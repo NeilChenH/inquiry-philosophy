@@ -1,0 +1,89 @@
+.hero .hero-photo {
+  animation: none;
+  transform: translate3d(var(--hero-shift-x, 0px), var(--hero-shift-y, 0px), 0) scale(1.06);
+}
+
+.hero::before {
+  background:
+    linear-gradient(90deg, rgb(8 12 8 / .81), rgb(8 12 8 / .49) 47%, transparent 90%),
+    linear-gradient(0deg, rgb(9 14 9 / .96), transparent 48%, rgb(9 14 9 / .23)),
+    radial-gradient(ellipse at 70% 36%, rgb(226 208 153 / .12), transparent 49%);
+}
+
+.hero-top::after {
+  --mark: rgb(230 235 207 / .38);
+  --corner: clamp(14px, 2vw, 28px);
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+  top: 18%;
+  right: 12%;
+  width: clamp(190px, 27vw, 480px);
+  aspect-ratio: 5 / 4;
+  background:
+    linear-gradient(var(--mark), var(--mark)) left top / var(--corner) 1px,
+    linear-gradient(var(--mark), var(--mark)) left top / 1px var(--corner),
+    linear-gradient(var(--mark), var(--mark)) right top / var(--corner) 1px,
+    linear-gradient(var(--mark), var(--mark)) right top / 1px var(--corner),
+    linear-gradient(var(--mark), var(--mark)) left bottom / var(--corner) 1px,
+    linear-gradient(var(--mark), var(--mark)) left bottom / 1px var(--corner),
+    linear-gradient(var(--mark), var(--mark)) right bottom / var(--corner) 1px,
+    linear-gradient(var(--mark), var(--mark)) right bottom / 1px var(--corner),
+    linear-gradient(var(--mark), var(--mark)) center / 17px 1px,
+    linear-gradient(var(--mark), var(--mark)) center / 1px 17px;
+  background-repeat: no-repeat;
+}
+
+.hero .hero-copy { animation: none; }
+.hero #cinema-dust { visibility: hidden; }
+.hero[data-hero-live] #cinema-dust { visibility: visible; }
+
+.hero[data-hero-motion] .hero-photo {
+  animation: inquiry-lens-drift 26s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.hero[data-hero-live] .hero-photo { animation-play-state: running; }
+
+.hero[data-hero-intro] h1,
+.hero[data-hero-intro] .hero-english {
+  animation: inquiry-hero-enter .78s cubic-bezier(.2, .65, .25, 1) both;
+}
+
+.hero[data-hero-intro] .hero-english { animation-delay: .1s; }
+
+@keyframes inquiry-lens-drift {
+  from { scale: 1; }
+  to { scale: 1.06; }
+}
+
+@keyframes inquiry-hero-enter {
+  from { opacity: 0; transform: translateY(.24em); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 650px) {
+  .hero-top::after { width: min(42vw, 210px); right: 9%; top: 17%; opacity: .64; }
+}
+
+:is(.reading, .no-motion, .reduced-motion) .hero .hero-photo {
+  animation: none;
+  transform: scale(1.06);
+}
+
+:is(.reading, .no-motion, .reduced-motion) .hero #cinema-dust,
+.reading .hero-top::after { visibility: hidden; }
+
+:is(.reading, .no-motion, .reduced-motion) .hero :is(h1, .hero-english) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero[data-hero-motion] .hero-photo {
+    animation: none;
+    transform: scale(1.06);
+  }
+  .hero[data-hero-live] #cinema-dust { visibility: hidden; }
+  .hero[data-hero-intro] :is(h1, .hero-english) { animation: none; }
+}

@@ -13,17 +13,18 @@
   const allQuizzes = chapters.flatMap(c=>(c.quiz || []).map(q=>({...q,chapter:c.id})));
   const quizMap = Object.fromEntries(allQuizzes.map(q=>[q.id,q]));
   const themes = ['cinema','paper','sand','forest'];
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let stored = {};
   try { stored = JSON.parse(localStorage.getItem('inquiry-3192') || '{}'); } catch {}
   const state = {
     theme: themes.includes(stored.theme) ? stored.theme : 'cinema',
     reading: !!stored.reading,
-    motion: typeof stored.motion==='boolean' ? stored.motion : !matchMedia('(prefers-reduced-motion: reduce)').matches,
+    motion: stored.motion !== false,
     completed: Array.isArray(stored.completed) ? stored.completed.filter(id=>allSections.some(s=>s.id===id)) : [],
     answers: stored.answers && typeof stored.answers==='object' && !Array.isArray(stored.answers) ? stored.answers : {},
     lastChapter: Number(stored.lastChapter) || 1
   };
-  let route = {}, previousRoute = {}, dustFrame = 0, toastTimer = 0, searchTimer = 0, focusTab = '';
+  let route = {}, previousRoute = {}, toastTimer = 0, searchTimer = 0, focusTab = '';
   let reviewFilter = {chapter:'all',wrong:false,round:false};
   let roundIds = [];
   const words = ['ASK.','LIVE.','REASON.','BE HUMAN.','EXIST.','KNOW.','QUESTION.','REIMAGINE.'];
@@ -36,13 +37,20 @@
   function save(){ try { localStorage.setItem('inquiry-3192',JSON.stringify(state)); } catch {} }
   function notify(zh,en){ const box=$('#toast');box.textContent=`${zh} / ${en}`;box.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>box.classList.remove('visible'),2400); }
   function syncSettings(){
+    const animate = state.motion && !state.reading && !reducedMotion.matches;
     document.documentElement.dataset.theme=state.theme;
     document.documentElement.classList.toggle('reading',state.reading);
-    document.documentElement.classList.toggle('no-motion',!state.motion);
-    document.documentElement.classList.toggle('motion-opt-in',state.motion);
+    document.documentElement.classList.toggle('reduced-motion', reducedMotion.matches);
+    document.documentElement.classList.toggle('no-motion', !animate);
+    document.documentElement.classList.toggle('motion-opt-in', animate);
     $('#theme').value=state.theme;
     const b=$('[data-action="reading"]');b.setAttribute('aria-pressed',String(state.reading));b.innerHTML=`<span>${state.reading?'沉浸浏览':'舒适阅读'}</span><small>${state.reading?'CINEMATIC MODE':'READING MODE'}</small>`;
-    const m=$('[data-action="motion"]');m.setAttribute('aria-pressed',String(state.motion));m.textContent=state.motion?'动效 开 / Motion on':'动效 关 / Motion off';
+    const motionButton = $('[data-action="motion"]');
+    motionButton.setAttribute('aria-pressed', String(state.motion));
+    motionButton.textContent = animate ? '动效 开 / Motion on'
+      : state.motion ? '动效 暂停 / Motion paused' : '动效 关 / Motion off';
+    window.inquiryHero?.sync(animate);
+    window.inquiryMotion?.sync(animate);
   }
   function navigate(hash){ if(location.hash===hash){render();}else location.hash=hash; }
   function parseRoute(){const parts=(location.hash.replace(/^#\/?/,'') || '').split('/');return {type:parts[0]||'home',id:Number(parts[1])||1,tab:parts[2]||'learn',target:parts[3]||''};}
@@ -147,20 +155,18 @@
   function review(){const qs=filteredQuizzes();const attempted=qs.filter(q=>Number.isInteger(state.answers[q.id]));const correct=attempted.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">REVISIT & REFLECT / 综合复习</div><h1 class="bilingual-title">把概念，变成自己的理解。<small>Make the ideas your own.</small></h1><p>重新追问容易混淆的地方。选择一个章节，或抽取十题做一轮混合练习。<br><span lang="en">Revisit distinctions that are easy to miss. Choose a chapter or draw ten questions for a mixed round.</span></p></div><div class="review-page"><div class="review-filters"><label class="sr-only" for="review-chapter">选择章节 / Choose chapter</label><select id="review-chapter"><option value="all">全部章节 / All chapters</option>${chapters.map(c=>`<option value="${c.id}" ${reviewFilter.chapter===String(c.id)?'selected':''}>${c.id}. ${escape(c.title.zh)} / ${escape(c.title.en)}</option>`).join('')}</select><label><input type="checkbox" id="wrong-only" ${reviewFilter.wrong?'checked':''}> 仅错题 / Mistakes only</label><button class="button" data-action="new-round">随机十题 / Draw 10 ↗</button>${reviewFilter.round?'<button class="text-button" data-action="all-questions">显示全部 / Show all</button>':''}</div>${quizIntro()}<div class="round-summary" aria-live="polite">本组 ${qs.length} 题 · 已答 ${attempted.length} · 正确 ${correct.length} / ${qs.length} questions · ${attempted.length} answered · ${correct.length} correct</div>${qs.length?qs.map(quizMarkup).join(''):`<div class="empty-state">这里暂时没有题目 / No questions here<p>选择其他章节，或先完成几道题，再回看错题。<br>Choose another chapter, or answer some questions before reviewing mistakes.</p><a class="button" href="#/chapters">浏览章节 / Explore chapters ↗</a></div>`}</div>`;}
   function progress(){const answered=allQuizzes.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id]));const right=answered.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">YOUR LEARNING JOURNEY / 学习档案</div><h1 class="bilingual-title">一点一点，想得更清楚。<small>Clarity grows one idea at a time.</small></h1><p>主动标记已经理解的单元，留下自己的学习足迹。<br><span lang="en">Mark the units you understand and follow your progress.</span></p></div><div class="progress-page"><div class="stats-grid"><div class="stat"><strong>${state.completed.length}<span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allSections.length}</span></strong><span>已理解单元</span><small>UNITS UNDERSTOOD</small></div><div class="stat"><strong>${answered.length}<span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allQuizzes.filter(q=>q.type!=='reflection').length}</span></strong><span>已答选择题</span><small>QUESTIONS ANSWERED</small></div><div class="stat"><strong>${answered.length?Math.round(right.length/answered.length*100)+'%':'—'}</strong><span>当前答案正确率</span><small>ACCURACY OF SAVED ANSWERS</small></div></div>${chapters.map(c=>{const n=c.sections.filter(s=>state.completed.includes(s.id)).length;const tried=c.quiz.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id])).length;return `<a class="progress-row" href="#/chapter/${c.id}"><span class="num">${String(c.id).padStart(2,'0')}</span><span><h3>${escape(c.title.zh)}</h3><small lang="en">${escape(c.title.en)}</small><div class="progress-track"><span style="width:${n/c.sections.length*100}%"></span></div></span><span class="row-data">${n}/${c.sections.length} 单元<small>${tried} 题已答<br>QUESTIONS TRIED ↗</small></span></a>`}).join('')}<div class="progress-actions"><p>进度保存在当前设备的当前浏览器；本地版与在线版分别保存。换设备时，可导出学习档案，再在另一设备导入。<br><span lang="en">Progress stays in this browser on this device. Local and online copies store it separately. Export and import your learning file to transfer progress.</span></p><div><button class="button" data-action="export">导出学习档案 / Export progress ↓</button><button class="button" data-action="import">导入学习档案 / Import progress ↑</button></div></div></div>`;}
   function render(){
-    cancelAnimationFrame(dustFrame);previousRoute=route;route=parseRoute();if(!['learn','slides','terms','quiz'].includes(route.tab))route.tab='learn';
+    previousRoute=route;route=parseRoute();if(!['learn','slides','terms','quiz'].includes(route.tab))route.tab='learn';
+    const main = $('#main');
+    const routeChanged = previousRoute.type !== route.type || previousRoute.id !== route.id;
     $$('.main-nav a').forEach(a=>a.classList.toggle('active',route.type===a.getAttribute('href').split('/')[1]||(a.getAttribute('href')==='#/chapters'&&route.type==='chapter')));
     document.title=route.type==='chapter'&&chapterMap[route.id]?`${chapterMap[route.id].title.zh} · 观问 INQUIRY`:'观问 INQUIRY — 从一个问题开始';
-    $('#main').innerHTML=route.type==='home'?home():route.type==='chapters'?curriculum():route.type==='chapter'?chapter(chapterMap[route.id]):route.type==='review'?review():route.type==='progress'?progress():home();
-    if(previousRoute.type!==route.type||previousRoute.id!==route.id){window.scrollTo({top:0,behavior:'instant'});}else if(route.type==='chapter'&&route.tab!==previousRoute.tab){$('.chapter-tabs')?.scrollIntoView({block:'start',behavior:'instant'});}
+    main.innerHTML=route.type==='home'?home():route.type==='chapters'?curriculum():route.type==='chapter'?chapter(chapterMap[route.id]):route.type==='review'?review():route.type==='progress'?progress():home();
+    if(routeChanged){window.scrollTo({top:0,behavior:'instant'});}else if(route.type==='chapter'&&route.tab!==previousRoute.tab){$('.chapter-tabs')?.scrollIntoView({block:'start',behavior:'instant'});}
     if(route.type==='chapter'&&route.tab==='learn'&&route.target){const target=document.getElementById(route.target);if(target){target.open=true;requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));}}
-    if(route.type==='home')startDust();syncSettings();
+    window.inquiryHero?.mount($('.hero', main));
+    syncSettings();
     if(focusTab){$(`[role="tab"][data-value="${focusTab}"]`)?.focus();focusTab='';}
-  }
-  function startDust(){
-    cancelAnimationFrame(dustFrame);const canvas=$('#cinema-dust');if(!canvas||!state.motion)return;const context=canvas.getContext('2d');if(!context)return;
-    const rect=canvas.getBoundingClientRect();const ratio=Math.min(devicePixelRatio||1,2);canvas.width=rect.width*ratio;canvas.height=rect.height*ratio;context.scale(ratio,ratio);
-    const width=rect.width,height=rect.height;const particles=Array.from({length:45},(_,i)=>({x:(Math.sin(i*22.3)*.5+.5)*width,y:(Math.cos(i*17.7)*.5+.5)*height,r:.4+(i%5)*.2,s:.12+(i%7)*.025}));
-    function frame(){if(!$('#cinema-dust')||!state.motion)return;if(!document.hidden){context.clearRect(0,0,width,height);for(const p of particles){p.y-=p.s;p.x+=Math.sin(p.y/130)*.06;if(p.y<0)p.y=height;context.beginPath();context.arc(p.x,p.y,p.r,0,Math.PI*2);context.fillStyle='rgba(234,239,207,.34)';context.fill();}}dustFrame=requestAnimationFrame(frame);}frame();
+    window.inquiryMotion?.mount(main, {routeChanged: Boolean(previousRoute.type) && routeChanged});
   }
   function openSources() {
     const courseLinks = (window.SOURCE_INVENTORY || []).map(item => `<p class="course-credit">
@@ -232,7 +238,7 @@
     else if(action==='close-dialog')b.closest('dialog').close();
     else if(action==='sources')openSources();
     else if(action==='reading'){state.reading=!state.reading;save();syncSettings();notify(state.reading?'已切换舒适阅读':'已切换沉浸浏览',state.reading?'Reading mode enabled':'Cinematic mode enabled');}
-    else if(action==='motion'){state.motion=!state.motion;save();syncSettings();if(state.motion)startDust();else cancelAnimationFrame(dustFrame);}
+    else if(action==='motion'){state.motion=!state.motion;save();syncSettings();}
     else if(action==='tab')navigate(`#/chapter/${route.id}/${b.dataset.value}`);
     else if(action==='expand-all')$$('.section-accordion').forEach(d=>d.open=true);
     else if(action==='collapse-all')$$('.section-accordion').forEach(d=>d.open=false);
@@ -269,8 +275,7 @@
   document.addEventListener('input',event=>{if(event.target.id==='search-input'){clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(event.target.value),120);}else if(event.target.matches('[data-viz-input]')&&window.inquiryVizInput)window.inquiryVizInput(event.target);});
   function updateReviewSummary(){if(route.type!=='review'||!$('.round-summary'))return;const qs=filteredQuizzes(),tried=qs.filter(q=>Number.isInteger(state.answers[q.id])),correct=tried.filter(q=>state.answers[q.id]===q.answer);$('.round-summary').textContent=`本组 ${qs.length} 题 · 已答 ${tried.length} · 正确 ${correct.length} / ${qs.length} questions · ${tried.length} answered · ${correct.length} correct`;}
   document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();$('#search-dialog').showModal();$('#search-input').focus();}if(event.target.matches('[role="tab"]')&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const tabs=$$('[role="tab"]');let i=tabs.indexOf(event.target);i=event.key==='Home'?0:event.key==='End'?tabs.length-1:(i+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;focusTab=tabs[i].dataset.value;tabs[i].click();}});
-  document.addEventListener('pointermove',event=>{if(state.motion&&route.type==='home'){const h=$('.hero');if(h){h.style.setProperty('--pointer-x',(event.clientX/innerWidth-.5)*2);h.style.setProperty('--pointer-y',(event.clientY/innerHeight-.5)*2);}}},{passive:true});
   window.addEventListener('hashchange',render);
-  window.addEventListener('resize',()=>{if(route.type==='home')startDust();},{passive:true});
-  syncSettings();render();
+  reducedMotion.addEventListener('change', syncSettings);
+  render();
 })();

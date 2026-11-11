@@ -8,7 +8,9 @@
   <title>观问 INQUIRY — 从一个问题开始</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <script>try{var p=JSON.parse(localStorage.getItem('inquiry-3192')||'{}');document.documentElement.dataset.theme=p.theme||'cinema';if(p.reading)document.documentElement.classList.add('reading');if(p.motion===false||(!('motion'in p)&&matchMedia('(prefers-reduced-motion: reduce)').matches))document.documentElement.classList.add('no-motion')}catch(e){}</script>
+  <link rel="stylesheet" href="cinema-hero.css">
+  <link rel="stylesheet" href="cinema-motion.css">
+  <script>try{var p=JSON.parse(localStorage.getItem('inquiry-3192')||'{}');document.documentElement.dataset.theme=p.theme||'cinema';if(p.reading)document.documentElement.classList.add('reading');if(p.motion===false||p.reading||matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('no-motion')}catch(e){}</script>
 </head>
 <body>
   <a class="skip-link" href="#main" data-action="skip">跳至正文 / Skip to content</a>
@@ -20,6 +22,7 @@
       <label class="theme-select"><span class="sr-only">主题 / Theme</span><select id="theme" aria-label="主题 / Theme"><option value="cinema">影院黑 / Cinema</option><option value="paper">纸白 / Paper</option><option value="sand">暖砂 / Sand</option><option value="forest">深林 / Forest</option></select></label>
       <button class="mode-button" data-action="reading" aria-pressed="false"><span>舒适阅读</span><small>READING MODE</small></button>
     </div>
+    <div class="reading-progress" data-reading-progress aria-hidden="true"></div>
   </header>
   <main id="main" tabindex="-1"></main>
   <footer class="site-footer"><div class="footer-word">STAY CURIOUS.</div><div class="footer-bottom"><span>观问 INQUIRY · 哲学与当代议题<br><small>Philosophy & contemporary issues · 8 chapters / 285 pages</small></span><div><button data-action="sources">内容与图片来源 / Sources & credits ↗</button><button data-action="motion" aria-pressed="true">动效 开 / Motion on</button><span class="local-hint">进度保存在当前浏览器 / Progress stays in this browser</span></div></div></footer>
@@ -33,6 +36,8 @@
   <script src="chapters/ch1.js"></script><script src="chapters/ch2.js"></script><script src="chapters/ch3.js"></script><script src="chapters/ch4.js"></script><script src="chapters/ch5.js"></script><script src="chapters/ch6.js"></script><script src="chapters/ch7.js"></script><script src="chapters/ch8.js"></script>
   <script src="supplements.js"></script>
   <script src="visualizations.js"></script>
+  <script src="cinema-hero.js"></script>
+  <script src="cinema-motion.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

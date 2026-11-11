@@ -21,7 +21,9 @@ for (const asset of html.matchAll(/<(?:link|script)\b[^>]*\b(?:src|href)="([^"]+
 }
 for (const script of scripts) {
   const code = new vm.Script(read(script), {filename: script});
-  if (!['app.js', 'visualizations.js'].includes(script)) code.runInContext(context, {timeout: 3000});
+  if (!['app.js', 'visualizations.js', 'cinema-hero.js', 'cinema-motion.js'].includes(script)) {
+    code.runInContext(context, {timeout: 3000});
+  }
 }
 
 const {COURSE_CHAPTERS, COURSE_SUPPLEMENTS, SOURCE_INVENTORY, FULL_COURSE_SITE, IMAGE_CREDITS} = context.window;
