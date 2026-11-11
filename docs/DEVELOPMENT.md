@@ -74,3 +74,23 @@ Chapter cards and section headings animate into view, with a scroll indicator in
 舒适阅读、关闭动效和系统的减少动态效果设置都会暂停这些动画。首屏离开视口或标签页进入后台时暂停粒子绘制。 / Reading mode, the motion switch and system reduced motion pause the animations. The hero canvas stops drawing offscreen and in background tabs.
 
 文件 / Files · `dist/cinema-hero.js` · `dist/cinema-hero.css` · `dist/cinema-motion.js` · `dist/cinema-motion.css` · [验收记录 / Verification](VERIFICATION.md)
+
+## 08 完善首屏反馈与学习操作 / Refine pointer and study interactions
+
+首屏的取景光环跟随鼠标，两个主按钮的文字和箭头提供轻微磁吸反馈。保留系统指针、按钮点击区域与键盘焦点。触屏、舒适阅读和系统减少动态效果设置使用静态交互。
+
+The homepage adds a pointer halo and slight magnetic feedback to the labels and arrows of its two primary links. The system cursor, hit targets and keyboard focus remain available. Touch, reading mode and system reduced motion use the static interaction.
+
+从搜索结果进入时直接展开并聚焦对应术语卡。键盘提交选择题后将焦点移到解析，方便继续阅读或回看来源页。
+
+Term results open and focus the matching card. Submitting a quiz answer with the keyboard moves focus to the explanation so the learner can continue reading or revisit its source.
+
+## 新功能发布验收 / First-visit release checks
+
+观问的定位是高端、有设计感的沉浸式思想空间。首屏与章节页眉营造氛围，双语正文、互动图解和练习保持稳定、清楚、易于操作。动效须与取景框、光线和页面层次一致，并尊重舒适阅读、系统减少动态效果和触屏操作。
+
+INQUIRY is designed as an immersive space for thought. Its homepage and chapter headers set the atmosphere, while bilingual reading, diagrams and practice remain stable and easy to use. Motion should support the composition and respect reading mode, reduced motion and touch.
+
+每次新增用户可见功能，发布前运行内容校验，并用独立浏览状态从首页开始实测。走一遍进入章节、定位课件、搜索、作答及查看进度的主路径，再检查新功能本身。涉及版式或动效时，另查窄屏、键盘和舒适阅读。将实际结果记入验收记录。
+
+Before releasing a user-facing feature, run the content checks and start from the homepage with fresh browser state. Walk through chapter entry, source lookup, search, practice and progress, then exercise the new feature. For layout or motion changes, also check narrow screens, keyboard input and reading mode. Record the observed results. [验收记录 / Verification](VERIFICATION.md)
