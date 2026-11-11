@@ -12,6 +12,7 @@
   const allSections = chapters.flatMap(c=>c.sections || []);
   const allQuizzes = chapters.flatMap(c=>(c.quiz || []).map(q=>({...q,chapter:c.id})));
   const quizMap = Object.fromEntries(allQuizzes.map(q=>[q.id,q]));
+  const termId = (chapterId, term) => `term-${chapterId}-${encodeURIComponent(term.en.trim().toLowerCase())}`;
   const themes = ['cinema','paper','sand','forest'];
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let stored = {};
@@ -144,10 +145,18 @@
       <div class="page-grid" aria-label="课件页码 / Slide pages">${links}</div>
       <div class="standalone-reader">${reader(c, pages, n - 1)}</div>`;
   }
-  function termsTab(c){return `<div class="toolbar" style="margin-top:0"><h2>术语，连同它的意思<small>TERMS IN CONTEXT</small></h2><span class="source-tag">点击展开解释 / Click to reveal</span></div><div class="terms-grid">${c.terms.map(t=>`<details class="term-card"><summary><span><strong lang="en">${escape(t.en)}</strong><small>${escape(t.zh)}</small></span><span class="expand-icon" aria-hidden="true"></span></summary><div class="term-body">${bi(t.note)}<span class="source-tag">CH.${c.id} · P${(t.pages||[]).join(', ')}</span></div></details>`).join('')}</div>`;}
+  function termsTab(c){return `<div class="toolbar" style="margin-top:0"><h2>术语，连同它的意思<small>TERMS IN CONTEXT</small></h2><span class="source-tag">点击展开解释 / Click to reveal</span></div><div class="terms-grid">${c.terms.map(t=>`<details class="term-card" id="${escape(termId(c.id,t))}"><summary><span><strong lang="en">${escape(t.en)}</strong><small>${escape(t.zh)}</small></span><span class="expand-icon" aria-hidden="true"></span></summary><div class="term-body">${bi(t.note)}<span class="source-tag">CH.${c.id} · P${(t.pages||[]).join(', ')}</span></div></details>`).join('')}</div>`;}
+  function showTerm(target) {
+    const card = document.getElementById(target);
+    if (!card?.matches('.term-card')) return;
+    card.open = true;
+    const summary = $('summary', card);
+    summary.focus({preventScroll: true});
+    summary.scrollIntoView({block: 'center', behavior: 'instant'});
+  }
   function quizMarkup(q,index){
     const answer=state.answers[q.id];const answered=Number.isInteger(answer)&&answer>=0&&answer<(q.options?.length||0);const correct=answer===q.answer;
-    return `<article class="quiz-card" id="${escape(q.id)}"><div class="question-head"><span>${String(index+1).padStart(2,'0')} / ${q.type==='reflection'?'思考题 REFLECTION':'选择题 MULTIPLE CHOICE'}</span><span>CH.${q.chapter||route.id} · P${(q.pages||[]).join(', ')}</span></div><h3>${bi(q.question)}</h3>${q.type==='reflection'?`<details class="quiz-reflection"><summary>展开参考要点 / Reveal suggested points ＋</summary>${bi(q.modelAnswer)}<div class="quiz-footer">开放讨论题，可有其他合理论证。 / Other well-supported answers are possible.</div></details>`:`<div class="quiz-options">${(q.options||[]).map((o,i)=>`<button class="quiz-option ${answered&&i===answer?'selected':''} ${answered&&i===q.answer?'correct':''} ${answered&&i===answer&&!correct?'incorrect':''}" data-action="answer" data-qid="${escape(q.id)}" data-value="${i}" aria-pressed="${answered&&i===answer}"><span class="option-letter">${String.fromCharCode(65+i)}</span><span class="option-copy"><span class="zh" lang="zh-CN">${escape(o.zh)}</span><span class="en" lang="en">${escape(o.en)}</span></span></button>`).join('')}</div>${answered?`<div class="quiz-feedback ${correct?'':'wrong'}"><strong>${correct?'✓ 理解正确 / Correct':'再辨析一下 / Let’s reconsider'} · ${String.fromCharCode(65+q.answer)}</strong>${bi(q.explanation)}<div class="quiz-footer"><button class="text-button" data-action="open-page" data-ch="${q.chapter||route.id}" data-page="${q.pages?.[0]||1}">回看来源页 / Revisit source ↗</button><button class="text-button" data-action="retry" data-qid="${escape(q.id)}">重新作答 / Try again</button></div></div>`:''}`}</article>`;
+    return `<article class="quiz-card" id="${escape(q.id)}"><div class="question-head"><span>${String(index+1).padStart(2,'0')} / ${q.type==='reflection'?'思考题 REFLECTION':'选择题 MULTIPLE CHOICE'}</span><span>CH.${q.chapter||route.id} · P${(q.pages||[]).join(', ')}</span></div><h3>${bi(q.question)}</h3>${q.type==='reflection'?`<details class="quiz-reflection"><summary>展开参考要点 / Reveal suggested points ＋</summary>${bi(q.modelAnswer)}<div class="quiz-footer">开放讨论题，可有其他合理论证。 / Other well-supported answers are possible.</div></details>`:`<div class="quiz-options">${(q.options||[]).map((o,i)=>`<button class="quiz-option ${answered&&i===answer?'selected':''} ${answered&&i===q.answer?'correct':''} ${answered&&i===answer&&!correct?'incorrect':''}" data-action="answer" data-qid="${escape(q.id)}" data-value="${i}" aria-pressed="${answered&&i===answer}"><span class="option-letter">${String.fromCharCode(65+i)}</span><span class="option-copy"><span class="zh" lang="zh-CN">${escape(o.zh)}</span><span class="en" lang="en">${escape(o.en)}</span></span></button>`).join('')}</div>${answered?`<div class="quiz-feedback ${correct?'':'wrong'}" tabindex="-1"><strong>${correct?'✓ 理解正确 / Correct':'再辨析一下 / Let’s reconsider'} · ${String.fromCharCode(65+q.answer)}</strong>${bi(q.explanation)}<div class="quiz-footer"><button class="text-button" data-action="open-page" data-ch="${q.chapter||route.id}" data-page="${q.pages?.[0]||1}">回看来源页 / Revisit source ↗</button><button class="text-button" data-action="retry" data-qid="${escape(q.id)}">重新作答 / Try again</button></div></div>`:''}`}</article>`;
   }
   function quizIntro(){return `<p class="quiz-intro">依据课件自编的理解练习，包含补充解释；不是历年真题或缺失的原配套讲义。思考题提供参考要点。<br><span lang="en">Original practice based on the slides, with explanatory notes. These are not past exam papers or the missing original handouts. Reflection prompts include suggested points.</span></p>`;}
   function quizTab(c){return `<div class="toolbar" style="margin-top:0;margin-bottom:22px"><h2>理解之后，再测一次<small>TEST YOUR UNDERSTANDING</small></h2></div>${quizIntro()}${c.quiz.map((q,i)=>quizMarkup({...q,chapter:c.id},i)).join('')}`;}
@@ -166,6 +175,7 @@
     window.inquiryHero?.mount($('.hero', main));
     syncSettings();
     if(focusTab){$(`[role="tab"][data-value="${focusTab}"]`)?.focus();focusTab='';}
+    if(route.type === 'chapter' && route.tab === 'terms' && route.target) showTerm(route.target);
     window.inquiryMotion?.mount(main, {routeChanged: Boolean(previousRoute.type) && routeChanged});
   }
   function openSources() {
@@ -206,7 +216,7 @@
     const hits=[];
     for(const c of chapters){
       for(const s of c.sections){const text=[s.title.zh,s.title.en,s.lead.zh,s.lead.en,...s.blocks.flatMap(b=>[b.zh,b.en])].join(' ');if(text.toLocaleLowerCase().includes(q))hits.push({chapter:c.id,label:s.title.zh+' / '+s.title.en,kind:'知识点 / CONCEPT',text,hash:`#/chapter/${c.id}/learn/${s.id}`});}
-      for(const t of c.terms){const text=[t.zh,t.en,t.note.zh,t.note.en].join(' ');if(text.toLocaleLowerCase().includes(q))hits.push({chapter:c.id,label:t.zh+' / '+t.en,kind:'术语 / TERM',text,hash:`#/chapter/${c.id}/terms`});}
+      for(const t of c.terms){const text=[t.zh,t.en,t.note.zh,t.note.en].join(' ');if(text.toLocaleLowerCase().includes(q))hits.push({chapter:c.id,label:t.zh+' / '+t.en,kind:'术语 / TERM',text,hash:`#/chapter/${c.id}/terms/${termId(c.id,t)}`});}
       for (const page of c.pages) {
         const raw = window.SOURCE_PAGES?.[c.id]?.[page.n - 1];
         const text = [page.title.zh, page.title.en, page.zh, raw?.en, page.enImageText].filter(Boolean).join(' ');
@@ -251,7 +261,13 @@
     else if(action==='answer'){
       const q=quizMap[b.dataset.qid];if(!q)return;state.answers[q.id]=Number(b.dataset.value);save();
       if(route.type==='review'&&reviewFilter.wrong&&state.answers[q.id]===q.answer){render();$('#info-title').innerHTML='✓ 已订正<small>CORRECTED · EXPLANATION</small>';$('#info-content').innerHTML=`<p>${bi(q.question)}</p><p>正确选项 / Correct option: ${String.fromCharCode(65+q.answer)}</p>${bi(q.explanation)}<p><button class="button" data-action="open-page" data-ch="${q.chapter}" data-page="${q.pages[0]}">回看来源 / Revisit source ↗</button></p><p class="muted">此题已从错题列表移出。 / This question has been removed from the mistakes list.</p>`;$('#info-dialog').showModal();}
-      else{const card=b.closest('.quiz-card');const idx=Number($('.question-head',card).textContent.trim().split('/')[0])-1;card.outerHTML=quizMarkup(q,Math.max(0,idx));updateReviewSummary();}
+      else {
+        const card = b.closest('.quiz-card');
+        const index = Number($('.question-head', card).textContent.trim().split('/')[0]) - 1;
+        card.outerHTML = quizMarkup(q, Math.max(0, index));
+        if (event.detail === 0) document.getElementById(q.id)?.querySelector('.quiz-feedback')?.focus();
+        updateReviewSummary();
+      }
     }
     else if(action==='retry'){const q=quizMap[b.dataset.qid];delete state.answers[q.id];save();if(route.type==='review'&&reviewFilter.wrong)render();else{const card=b.closest('.quiz-card');const idx=Number($('.question-head',card).textContent.trim().split('/')[0])-1;card.outerHTML=quizMarkup(q,Math.max(0,idx));updateReviewSummary();}}
     else if(action==='new-round'){const qs=allQuizzes.filter(q=>q.type!=='reflection'&&(reviewFilter.chapter==='all'||q.chapter===Number(reviewFilter.chapter))&&(!reviewFilter.wrong||(Number.isInteger(state.answers[q.id])&&state.answers[q.id]!==q.answer)));for(let i=qs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[qs[i],qs[j]]=[qs[j],qs[i]];}roundIds=qs.slice(0,10).map(q=>q.id);reviewFilter.round=true;render();}
