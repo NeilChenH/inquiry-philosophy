@@ -17,3 +17,9 @@ The verifier checks the static entry points, bilingual content, source page refe
 实测使用本机 HTTP 预览。双击入口通过静态检查核对了目标路径。
 
 The interactive checks used a local HTTP preview. The local HTML launcher's target was checked separately.
+
+## 动效升级实测 / Motion upgrade
+
+- 首页滚动时触发卡片入场，顶部进度线随位置变化。首屏离开视口后，粒子停止绘制。 / The cards revealed on scroll and the header tracked scroll position. Hero particles paused outside the viewport.
+- 切换到第二章时触发短入场。打开课件索引并翻至第 2 页后，在线来源链接仍指向第二章第 2 页。 / Chapter 2 entered with a short animation. The source link still matched the selected chapter and page.
+- 舒适阅读和页脚动效开关都可暂停效果。窄屏预览没有出现横向溢出。 / Reading mode and the footer motion control both paused the effects. The narrow viewport had no horizontal overflow.

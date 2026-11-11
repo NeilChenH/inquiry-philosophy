@@ -19,7 +19,7 @@ INQUIRY is an interactive bilingual philosophy learning site. Its eight chapters
 - `dist/index.html` 是静态入口。界面与交互由 `styles.css`、`app.js` 和 `visualizations.js` 提供。 / The static entry point loads the styles, application and interactive diagrams.
 - `dist/chapters/` 提供双语讲解、术语、练习和索引。页码与八份课件的 285 个物理页一一对应。 / Chapter data includes the study material and references to all 285 source pages.
 - `node tools/verify.cjs` 核验章节、双语内容、页码和资源。 / Run the verifier with Node.js.
-- 按需求、课件整理、配图、实现、验收及发布查看历史。 / Follow the six stages in the development log and commit history. [开发记录 / Development log](docs/DEVELOPMENT.md) · [提交历史 / Commits](https://github.com/NeilChenH/inquiry-philosophy/commits/main/)
+- 按需求、内容整理、实现、发布及后续升级查看历史。 / Follow the original release and later improvements in the development log and commit history. [开发记录 / Development log](docs/DEVELOPMENT.md) · [提交历史 / Commits](https://github.com/NeilChenH/inquiry-philosophy/commits/main/)
 
 ## 许可 / License
 

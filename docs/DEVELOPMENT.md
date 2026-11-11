@@ -1,8 +1,8 @@
 # 开发记录 / Development log
 
-这份提交历史按项目的实际开发步骤重建。每次提交收录该阶段的交付文件，提交日期为开源整理日期。
+前六个阶段的提交按首次开源时的实际开发步骤重建。后续更新按实际完成时间记录。
 
-This history reconstructs the stages of the completed project. Each commit adds the files for one stage and is dated when the repository was prepared for publication.
+The first six stages reconstruct the work that led to the initial open release. Later changes are recorded when they are completed.
 
 ## 01 确认需求 / Define the learning experience
 
@@ -64,3 +64,13 @@ node tools/verify.cjs
 完整在线版用于逐页阅读。GitHub 公开仓库用于下载、运行和阅读源码，以及查看分阶段提交历史。 [完整在线版 / Full course](https://philosophy-3192-cinema-20261111.chencanhongcch.chatgpt.site/) · [开源提交 / Commits](https://github.com/NeilChenH/inquiry-philosophy/commits/main/)
 
 The full site hosts the original-slide reader. The GitHub repository publishes the open edition, its run instructions and this development history.
+
+## 07 升级电影感动效 / Refine cinematic motion
+
+滚动时按顺序呈现章节卡片与分区标题，顶部细线显示当前页面的滚动进度。首页增加取景框、分层光尘与平滑鼠标视差。章节之间切换时短暂入场，按钮提供悬停与按压反馈。
+
+Chapter cards and section headings animate into view, with a scroll indicator in the header. The homepage adds a viewfinder, layered particles and smooth pointer parallax. Chapter navigation uses a brief entrance, with hover and press feedback on buttons.
+
+舒适阅读、关闭动效和系统的减少动态效果设置都会暂停这些动画。首屏离开视口或标签页进入后台时暂停粒子绘制。 / Reading mode, the motion switch and system reduced motion pause the animations. The hero canvas stops drawing offscreen and in background tabs.
+
+文件 / Files · `dist/cinema-hero.js` · `dist/cinema-hero.css` · `dist/cinema-motion.js` · `dist/cinema-motion.css` · [验收记录 / Verification](VERIFICATION.md)
