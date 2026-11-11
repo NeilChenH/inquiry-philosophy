@@ -24,11 +24,11 @@ The original project extracted text, rendered each PDF page and checked translat
 | --- | ---: |
 | 哲学导论 / Introduction to Philosophy | 41 |
 | 人生哲学 / Philosophy of Life | 25 |
-| 逻辑与方法论 / Logic and Methodology | 32 |
-| 人的概念 / Concept of Man | 32 |
+| 逻辑与思维方法 / Logic and Methods of Thinking | 32 |
+| 人的观念 / The Concept of Man | 32 |
 | 形而上学 / Metaphysics | 43 |
 | 认识论 / Epistemology | 27 |
-| 意识形态 / Ideology | 44 |
+| 意识形态与当代议题 / Ideology and Current Issues | 44 |
 | 去殖民化 / Decolonisation | 41 |
 
 文件 / Files · `dist/chapters/`, `dist/sources.js`, `dist/supplements.js`
@@ -53,7 +53,7 @@ The buildless site includes expandable sections and references, bilingual search
 
 核对数据结构、覆盖量、页码链接和图片署名。使用仓库中的验证脚本检查下载后的副本。
 
-Check bilingual coverage, page references and image credits with the included verifier.
+Check bilingual coverage, page references and image credits with the included verifier. [验收记录 / Verification](VERIFICATION.md)
 
 ```sh
 node tools/verify.cjs
