@@ -1,0 +1,11 @@
+.openai/
+.env
+.env.*
+*.pdf
+dist/originals/
+dist/assets/slides/
+.local/
+观问_学习档案*.json
+__pycache__/
+.DS_Store
+Thumbs.db
