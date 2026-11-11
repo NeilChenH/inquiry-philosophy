@@ -18,6 +18,7 @@
   const sizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(queueProgress) : null;
 
   function queueProgress() {
+    // 合并同一帧内的滚动和尺寸变化事件，减少重复读取页面高度。
     if (!enabled || !progress || progressFrame !== null) return;
     progressFrame = requestAnimationFrame(() => {
       progressFrame = null;
@@ -39,6 +40,7 @@
       }
     }, {rootMargin: '0px 0px 16px 0px'});
 
+    // 只观察当前视口下方的内容，已可见的内容直接呈现。
     const viewportBottom = document.documentElement.clientHeight;
     for (const target of main.querySelectorAll(revealTargets)) {
       if (target.getBoundingClientRect().top >= viewportBottom) revealObserver.observe(target);
@@ -53,6 +55,7 @@
   }
 
   function clearMotion() {
+    // 切换页面或暂停动效时清理观察器和待执行帧。
     revealObserver?.disconnect();
     revealObserver = null;
     sizeObserver?.disconnect();

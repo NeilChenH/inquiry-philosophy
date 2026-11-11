@@ -53,6 +53,77 @@
 
 .hero[data-hero-intro] .hero-english { animation-delay: .1s; }
 
+/* 光环只提供视觉反馈，系统指针继续负责指示位置和链接状态。 */
+.hero-pointer {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  pointer-events: none;
+  visibility: hidden;
+  color: #e2efba;
+}
+
+@media (any-hover: hover) and (any-pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero[data-hero-live][data-hero-pointer] .hero-pointer { visibility: visible; }
+
+  .hero-pointer::before,
+  .hero-pointer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    transition: scale 180ms ease, opacity 180ms ease;
+  }
+
+  .hero-pointer::before {
+    border: 1px solid currentColor;
+    box-shadow: 0 0 0 1px rgb(17 22 12 / .7);
+    opacity: .8;
+  }
+
+  .hero-pointer::after {
+    inset: -5px;
+    border: 1px solid transparent;
+    border-top-color: currentColor;
+    border-bottom-color: currentColor;
+    rotate: 45deg;
+    opacity: .42;
+  }
+
+  .hero-pointer[data-cta]::before { scale: 1.19; opacity: .94; }
+  .hero-pointer[data-cta]::after { scale: 1.19; opacity: .72; }
+
+  .hero[data-hero-pointer] .hero-actions .button {
+    transition-property: background-color, border-color, color;
+  }
+
+  .hero[data-hero-live][data-hero-pointer] .hero-actions .button:is(:hover, :active) {
+    transform: none;
+  }
+
+  /* 磁吸只移动文字与箭头，链接的点击区域和焦点轮廓保持原位。 */
+  .hero[data-hero-live] .hero-actions a.button > span {
+    translate: var(--hero-magnet-x, 0px) var(--hero-magnet-y, 0px);
+    transition: translate 180ms cubic-bezier(.2, .65, .25, 1), transform 240ms ease;
+  }
+
+  .hero[data-hero-live] .hero-actions a.button[data-hero-magnet] > span {
+    transition-duration: 0ms, 240ms;
+  }
+}
+
+:is(.reading, .no-motion, .reduced-motion) .hero[data-hero-live][data-hero-pointer] .hero-pointer {
+  visibility: hidden;
+}
+
+@media (forced-colors: active), print {
+  .hero-pointer { display: none; }
+}
+
 @keyframes inquiry-lens-drift {
   from { scale: 1; }
   to { scale: 1.06; }

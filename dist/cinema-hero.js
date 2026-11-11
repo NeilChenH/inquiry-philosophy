@@ -25,6 +25,7 @@
     const width = state.hero.clientWidth;
     const height = state.hero.clientHeight;
     if (!width || !height) return;
+    // 限制画布像素总量，控制高分屏的绘制开销。
     const scale = Math.min(window.devicePixelRatio || 1, 1.5, Math.sqrt(2000000 / (width * height)));
     state.width = width;
     state.height = height;
@@ -59,6 +60,87 @@
     context.globalAlpha = 1;
   }
 
+  function moveHalo(pointer) {
+    pointer.element.style.transform = `translate3d(${pointer.x.toFixed(2)}px, ${pointer.y.toFixed(2)}px, 0)`;
+  }
+
+  function releaseMagnet(pointer) {
+    const magnet = pointer.magnet;
+    if (!magnet) return;
+    magnet.button.removeAttribute('data-hero-magnet');
+    magnet.button.style.removeProperty('--hero-magnet-x');
+    magnet.button.style.removeProperty('--hero-magnet-y');
+    pointer.element.removeAttribute('data-cta');
+    pointer.magnet = null;
+  }
+
+  function resetPointer(state) {
+    const pointer = state.pointer;
+    if (pointer.x !== null) state.hero.removeAttribute('data-hero-pointer');
+    pointer.x = null;
+    releaseMagnet(pointer);
+    state.targetX = state.targetY = 0;
+  }
+
+  function trackPointer(state, event) {
+    // 混合设备也须收到实际鼠标事件，触摸和手写笔不会触发跟随。
+    if (!state.frameId || !mouse.matches || event.pointerType !== 'mouse') {
+      resetPointer(state);
+      return;
+    }
+    const rect = state.hero.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const pointer = state.pointer;
+    pointer.targetX = event.clientX - rect.left;
+    pointer.targetY = event.clientY - rect.top;
+    state.targetX = (pointer.targetX / rect.width) * 2 - 1;
+    state.targetY = (pointer.targetY / rect.height) * 2 - 1;
+    if (pointer.x === null) {
+      pointer.x = pointer.targetX;
+      pointer.y = pointer.targetY;
+      moveHalo(pointer);
+      state.hero.setAttribute('data-hero-pointer', '');
+    }
+
+    const button = event.target?.closest?.('.hero-actions a.button') || null;
+    if (button !== (pointer.magnet?.button || null)) {
+      releaseMagnet(pointer);
+      if (button) {
+        pointer.magnet = {button, x: 0, y: 0};
+        pointer.element.setAttribute('data-cta', '');
+        button.setAttribute('data-hero-magnet', '');
+      }
+    }
+    if (button) {
+      const box = button.getBoundingClientRect();
+      const pull = (point, start, size) => Math.max(-1, Math.min(1, (point - start) * 2 / (size || 1) - 1));
+      pointer.magnet.targetX = pull(event.clientX, box.left, box.width) * 7;
+      pointer.magnet.targetY = pull(event.clientY, box.top, box.height) * 5;
+    }
+  }
+
+  function followPointer(pointer, delta) {
+    if (pointer.x === null) return;
+    const easing = 1 - Math.exp(-delta / 42);
+    const haloX = pointer.targetX - pointer.x;
+    const haloY = pointer.targetY - pointer.y;
+    if (Math.abs(haloX) + Math.abs(haloY) > .15) {
+      pointer.x += haloX * easing;
+      pointer.y += haloY * easing;
+      moveHalo(pointer);
+    }
+
+    const magnet = pointer.magnet;
+    if (!magnet) return;
+    const dx = magnet.targetX - magnet.x;
+    const dy = magnet.targetY - magnet.y;
+    if (Math.abs(dx) + Math.abs(dy) < .05) return;
+    magnet.x += dx * easing;
+    magnet.y += dy * easing;
+    magnet.button.style.setProperty('--hero-magnet-x', `${magnet.x.toFixed(2)}px`);
+    magnet.button.style.setProperty('--hero-magnet-y', `${magnet.y.toFixed(2)}px`);
+  }
+
   function frame(state, now) {
     const delta = state.lastTime ? Math.min(50, now - state.lastTime) : 16;
     state.lastTime = now;
@@ -72,6 +154,8 @@
       state.hero.style.setProperty('--hero-shift-x', `${(state.x * -23).toFixed(2)}px`);
       state.hero.style.setProperty('--hero-shift-y', `${(state.y * -15).toFixed(2)}px`);
     }
+    followPointer(state.pointer, delta);
+    // 光尘限制为每秒约 30 次重绘，鼠标跟随仍逐帧更新。
     if (now - state.lastPaint >= paintInterval) {
       paint(state);
       state.lastPaint = now;
@@ -80,6 +164,7 @@
   }
 
   function reconcile(state, enabled = motionEnabled && !reduced.matches) {
+    // 首屏离开视口或页面进入后台时暂停绘制，并复位指针效果。
     const live = enabled && state.intersects && !document.hidden;
     state.hero.toggleAttribute('data-hero-motion', enabled);
     state.hero.toggleAttribute('data-hero-live', live);
@@ -91,6 +176,7 @@
       state.x = state.y = state.targetX = state.targetY = 0;
     }
     if (!live) {
+      resetPointer(state);
       window.cancelAnimationFrame(state.frameId);
       state.frameId = 0;
       state.lastTime = 0;
@@ -113,12 +199,17 @@
       mounted.listeners.abort();
       mounted.visibility?.disconnect();
       mounted.resize?.disconnect();
+      mounted.pointer.element.remove();
       mounted = null;
     }
     if (!hero) return;
 
     const canvas = hero.querySelector('#cinema-dust');
     const context = canvas?.getContext('2d') || null;
+    const cursor = document.createElement('span');
+    cursor.className = 'hero-pointer';
+    cursor.setAttribute('aria-hidden', 'true');
+    hero.append(cursor);
     const listeners = new AbortController();
     const state = {
       hero, canvas, context, listeners,
@@ -127,6 +218,7 @@
       frameId: 0, lastTime: 0, lastPaint: -Infinity,
       age: 0, width: 0, height: 0,
       x: 0, y: 0, targetX: 0, targetY: 0,
+      pointer: {element: cursor, x: null, y: 0, targetX: 0, targetY: 0, magnet: null},
       motes: Array.from({length: 54}, () => ({
         x: Math.random(), y: Math.random(),
         speed: .008 + Math.random() * .021,
@@ -148,20 +240,20 @@
     mounted = state;
     const signal = listeners.signal;
     const refresh = () => { if (mounted === state) reconcile(state); };
-    const resize = () => { if (state.frameId) prepareCanvas(state); };
+    const reset = () => resetPointer(state);
+    const resize = () => {
+      reset();
+      if (state.frameId) prepareCanvas(state);
+    };
 
-    hero.addEventListener('pointermove', event => {
-      if (!state.frameId || !mouse.matches || event.pointerType !== 'mouse') return;
-      const rect = hero.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      state.targetX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      state.targetY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
-    }, {passive: true, signal});
-    hero.addEventListener('pointerleave', () => {
-      state.targetX = state.targetY = 0;
-    }, {passive: true, signal});
+    hero.addEventListener('pointermove', event => trackPointer(state, event), {passive: true, signal});
+    hero.addEventListener('pointerleave', reset, {signal});
+    hero.addEventListener('pointercancel', reset, {signal});
     document.addEventListener('visibilitychange', refresh, {signal});
+    mouse.addEventListener?.('change', reset, {signal});
     reduced.addEventListener?.('change', refresh, {signal});
+    window.addEventListener('blur', reset, {signal});
+    window.addEventListener('scroll', reset, {passive: true, signal});
     window.addEventListener('resize', resize, {passive: true, signal});
 
     if ('IntersectionObserver' in window) {

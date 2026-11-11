@@ -1,4 +1,4 @@
-/* The chapter header carries the entrance. Keep the study panel steady on tab changes. */
+/* 章节切换时由页首承载转场，切换学习标签时正文保持平稳。 */
 .chapter-content {
   animation: none;
 }
@@ -27,6 +27,7 @@
     animation: cinema-reveal 500ms var(--cinema-ease) var(--cinema-stagger, 0ms) backwards;
   }
 
+  /* 键盘焦点进入时立即显示完整内容。 */
   html.cinema-motion-ready:not(.reading, .no-motion, .reduced-motion) .cinema-reveal:focus-within {
     animation: none;
   }
