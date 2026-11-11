@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="cinema">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10120f">
+  <meta name="description" content="观问 INQUIRY 中英双语哲学学习站。八章知识讲解、互动图解、课件页码索引、术语与综合自测。">
+  <title>观问 INQUIRY — 从一个问题开始</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script>try{var p=JSON.parse(localStorage.getItem('inquiry-3192')||'{}');document.documentElement.dataset.theme=p.theme||'cinema';if(p.reading)document.documentElement.classList.add('reading');if(p.motion===false||(!('motion'in p)&&matchMedia('(prefers-reduced-motion: reduce)').matches))document.documentElement.classList.add('no-motion')}catch(e){}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-action="skip">跳至正文 / Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="#/" aria-label="观问 INQUIRY 首页"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17"/><path d="M8 26 20 7l12 19Z"/><circle cx="20" cy="21" r="4"/></svg><span>观问<small>INQUIRY</small></span></a>
+    <nav class="main-nav" aria-label="主导航 / Main navigation"><a href="#/chapters">课程<span>CHAPTERS</span></a><a href="#/review">复习<span>REVIEW</span></a><a href="#/progress">学习档案<span>PROGRESS</span></a></nav>
+    <div class="header-tools">
+      <button class="icon-button" data-action="search" aria-label="搜索 / Search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/></svg></button>
+      <label class="theme-select"><span class="sr-only">主题 / Theme</span><select id="theme" aria-label="主题 / Theme"><option value="cinema">影院黑 / Cinema</option><option value="paper">纸白 / Paper</option><option value="sand">暖砂 / Sand</option><option value="forest">深林 / Forest</option></select></label>
+      <button class="mode-button" data-action="reading" aria-pressed="false"><span>舒适阅读</span><small>READING MODE</small></button>
+    </div>
+  </header>
+  <main id="main" tabindex="-1"></main>
+  <footer class="site-footer"><div class="footer-word">STAY CURIOUS.</div><div class="footer-bottom"><span>观问 INQUIRY · 哲学与当代议题<br><small>Philosophy & contemporary issues · 8 chapters / 285 pages</small></span><div><button data-action="sources">内容与图片来源 / Sources & credits ↗</button><button data-action="motion" aria-pressed="true">动效 开 / Motion on</button><span class="local-hint">进度保存在当前浏览器 / Progress stays in this browser</span></div></div></footer>
+  <dialog id="search-dialog" class="search-dialog"><div class="dialog-top"><h2>寻找一个概念 <small>FIND AN IDEA</small></h2><button data-action="close-dialog" aria-label="关闭搜索 / Close search">×</button></div><label for="search-input" class="sr-only">搜索中英文知识点、术语或课件 / Search concepts, terms and slides</label><input id="search-input" type="search" placeholder="搜索概念、术语、课件… / Search ideas, terms, slides…" autocomplete="off"><div id="search-results" aria-live="polite"><p class="muted">试试“演绎”“Sejahtera”或“knowledge”。<br>Try “deduction”, “Sejahtera” or “knowledge”.</p></div></dialog>
+  <dialog id="info-dialog" class="info-dialog"><div class="dialog-top"><h2 id="info-title"></h2><button data-action="close-dialog" aria-label="关闭 / Close">×</button></div><div id="info-content"></div></dialog>
+  <dialog id="image-dialog" class="image-dialog"><button data-action="close-dialog" aria-label="关闭图片 / Close image">关闭 / CLOSE ×</button><img alt="原课件页面 / Original lecture slide"></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <input id="import-progress" type="file" accept="application/json,.json" hidden>
+  <script src="sources.js"></script>
+  <script src="assets/credits.js"></script>
+  <script src="chapters/ch1.js"></script><script src="chapters/ch2.js"></script><script src="chapters/ch3.js"></script><script src="chapters/ch4.js"></script><script src="chapters/ch5.js"></script><script src="chapters/ch6.js"></script><script src="chapters/ch7.js"></script><script src="chapters/ch8.js"></script>
+  <script src="supplements.js"></script>
+  <script src="visualizations.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
