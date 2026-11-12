@@ -94,3 +94,25 @@ INQUIRY is designed as an immersive space for thought. Its homepage and chapter 
 每次新增用户可见功能，发布前运行内容校验，并用独立浏览状态从首页开始实测。走一遍进入章节、定位课件、搜索、作答及查看进度的主路径，再检查新功能本身。涉及版式或动效时，另查窄屏、键盘和舒适阅读。将实际结果记入验收记录。
 
 Before releasing a user-facing feature, run the content checks and start from the homepage with fresh browser state. Walk through chapter entry, source lookup, search, practice and progress, then exercise the new feature. For layout or motion changes, also check narrow screens, keyboard input and reading mode. Record the observed results. [验收记录 / Verification](VERIFICATION.md)
+
+## 09 五幕电影版 / Five-act edition
+
+黑金星云开场之后是八扇章门、三步学习路径、今日思考和落幕页脚。章节进度来自已理解单元，今日思考保留于当前页面。章节封面采用宽银幕遮幅，原有标签、折叠内容和课件定位可继续使用。
+
+The opening nebula leads into eight chapter doors, a three-step learning path, a question prompt and the closing footer. Door progress reflects completed units. The question stays on the current page. The chapter covers are letterboxed and retain access to the course tabs, disclosures and page references.
+
+标题字形与英文正文、字幕字体从本地加载。标题中文使用 Noto Serif SC 子集，其余字形由系统字体补齐。英文使用 Playfair Display、Inter 和 JetBrains Mono。各字体的 SIL Open Font License 随文件提供。 [本地字体及许可 / Fonts and licenses](../dist/assets/fonts/)
+
+Display, body and caption fonts load locally. The Noto Serif SC display subset uses the system stack for remaining Chinese characters. Each bundled font includes its SIL Open Font License.
+
+## 10 编排电影动效 / Choreograph cinematic motion
+
+用 GSAP 时间轴编排星云、双语片名和学习入口。八扇章门随滚动高亮，宽屏配图提供轻微视差。学习路径进入视口时描线并逐点亮起，章节切换只在页首播放短入场。
+
+GSAP timelines coordinate the nebula, bilingual title and entry link. ScrollTrigger highlights the eight chapter doors, moves their images subtly on wide screens and draws the learning path. Chapter entrances animate only the header.
+
+动效根据站内开关、舒适阅读和系统减少动态效果设置启停。离开首页时清理该页的触发器，首屏移出视口时暂停 Canvas 绘制。本地入口使用自带的 GSAP 脚本，双击即可运行。
+
+Motion follows the site control, reading mode and system reduced-motion preference. Leaving the homepage clears its triggers, and the canvas pauses offscreen. The local launcher uses bundled scripts and requires no build.
+
+[GSAP 版本与许可 / GSAP version and license](../dist/assets/vendor/gsap-3.13.0/NOTICE.md) · [验收记录 / Verification](VERIFICATION.md)
