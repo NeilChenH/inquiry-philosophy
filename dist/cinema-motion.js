@@ -14,6 +14,7 @@
   let progress = null;
   let enabled = false;
   let revealObserver = null;
+  let chapterIntro = null;
   let progressFrame = null;
   const sizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(queueProgress) : null;
 
@@ -56,6 +57,8 @@
 
   function clearMotion() {
     // 切换页面或暂停动效时清理观察器和待执行帧。
+    chapterIntro?.revert();
+    chapterIntro = null;
     revealObserver?.disconnect();
     revealObserver = null;
     sizeObserver?.disconnect();
@@ -67,12 +70,30 @@
     progress?.style.removeProperty('--reading-progress');
   }
 
+  function enterChapter() {
+    const hero = main?.querySelector('.chapter-hero');
+    if (!hero) return;
+    const gsap = window.gsap;
+    if (!gsap) {
+      hero.classList.add('cinema-route-enter');
+      return;
+    }
+
+    // 章节切换只为页首编排镜头，标签、课件和正文随时可操作。
+    chapterIntro = gsap.context(() => {
+      gsap.timeline({defaults: {ease: 'power2.out'}})
+        .from(hero.querySelector('img'), {scale: 1.045, duration: .68}, 0)
+        .from('.eyebrow, h1, .chapter-subtitle',
+          {y: 9, opacity: .64, duration: .34, stagger: .045}, .04);
+    }, hero);
+  }
+
   function mount(nextMain, {routeChanged = false} = {}) {
     clearMotion();
     main = nextMain;
     progress = document.querySelector('[data-reading-progress]');
     watchMain();
-    if (enabled && routeChanged) main?.querySelector('.chapter-hero')?.classList.add('cinema-route-enter');
+    if (enabled && routeChanged) enterChapter();
   }
 
   function sync(nextEnabled) {

@@ -3,21 +3,81 @@
 
   const mouse = window.matchMedia('(any-pointer: fine)');
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const paintInterval = 1000 / 30;
   let mounted = null;
   let motionEnabled = false;
+  let nebulaScene = null;
 
-  function lightTexture(size, stops) {
+  function seededRandom(seed) {
+    return () => {
+      seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+  }
+
+  function noiseGrid(width, height, random) {
+    return {width, height, values: Float32Array.from({length: width * height}, random)};
+  }
+
+  function sampleNoise({width, height, values}, x, y) {
+    const column = x * (width - 1.001);
+    const row = y * (height - 1.001);
+    const left = Math.floor(column);
+    const top = Math.floor(row);
+    const dx = column - left;
+    const dy = row - top;
+    const u = dx * dx * (3 - 2 * dx);
+    const v = dy * dy * (3 - 2 * dy);
+    const i = top * width + left;
+    const upper = values[i] + (values[i + 1] - values[i]) * u;
+    const lower = values[i + width] + (values[i + width + 1] - values[i + width]) * u;
+    return upper + (lower - upper) * v;
+  }
+
+  function cloudTexture(random, offset) {
     const texture = document.createElement('canvas');
-    texture.width = texture.height = size;
+    const width = texture.width = 336;
+    const height = texture.height = 220;
     const context = texture.getContext('2d');
     if (!context) return null;
-    const center = size / 2;
-    const gradient = context.createRadialGradient(center, center, 0, center, center, center);
-    for (const [position, color] of stops) gradient.addColorStop(position, color);
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, size, size);
+    const broad = noiseGrid(8, 6, random);
+    const middle = noiseGrid(21, 14, random);
+    const fine = noiseGrid(54, 33, random);
+    const pixels = context.createImageData(width, height);
+
+    // 低分辨率纹理只生成一次，多层噪声塑造云带的褶皱和明暗。
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const large = sampleNoise(broad, u, v);
+        const detail = sampleNoise(middle, u, v);
+        const grain = sampleNoise(fine, u, v);
+        const spine = .55 + offset - (u - .5) * .59 + Math.sin(u * 11 + offset * 12) * .067;
+        const distance = v - spine + (large - .5) * .29 + (detail - .5) * .065;
+        const falloff = Math.exp(-distance * distance / .018);
+        const thread = Math.exp(-Math.abs(distance - .028) * 28);
+        const density = Math.pow(Math.max(0, large * .47 + detail * .37 + grain * .16 - .21), 1.32);
+        const flare = Math.max(0, detail - .35) * .7 + large * .39;
+        const i = (y * width + x) * 4;
+        pixels.data[i] = 126 + flare * 117;
+        pixels.data[i + 1] = 56 + flare * 102;
+        pixels.data[i + 2] = 15 + flare * 51;
+        pixels.data[i + 3] = Math.min(1, density * (falloff * 1.3 + thread * .35)) * 255;
+      }
+    }
+    context.putImageData(pixels, 0, 0);
     return texture;
+  }
+
+  function makeScene() {
+    const random = seededRandom(20842);
+    const stars = Array.from({length: 320}, (_, i) => {
+      const x = random();
+      const scatter = (random() + random() + random() - 1.5) * .58;
+      const y = i < 184 ? random() : .55 - (x - .5) * .54 + scatter;
+      return {x, y, radius: .35 + random() ** 3 * 1.28, shine: .13 + random() * .57, phase: random() * Math.PI * 2};
+    });
+    return {stars, clouds: [cloudTexture(random, -.077), cloudTexture(random, .133)]};
   }
 
   function prepareCanvas(state) {
@@ -35,26 +95,48 @@
   }
 
   function paint(state) {
-    const {context, width, height, age, x, y, motes, bloom, glint} = state;
-    if (!context || !width || !height) return;
+    const {context, width, height, age, x, y, pointer, fieldStrength} = state;
+    if (!context || !width || !height || !nebulaScene) return;
     context.clearRect(0, 0, width, height);
-    if (bloom) {
-      const size = Math.min(width * .85, height * 1.6);
-      const centerX = width * .7 + Math.sin(age * .2) * width * .06 + x * 28;
-      const centerY = height * .32 + y * 20;
-      context.globalAlpha = .7;
-      context.drawImage(bloom, centerX - size * .5, centerY - size * .4, size, size * .8);
+
+    const cloudWidth = Math.max(width * 1.11, height * .96);
+    const cloudHeight = height * 1.14;
+    const cloudLeft = (width - cloudWidth) * .5;
+    const cloudTop = (height - cloudHeight) * .5;
+    const [back, front] = nebulaScene.clouds;
+    if (back) {
+      context.globalAlpha = .56;
+      context.drawImage(back, cloudLeft + x * 11, cloudTop + y * 8, cloudWidth, cloudHeight);
     }
-    if (glint) {
-      const count = width < 650 ? 18 : motes.length;
-      for (let i = 0; i < count; i++) {
-        const mote = motes[i];
-        const drift = (mote.y + 1 - (age * mote.speed) % 1) % 1;
-        const light = .34 + Math.sin(age * mote.flicker + i) * .13;
-        const px = width * mote.x + Math.sin(drift * 9 + i) * 15 + x * 18 * mote.depth;
-        const py = height * drift + y * 14 * mote.depth;
-        context.globalAlpha = light * Math.min(drift * 10, (1 - drift) * 10, 1);
-        context.drawImage(glint, px, py, mote.size, mote.size);
+    if (front) {
+      context.globalAlpha = .73;
+      context.drawImage(front, cloudLeft - x * 21 + Math.sin(age * .18) * 14, cloudTop - y * 13, cloudWidth, cloudHeight);
+    }
+
+    const count = width < 650 ? 188 : nebulaScene.stars.length;
+    const reach = Math.min(168, width * .22);
+    for (let i = 0; i < count; i++) {
+      const star = nebulaScene.stars[i];
+      let px = star.x * width + Math.sin(age * .24 + star.phase) * 4 - x * star.radius * 7;
+      let py = star.y * height + Math.cos(age * .16 + star.phase) * 5 - y * star.radius * 5;
+      if (fieldStrength > .015) {
+        const dx = pointer.fieldX - px;
+        const dy = pointer.fieldY - py;
+        const distance = Math.hypot(dx, dy);
+        if (distance < reach && distance > .5) {
+          const pull = fieldStrength * (1 - distance / reach) ** 2 * (i % 4 === 0 ? -23 : 16);
+          px += dx / distance * pull;
+          py += dy / distance * pull;
+        }
+      }
+      const flicker = .76 + Math.sin(age * .98 + star.phase) * .24;
+      context.globalAlpha = star.shine * flicker;
+      context.fillStyle = i % 5 === 0 ? '#f4e8bd' : '#e8b662';
+      context.fillRect(px, py, star.radius, star.radius);
+      if (star.radius > 1.5) {
+        context.globalAlpha *= .29;
+        context.fillRect(px - 2.2, py + .4, 5.8, .7);
+        context.fillRect(px + .4, py - 2.2, .7, 5.8);
       }
     }
     context.globalAlpha = 1;
@@ -93,6 +175,8 @@
     const pointer = state.pointer;
     pointer.targetX = event.clientX - rect.left;
     pointer.targetY = event.clientY - rect.top;
+    pointer.fieldX = pointer.targetX;
+    pointer.fieldY = pointer.targetY;
     state.targetX = (pointer.targetX / rect.width) * 2 - 1;
     state.targetY = (pointer.targetY / rect.height) * 2 - 1;
     if (pointer.x === null) {
@@ -151,16 +235,35 @@
     if (Math.abs(dx) + Math.abs(dy) > .002) {
       state.x += dx * smoothing;
       state.y += dy * smoothing;
-      state.hero.style.setProperty('--hero-shift-x', `${(state.x * -23).toFixed(2)}px`);
-      state.hero.style.setProperty('--hero-shift-y', `${(state.y * -15).toFixed(2)}px`);
     }
     followPointer(state.pointer, delta);
-    // 光尘限制为每秒约 30 次重绘，鼠标跟随仍逐帧更新。
+    state.fieldStrength += ((state.pointer.x === null ? 0 : 1) - state.fieldStrength) * smoothing;
+    // 粒子绘制与指针跟随分开节流，空闲时只更新缓慢流动的背景。
+    const paintInterval = state.pointer.x === null ? 1000 / 24 : 1000 / 30;
     if (now - state.lastPaint >= paintInterval) {
       paint(state);
       state.lastPaint = now;
     }
     state.frameId = window.requestAnimationFrame(time => frame(state, time));
+  }
+
+  function playIntro(state) {
+    const gsap = window.gsap;
+    if (!gsap) {
+      state.hero.setAttribute('data-hero-intro', '');
+      return;
+    }
+
+    // 星云先铺开，双语片名与学习入口依次进入。保留文字对比度和键盘可用性。
+    state.intro = gsap.context(() => {
+      const timeline = gsap.timeline({defaults: {ease: 'power2.out'}});
+      timeline
+        .from(state.canvas, {opacity: .35, duration: .8}, 0)
+        .from('.nebula-zh > span', {y: 18, opacity: .5, duration: .65, stagger: .09}, .07)
+        .from('.nebula-english', {y: 9, opacity: .5, duration: .55}, .23)
+        .from('.nebula-subtitle', {y: 7, opacity: .65, duration: .45}, .38)
+        .from('.hero-actions', {opacity: .75, duration: .38}, .49);
+    }, state.hero);
   }
 
   function reconcile(state, enabled = motionEnabled && !reduced.matches) {
@@ -171,23 +274,25 @@
 
     if (!enabled) {
       state.hero.removeAttribute('data-hero-intro');
-      state.hero.style.removeProperty('--hero-shift-x');
-      state.hero.style.removeProperty('--hero-shift-y');
       state.x = state.y = state.targetX = state.targetY = 0;
     }
     if (!live) {
+      state.intro?.revert();
+      state.intro = null;
       resetPointer(state);
       window.cancelAnimationFrame(state.frameId);
       state.frameId = 0;
       state.lastTime = 0;
+      state.fieldStrength = 0;
       return;
     }
     if (!state.introduced) {
-      state.hero.setAttribute('data-hero-intro', '');
+      playIntro(state);
       state.introduced = true;
     }
     if (!state.frameId) {
       prepareCanvas(state);
+      if (state.context && !nebulaScene) nebulaScene = makeScene();
       state.frameId = window.requestAnimationFrame(now => frame(state, now));
     }
   }
@@ -209,6 +314,10 @@
     const cursor = document.createElement('span');
     cursor.className = 'hero-pointer';
     cursor.setAttribute('aria-hidden', 'true');
+    const cursorLabel = document.createElement('span');
+    cursorLabel.className = 'hero-pointer-label';
+    cursorLabel.textContent = '打开 / OPEN';
+    cursor.append(cursorLabel);
     hero.append(cursor);
     const listeners = new AbortController();
     const state = {
@@ -217,25 +326,8 @@
       introduced: false,
       frameId: 0, lastTime: 0, lastPaint: -Infinity,
       age: 0, width: 0, height: 0,
-      x: 0, y: 0, targetX: 0, targetY: 0,
-      pointer: {element: cursor, x: null, y: 0, targetX: 0, targetY: 0, magnet: null},
-      motes: Array.from({length: 54}, () => ({
-        x: Math.random(), y: Math.random(),
-        speed: .008 + Math.random() * .021,
-        flicker: .5 + Math.random() * 1.1,
-        depth: Math.random(),
-        size: 2 + Math.random() * 6,
-      })),
-      bloom: context && lightTexture(192, [
-        [0, 'rgba(255, 222, 153, .21)'],
-        [.27, 'rgba(234, 205, 144, .13)'],
-        [1, 'rgba(218, 199, 144, 0)'],
-      ]),
-      glint: context && lightTexture(16, [
-        [0, 'rgba(251, 247, 204, 1)'],
-        [.24, 'rgba(245, 241, 186, .76)'],
-        [1, 'rgba(239, 228, 155, 0)'],
-      ]),
+      x: 0, y: 0, targetX: 0, targetY: 0, fieldStrength: 0,
+      pointer: {element: cursor, x: null, y: 0, targetX: 0, targetY: 0, fieldX: 0, fieldY: 0, magnet: null},
     };
     mounted = state;
     const signal = listeners.signal;

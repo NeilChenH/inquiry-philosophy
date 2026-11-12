@@ -39,10 +39,58 @@
     },source:'CH.8 · P4–5, 21–38'}
   };
   function regularOutput(id,key){const item=sets[id].items[key];if(id===3)return `<h4>${E(item[0])}<small class="muted" style="display:block;font-size:11px;margin-top:6px">${E(item[1])}</small></h4>${flow(item[2])}${pair(item[3],item[4])}`;return `<h4>${E(item[0])}<small class="muted" style="display:block;font-size:11px;margin-top:6px">${E(item[1])}</small></h4>${pair(item[2],item[3])}`;}
+  function reasoning() {
+    const model = sets[3];
+    const nodes = model.options.map(([key, zh, en], index) => `
+      ${index ? '<span class="reason-connector" aria-hidden="true">→</span>' : ''}
+      ${button(key, zh, en, index === 0)}`).join('');
+    return `<section class="viz-panel reasoning-model" data-viz-ch="3" aria-label="推理类型对照 / Compare reasoning methods">
+      <div class="eyebrow">INTERACTIVE IDEAS / 推理类型对照</div>
+      <h2 class="viz-title">${E(model.title[0])}<small lang="en">${E(model.title[1])}</small></h2>
+      <p class="viz-hint">${E(model.hint[0])}<br><span lang="en">${E(model.hint[1])}</span></p>
+      <div class="reason-nodes" data-selected="deduction">${nodes}</div>
+      <div class="reason-output">
+        <div class="viz-output" aria-live="polite">${regularOutput(3, 'deduction')}</div>
+      </div>
+      <div class="source-tag">${model.source}</div>
+    </section>`;
+  }
   function regular(id){const s=sets[id],first=s.options[0][0];return `<section class="viz-panel" data-viz-ch="${id}" aria-label="交互知识图解 / Interactive concept diagram"><div class="eyebrow">INTERACTIVE IDEAS / 点一下，想一步</div><h2 class="viz-title">${E(s.title[0])}<small lang="en">${E(s.title[1])}</small></h2><p class="viz-hint">${E(s.hint[0])}<br><span lang="en">${E(s.hint[1])}</span></p><div class="${id===8?'viz-columns':''}"><div class="viz-buttons ${id===8?'layer-buttons':''}">${s.options.map(([key,z,e],i)=>button(key,z,e,i===0)).join('')}</div><div class="viz-output" aria-live="polite">${regularOutput(id,first)}</div></div><div class="source-tag" style="margin-top:18px">${s.source}</div></section>`;}
   function pesi(){return `<section class="viz-panel" data-viz-ch="4"><div class="eyebrow">BALANCE IN PRACTICE / 把平衡带入生活</div><h2 class="viz-title">今天，给四个维度一点空间。<small>Make room for four dimensions of life.</small></h2><p class="viz-hint">拖动滑块，分配一次学习日的关注点。数值仅是个人反思，不是心理测评或健康分数。<br><span lang="en">Move the sliders to reflect on your attention. Values are personal prompts, not psychological or health scores.</span></p><div class="pesi-grid">${[['physical','身体','Physical'],['emotional','情绪','Emotional'],['spiritual','精神与灵性','Spiritual'],['intellectual','智力','Intellectual']].map(([key,z,e])=>`<div class="pesi-field"><label for="pesi-${key}"><span>${z} / ${e}</span><output id="out-${key}">3</output></label><input id="pesi-${key}" data-viz-input="pesi" data-key="${key}" type="range" min="1" max="5" value="3" aria-label="${z} / ${e}"></div>`).join('')}</div><div class="pesi-result" aria-hidden="true">${['physical','emotional','spiritual','intellectual'].map(k=>`<span class="pesi-bar" data-bar="${k}" style="height:60%"></span>`).join('')}</div><div class="viz-output" aria-live="polite">${pair('试着为每个维度写下一个可实践的小行动：走动、辨认情绪、反思价值、整理一个概念。四个维度并非互相隔绝。','Try a small action for each dimension: move your body, name an emotion, reflect on values, clarify a concept. These dimensions interact rather than existing in isolation.')}</div><div class="source-tag" style="margin-top:18px">PESI · CH.4 P25–30 / 补充反思练习 Supplementary reflection</div></section>`;}
-  function jtb(){return `<section class="viz-panel" data-viz-ch="6"><div class="eyebrow">BUILD A CONCEPT / 把条件拆开看</div><h2 class="viz-title">什么才算“知道”？<small>When do we say we know?</small></h2><p class="viz-hint">点选条件，检验课件采用的经典 JTB 模型。<br><span lang="en">Toggle conditions in the classical JTB model used in the slides.</span></p><div class="truth-toggles">${[['belief','我相信这个命题','I believe the proposition'],['truth','这个命题是真的','The proposition is true'],['justification','我有支持它的根据','I have justification']].map(([key,z,e])=>`<label><input type="checkbox" data-viz-input="jtb" data-key="${key}" checked><span>${z}</span><small lang="en">${e}</small></label>`).join('')}</div><div class="viz-result" aria-live="polite">${pair('三项都满足：符合经典“有根据的真信念”三条件。','All three conditions are met: the classical justified-true-belief requirements are satisfied.')}</div><div class="viz-output">${pair('补充辨析：满足这三项并不自动解决“知识”的全部哲学问题；盖梯尔问题正是对该模型充分性的挑战。此交互只检查条件组合。','Clarification: meeting these conditions does not settle the philosophical analysis of knowledge. Gettier cases challenge their sufficiency. This interaction checks only the combination of conditions.')}<p style="margin-top:10px;font-size:10px"><a href="https://plato.stanford.edu/entries/knowledge-analysis/" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">SEP · The Analysis of Knowledge ↗</a></p></div><div class="source-tag" style="margin-top:18px">CH.6 · P6–7 / 补充来源见链接 Supplementary source linked above</div></section>`;}
-  window.renderVisualization=id=>id===4?pesi():id===6?jtb():sets[id]?regular(id):'';
-  window.inquiryVizAction=button=>{const panel=button.closest('.viz-panel');const id=Number(panel.dataset.vizCh);const key=button.dataset.key;if(!sets[id]?.items[key])return;panel.querySelectorAll('[data-action="viz"]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});panel.querySelector('.viz-output').innerHTML=regularOutput(id,key);};
-  window.inquiryVizInput=input=>{const panel=input.closest('.viz-panel');if(input.dataset.vizInput==='pesi'){panel.querySelector(`#out-${input.dataset.key}`).textContent=input.value;panel.querySelector(`[data-bar="${input.dataset.key}"]`).style.height=`${Number(input.value)*20}%`;}else if(input.dataset.vizInput==='jtb'){const selected=[...panel.querySelectorAll('input')].filter(e=>e.checked).length;panel.querySelector('.viz-result').innerHTML=selected===3?pair('三项都满足：符合经典“有根据的真信念”三条件。','All three conditions are met: the classical justified-true-belief requirements are satisfied.'):pair(`目前满足 ${selected}/3 项：尚未满足课件经典模型的全部条件。请辨认缺少的是信念、真或证成。`,`${selected}/3 conditions met: the full classical model is not satisfied. Identify whether belief, truth or justification is missing.`);}};
+  function jtb(){return `<section class="viz-panel jtb-model" data-viz-ch="6"><div class="eyebrow">BUILD A CONCEPT / 把条件拆开看</div><h2 class="viz-title">什么才算“知道”？<small>When do we say we know?</small></h2><p class="viz-hint">点选条件，检验课件采用的经典 JTB 模型。<br><span lang="en">Toggle conditions in the classical JTB model used in the slides.</span></p><div class="truth-toggles">${[['belief','我相信这个命题','I believe the proposition'],['truth','这个命题是真的','The proposition is true'],['justification','我有支持它的根据','I have justification']].map(([key,z,e])=>`<label><input type="checkbox" data-viz-input="jtb" data-key="${key}"><span>${z}</span><small lang="en">${e}</small></label>`).join('')}</div><div class="jtb-link" aria-hidden="true"></div><div class="jtb-core" data-jtb-count="0"><strong>知识</strong><small lang="en">KNOWLEDGE</small><span aria-hidden="true">0 / 3</span></div><div class="viz-result" aria-live="polite">${jtbResult(0)}</div><div class="viz-output">${pair('补充辨析：满足这三项并不自动解决“知识”的全部哲学问题；盖梯尔问题正是对该模型充分性的挑战。此交互只检查条件组合。','Clarification: meeting these conditions does not settle the philosophical analysis of knowledge. Gettier cases challenge their sufficiency. This interaction checks only the combination of conditions.')}<p style="margin-top:10px;font-size:10px"><a href="https://plato.stanford.edu/entries/knowledge-analysis/" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">SEP · The Analysis of Knowledge ↗</a></p></div><div class="source-tag" style="margin-top:18px">CH.6 · P6–7 / 补充来源见链接 Supplementary source linked above</div></section>`;}
+  function jtbResult(count) {
+    return count === 3
+      ? pair('三项都满足：符合经典“有根据的真信念”三条件。', 'All three conditions are met: the classical justified-true-belief requirements are satisfied.')
+      : pair(`目前满足 ${count}/3 项。点选信念、真与证成，观察“知识”节点如何变化。`,
+        `${count}/3 conditions met. Toggle belief, truth and justification to see how the knowledge node changes.`);
+  }
+  window.renderVisualization=id=>id===4?pesi():id===6?jtb():id===3?reasoning():sets[id]?regular(id):'';
+  window.inquiryVizAction = button => {
+    const panel = button.closest('.viz-panel');
+    const id = Number(panel.dataset.vizCh);
+    const key = button.dataset.key;
+    if (!sets[id]?.items[key]) return;
+    for (const control of panel.querySelectorAll('[data-action="viz"]')) {
+      const active = control === button;
+      control.classList.toggle('active', active);
+      control.setAttribute('aria-pressed', String(active));
+    }
+    const nodes = panel.querySelector('.reason-nodes');
+    if (nodes) nodes.dataset.selected = key;
+    panel.querySelector('.viz-output').innerHTML = regularOutput(id, key);
+  };
+  window.inquiryVizInput = input => {
+    const panel = input.closest('.viz-panel');
+    if (input.dataset.vizInput === 'pesi') {
+      panel.querySelector(`#out-${input.dataset.key}`).textContent = input.value;
+      panel.querySelector(`[data-bar="${input.dataset.key}"]`).style.height = `${Number(input.value) * 20}%`;
+    } else if (input.dataset.vizInput === 'jtb') {
+      const selected = panel.querySelectorAll('input:checked').length;
+      // 节点只呈现经典模型的条件组合。说明中的盖梯尔辨析保持可见。
+      const core = panel.querySelector('.jtb-core');
+      core.dataset.jtbCount = String(selected);
+      core.querySelector('span').textContent = `${selected} / 3`;
+      panel.querySelector('.viz-result').innerHTML = jtbResult(selected);
+    }
+  };
 })();

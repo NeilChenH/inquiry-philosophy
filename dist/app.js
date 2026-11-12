@@ -13,12 +13,14 @@
   const allQuizzes = chapters.flatMap(c=>(c.quiz || []).map(q=>({...q,chapter:c.id})));
   const quizMap = Object.fromEntries(allQuizzes.map(q=>[q.id,q]));
   const termId = (chapterId, term) => `term-${chapterId}-${encodeURIComponent(term.en.trim().toLowerCase())}`;
-  const themes = ['cinema','paper','sand','forest'];
+  const themes = ['cinema', 'paper', 'night', 'sand'];
+  // 兼容旧版的深林主题设置和已经导出的学习档案。
+  const themeValue = value => value === 'forest' ? 'night' : themes.includes(value) ? value : 'cinema';
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let stored = {};
   try { stored = JSON.parse(localStorage.getItem('inquiry-3192') || '{}'); } catch {}
   const state = {
-    theme: themes.includes(stored.theme) ? stored.theme : 'cinema',
+    theme: themeValue(stored.theme),
     reading: !!stored.reading,
     motion: stored.motion !== false,
     completed: Array.isArray(stored.completed) ? stored.completed.filter(id=>allSections.some(s=>s.id===id)) : [],
@@ -26,6 +28,7 @@
     lastChapter: Number(stored.lastChapter) || 1
   };
   let route = {}, previousRoute = {}, toastTimer = 0, searchTimer = 0, focusTab = '';
+  let activeTransition = null;
   let reviewFilter = {chapter:'all',wrong:false,round:false};
   let roundIds = [];
   const words = ['ASK.','LIVE.','REASON.','BE HUMAN.','EXIST.','KNOW.','QUESTION.','REIMAGINE.'];
@@ -37,8 +40,10 @@
   const hasOriginalSlides = c => Boolean(window.SOURCE_PAGES?.[c.id]?.[0]?.image && c.pages?.[0]?.zh);
   function save(){ try { localStorage.setItem('inquiry-3192',JSON.stringify(state)); } catch {} }
   function notify(zh,en){ const box=$('#toast');box.textContent=`${zh} / ${en}`;box.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>box.classList.remove('visible'),2400); }
+  const motionAllowed = () => state.motion && !state.reading && !reducedMotion.matches;
   function syncSettings(){
-    const animate = state.motion && !state.reading && !reducedMotion.matches;
+    const animate = motionAllowed();
+    if (!animate) activeTransition?.skipTransition();
     document.documentElement.dataset.theme=state.theme;
     document.documentElement.classList.toggle('reading',state.reading);
     document.documentElement.classList.toggle('reduced-motion', reducedMotion.matches);
@@ -46,12 +51,17 @@
     document.documentElement.classList.toggle('motion-opt-in', animate);
     $('#theme').value=state.theme;
     const b=$('[data-action="reading"]');b.setAttribute('aria-pressed',String(state.reading));b.innerHTML=`<span>${state.reading?'沉浸浏览':'舒适阅读'}</span><small>${state.reading?'CINEMATIC MODE':'READING MODE'}</small>`;
-    const motionButton = $('[data-action="motion"]');
-    motionButton.setAttribute('aria-pressed', String(state.motion));
-    motionButton.textContent = animate ? '动效 开 / Motion on'
+    const motionText = animate ? '动效 开 / Motion on'
       : state.motion ? '动效 暂停 / Motion paused' : '动效 关 / Motion off';
+    for (const button of $$('[data-action="motion"]')) {
+      button.setAttribute('aria-pressed', String(state.motion));
+      if (button.hasAttribute('data-motion-short')) button.setAttribute('aria-label', motionText);
+      else button.textContent = motionText;
+    }
     window.inquiryHero?.sync(animate);
     window.inquiryMotion?.sync(animate);
+    window.inquiryHome?.sync(animate);
+    window.inquiryChapter?.sync(animate);
   }
   function navigate(hash){ if(location.hash===hash){render();}else location.hash=hash; }
   function parseRoute(){const parts=(location.hash.replace(/^#\/?/,'') || '').split('/');return {type:parts[0]||'home',id:Number(parts[1])||1,tab:parts[2]||'learn',target:parts[3]||''};}
@@ -64,8 +74,12 @@
     return `<a class="chapter-card" href="#/chapter/${c.id}"><div class="card-image"><img src="${image(c.id)}" alt="${escape(credit(c.id)?.title || c.title.en)}" loading="lazy" decoding="async"><span class="card-number">CH. ${String(c.id).padStart(2,'0')}</span><span class="card-word">${words[c.id-1]}</span></div><div class="card-meta"><h3>${title(c.title)}</h3><span class="card-arrow" aria-hidden="true">↗</span></div><div class="card-stats">${pageCount(c)} 页 PAGES · ${c.sections.length} 单元 UNITS${done?` · ${done}/${c.sections.length} ✓`:''}</div>${artCredit}</a>`;
   }
   function curriculum(){return `<section class="section-wrap" id="curriculum"><div class="section-heading"><div><div class="eyebrow">THE COURSE / 课程全景</div><h2>八章，重新看世界。<small class="muted" style="display:block;font-size:.4em;margin-top:12px;letter-spacing:.02em">Eight chapters. A different way to see.</small></h2></div><p>从“什么是哲学”，走向“如何理解当下”。<span>From the meaning of philosophy to making sense of the world we live in.</span></p></div><div class="curriculum-grid">${chapters.map(chapterCard).join('')}</div></section>`;}
-  function home(){
-    return `<section class="hero"><img class="hero-photo" src="${image(1)}" alt="雅典学院：哲学家在拱廊中交流 / The School of Athens: philosophers in dialogue" fetchpriority="high"><canvas id="cinema-dust" aria-hidden="true"></canvas><div class="hero-top"><span>PHILOSOPHY & CONTEMPORARY ISSUES<br>哲学与当代议题 / 3192</span><span>8 CHAPTERS · 285 PAGES<br>始终中英对照 / ALWAYS BILINGUAL</span></div><div class="hero-copy"><div class="eyebrow">THE ART OF ASKING / 从提问开始</div><h1>世界很大。<br>从一个<em>问题</em>开始。</h1><p class="hero-english" lang="en">A WORLD OF IDEAS.<br>IT ALL BEGINS WITH A QUESTION.</p><div class="hero-actions"><a class="button primary" href="#/chapter/${chapterMap[state.lastChapter]?state.lastChapter:1}"><span>进入学习<small>ENTER THE COURSE</small></span><span class="arrow" aria-hidden="true">↗</span></a><a class="button secondary" href="#/chapters"><span>探索八章<small>EXPLORE THE CHAPTERS</small></span><span class="arrow" aria-hidden="true">↓</span></a></div></div><div class="hero-bottom"><div class="hero-word" lang="en">THINK BEYOND.</div><span class="scroll-cue" aria-hidden="true">↓</span><div class="hero-caption">拉斐尔《雅典学院》<br>Raphael · The School of Athens<br>思想在对话中生长 / IDEAS IN DIALOGUE</div></div></section>${curriculum()}<section class="path-strip"><div class="section-wrap"><div class="section-heading"><div><div class="eyebrow">YOUR WAY THROUGH / 学习路径</div><h2>让抽象，变得清楚。</h2></div><p>先抓住问题，再读懂原文，最后检验理解。<span>Start with the question. Explore the source. Test your understanding.</span></p></div><div class="path-grid"><div class="path-item"><span class="step-num">01</span><h3>看见关系<small>SEE THE CONNECTIONS</small></h3><p>点击知识图解，用具体情境理解概念之间的关系。</p><p lang="en">Explore interactive diagrams and concrete situations.</p></div><div class="path-item"><span class="step-num">02</span><h3>回到原页<small>RETURN TO THE SOURCE</small></h3><p>展开页码索引，前往完整在线版对照原页和译文。</p><p lang="en">Expand the page index, then follow a link to the original slide and its translation.</p></div><div class="path-item"><span class="step-num">03</span><h3>练习追问<small>PUT IDEAS TO THE TEST</small></h3><p>通过自测、解析和思考题，把“看过”变成“理解”。</p><p lang="en">Turn recognition into understanding with practice, explanations and reflection.</p></div></div></div></section><section class="section-wrap review-callout"><div><div class="eyebrow">REVISIT. REFLECT. / 复习与思考</div><h2>知道答案，<br>也知道为什么。<span>Know why, not just what.</span></h2></div><div class="callout-copy"><p>按章自测、混合复习，或回看还没弄清的问题。每道选择题都附解析和来源页码。<span>Practice by chapter, mix topics, or revisit mistakes. Every multiple-choice question links to an explanation and source pages.</span></p><a class="button" href="#/review"><span>开始复习<small>START A REVIEW</small></span><span class="arrow" aria-hidden="true">↗</span></a></div></section>`;
+  function home() {
+    return window.inquiryHome.render({
+      chapters, pageCount, image, credit, completed: state.completed,
+      lastChapter: chapterMap[state.lastChapter] ? state.lastChapter : 1,
+      fullSlides: chapters.some(hasOriginalSlides),
+    });
   }
   function sidebar(c){return `<aside class="chapter-sidebar" aria-label="章节 / Chapters"><div class="sidebar-label">COURSE INDEX / 章节目录</div>${chapters.map(x=>`<a class="${x.id===c.id?'active':''}" href="#/chapter/${x.id}" ${x.id===c.id?'aria-current="page"':''}><span class="num">${String(x.id).padStart(2,'0')}</span><span><strong>${escape(x.title.zh)}</strong><small lang="en">${escape(x.title.en)}</small></span></a>`).join('')}<div class="sidebar-progress"><span id="side-progress">${state.completed.length} / ${allSections.length} 单元 UNITS</span><div class="progress-track"><span id="side-progress-bar" style="width:${allSections.length?state.completed.length/allSections.length*100:0}%"></span></div></div></aside>`;}
   function chapter(c){
@@ -83,7 +97,70 @@
   }
   function notesFor(c,pages){return [...(c.notes||[]),...(window.COURSE_SUPPLEMENTS?.[c.id]||[])].filter(n=>!pages || (n.pages||[]).some(p=>pages.includes(p)));}
   function noteMarkup(n){return `<aside class="source-note"><div class="note-label">${n.kind==='verified'?'补充辨析 / VERIFIED CLARIFICATION':'课程语境与原文提示 / SOURCE & CONTEXT'}</div><h4>${title(n.title)}</h4>${bi({zh:n.zh,en:n.en})}${n.references?.length?`<div style="margin-top:10px">${n.references.map(r=>`<a href="${escape(r.url)}" target="_blank" rel="noopener noreferrer">${escape(r.label)} ↗</a>`).join('')}</div>`:''}</aside>`;}
-  function learnTab(c){return `<div class="overview">${bi(c.overview,true)}</div>${window.renderVisualization?window.renderVisualization(c.id):''}<div class="toolbar"><h2>知识主线<small>THE LEARNING PATH</small></h2><div><button class="text-button" data-action="expand-all">全部展开 / Expand all</button><button class="text-button" data-action="collapse-all">全部折叠 / Collapse all</button></div></div>${c.sections.map((s,i)=>`<details class="section-accordion" id="${escape(s.id)}" ${i===0?'open':''}><summary><span class="module-number">${String(i+1).padStart(2,'0')}</span><h3 class="module-title">${title(s.title)}</h3><span class="expand-icon" aria-hidden="true"></span></summary><div class="section-body"><div class="section-lead">${bi(s.lead)}</div>${(s.blocks||[]).map(b=>bi(b)).join('')}${s.example?`<div class="example-box"><div class="box-label">用一个例子想清楚 / A CONCRETE EXAMPLE</div>${bi(s.example)}</div>`:''}${s.takeaway?`<div class="takeaway"><div class="box-label">记住这个关系 / TAKE THIS WITH YOU</div>${bi(s.takeaway)}</div>`:''}<details class="source-fold" data-source-fold="true" data-ch="${c.id}" data-pages="${(s.pages||[]).join(',')}"><summary><span>${hasOriginalSlides(c) ? '展开原课件逐页对照 / Expand original slides' : '展开课件页码 / Expand page references'} · P${(s.pages||[]).join(', ')}</span><span class="expand-icon" aria-hidden="true"></span></summary><div class="source-pages-container"></div></details><div class="module-footer"><span class="source-tag">课件 / SOURCE: CH.${c.id} · P${(s.pages||[]).join(', ')}</span><button class="complete-button ${state.completed.includes(s.id)?'completed':''}" data-action="complete" data-value="${escape(s.id)}" aria-pressed="${state.completed.includes(s.id)}">${state.completed.includes(s.id)?'✓ 已理解 / Understood':'标记已理解 / Mark understood'}</button></div></div></details>`).join('')}<div class="notes-list"><h3>带着语境阅读 <small class="muted">READ WITH CONTEXT</small></h3>${notesFor(c).map(noteMarkup).join('')}</div>`;}
+  // 只用本单元来源页对应的术语做高亮。每种语言最多标出一个词。
+  function markConcept(text, terms, language) {
+    const candidates = terms.map(term => term[language]).filter(word => word.length >= (language === 'zh' ? 2 : 3));
+    for (const word of candidates.sort((a, b) => b.length - a.length)) {
+      const pattern = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const match = language === 'en'
+        ? new RegExp(`\\b${pattern}\\b`, 'i').exec(text)
+        : text.includes(word) ? {0: word, index: text.indexOf(word)} : null;
+      if (!match) continue;
+      const start = match.index;
+      return `${escape(text.slice(0, start))}<mark class="concept-mark">${escape(match[0])}</mark>${escape(text.slice(start + match[0].length))}`;
+    }
+    return escape(text);
+  }
+
+  function studyPair(value, terms) {
+    return `<div class="pair"><div class="zh" lang="zh-CN">${markConcept(value.zh, terms, 'zh')}</div><div class="en" lang="en">${markConcept(value.en, terms, 'en')}</div></div>`;
+  }
+  function studyUnit(chapter, unit, index) {
+    const pages = unit.pages || [];
+    const relatedTerms = chapter.terms.filter(term => term.pages?.some(page => pages.includes(page)));
+    const complete = state.completed.includes(unit.id);
+    const sourceLabel = hasOriginalSlides(chapter)
+      ? '展开原课件逐页对照 / Expand original slides' : '展开课件页码 / Expand page references';
+    return `<details class="section-accordion" id="${escape(unit.id)}" ${index === 0 ? 'open' : ''}>
+      <summary>
+        <span class="module-number">${String(index + 1).padStart(2, '0')}</span>
+        <div class="unit-heading">
+          <h3 class="module-title">${title(unit.title)}</h3>
+          <span class="unit-teaser"><span lang="zh-CN">${escape(unit.lead.zh)}</span><span lang="en">${escape(unit.lead.en)}</span></span>
+        </div>
+        <span class="expand-icon" aria-hidden="true"></span>
+      </summary>
+      <div class="section-body">
+        <div class="section-lead">${bi(unit.lead)}</div>
+        ${(unit.blocks || []).map(block => studyPair(block, relatedTerms)).join('')}
+        ${unit.example ? `<div class="example-box"><div class="box-label">用一个例子想清楚 / A CONCRETE EXAMPLE</div>${bi(unit.example)}</div>` : ''}
+        ${unit.takeaway ? `<div class="takeaway"><div class="box-label">记住这个关系 / TAKE THIS WITH YOU</div>${bi(unit.takeaway)}</div>` : ''}
+        <details class="source-fold" data-source-fold="true" data-ch="${chapter.id}" data-pages="${pages.join(',')}">
+          <summary><span>${sourceLabel} · P${pages.join(', ')}</span><span class="expand-icon" aria-hidden="true"></span></summary>
+          <div class="source-pages-container"></div>
+        </details>
+        <div class="module-footer">
+          <span class="source-tag">课件 / SOURCE: CH.${chapter.id} · P${pages.join(', ')}</span>
+          <button class="complete-button ${complete ? 'completed' : ''}" data-action="complete" data-value="${escape(unit.id)}" aria-pressed="${complete}">${complete ? '✓ 已理解 / Understood' : '标记已理解 / Mark understood'}</button>
+        </div>
+      </div>
+    </details>`;
+  }
+
+  function learnTab(chapter) {
+    const units = chapter.sections.map((unit, index) => studyUnit(chapter, unit, index));
+    const visualization = window.renderVisualization?.(chapter.id) || '';
+    return `<div class="overview">${bi(chapter.overview, true)}</div>
+      <div class="toolbar">
+        <h2>知识主线<small>THE LEARNING PATH</small></h2>
+        <div><button class="text-button" data-action="expand-all">全部展开 / Expand all</button>
+          <button class="text-button" data-action="collapse-all">全部折叠 / Collapse all</button></div>
+      </div>
+      ${units.slice(0, 1).join('')}
+      ${visualization}
+      ${units.slice(1).join('')}
+      <div class="notes-list"><h3>带着语境阅读 <small class="muted">READ WITH CONTEXT</small></h3>${notesFor(chapter).map(noteMarkup).join('')}</div>`;
+  }
   function reader(c, pages, index = 0) {
     const safePages = pages.filter(n => Number.isInteger(n) && n >= 1 && n <= pageCount(c));
     if (!safePages.length) return '';
@@ -162,22 +239,64 @@
   function quizTab(c){return `<div class="toolbar" style="margin-top:0;margin-bottom:22px"><h2>理解之后，再测一次<small>TEST YOUR UNDERSTANDING</small></h2></div>${quizIntro()}${c.quiz.map((q,i)=>quizMarkup({...q,chapter:c.id},i)).join('')}`;}
   function filteredQuizzes(){let qs=allQuizzes.filter(q=>q.type!=='reflection');if(reviewFilter.chapter!=='all')qs=qs.filter(q=>q.chapter===Number(reviewFilter.chapter));if(reviewFilter.wrong)qs=qs.filter(q=>Number.isInteger(state.answers[q.id])&&state.answers[q.id]!==q.answer);if(reviewFilter.round)qs=qs.filter(q=>roundIds.includes(q.id));return qs;}
   function review(){const qs=filteredQuizzes();const attempted=qs.filter(q=>Number.isInteger(state.answers[q.id]));const correct=attempted.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">REVISIT & REFLECT / 综合复习</div><h1 class="bilingual-title">把概念，变成自己的理解。<small>Make the ideas your own.</small></h1><p>重新追问容易混淆的地方。选择一个章节，或抽取十题做一轮混合练习。<br><span lang="en">Revisit distinctions that are easy to miss. Choose a chapter or draw ten questions for a mixed round.</span></p></div><div class="review-page"><div class="review-filters"><label class="sr-only" for="review-chapter">选择章节 / Choose chapter</label><select id="review-chapter"><option value="all">全部章节 / All chapters</option>${chapters.map(c=>`<option value="${c.id}" ${reviewFilter.chapter===String(c.id)?'selected':''}>${c.id}. ${escape(c.title.zh)} / ${escape(c.title.en)}</option>`).join('')}</select><label><input type="checkbox" id="wrong-only" ${reviewFilter.wrong?'checked':''}> 仅错题 / Mistakes only</label><button class="button" data-action="new-round">随机十题 / Draw 10 ↗</button>${reviewFilter.round?'<button class="text-button" data-action="all-questions">显示全部 / Show all</button>':''}</div>${quizIntro()}<div class="round-summary" aria-live="polite">本组 ${qs.length} 题 · 已答 ${attempted.length} · 正确 ${correct.length} / ${qs.length} questions · ${attempted.length} answered · ${correct.length} correct</div>${qs.length?qs.map(quizMarkup).join(''):`<div class="empty-state">这里暂时没有题目 / No questions here<p>选择其他章节，或先完成几道题，再回看错题。<br>Choose another chapter, or answer some questions before reviewing mistakes.</p><a class="button" href="#/chapters">浏览章节 / Explore chapters ↗</a></div>`}</div>`;}
-  function progress(){const answered=allQuizzes.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id]));const right=answered.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">YOUR LEARNING JOURNEY / 学习档案</div><h1 class="bilingual-title">一点一点，想得更清楚。<small>Clarity grows one idea at a time.</small></h1><p>主动标记已经理解的单元，留下自己的学习足迹。<br><span lang="en">Mark the units you understand and follow your progress.</span></p></div><div class="progress-page"><div class="stats-grid"><div class="stat"><strong>${state.completed.length}<span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allSections.length}</span></strong><span>已理解单元</span><small>UNITS UNDERSTOOD</small></div><div class="stat"><strong>${answered.length}<span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allQuizzes.filter(q=>q.type!=='reflection').length}</span></strong><span>已答选择题</span><small>QUESTIONS ANSWERED</small></div><div class="stat"><strong>${answered.length?Math.round(right.length/answered.length*100)+'%':'—'}</strong><span>当前答案正确率</span><small>ACCURACY OF SAVED ANSWERS</small></div></div>${chapters.map(c=>{const n=c.sections.filter(s=>state.completed.includes(s.id)).length;const tried=c.quiz.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id])).length;return `<a class="progress-row" href="#/chapter/${c.id}"><span class="num">${String(c.id).padStart(2,'0')}</span><span><h3>${escape(c.title.zh)}</h3><small lang="en">${escape(c.title.en)}</small><div class="progress-track"><span style="width:${n/c.sections.length*100}%"></span></div></span><span class="row-data">${n}/${c.sections.length} 单元<small>${tried} 题已答<br>QUESTIONS TRIED ↗</small></span></a>`}).join('')}<div class="progress-actions"><p>进度保存在当前设备的当前浏览器；本地版与在线版分别保存。换设备时，可导出学习档案，再在另一设备导入。<br><span lang="en">Progress stays in this browser on this device. Local and online copies store it separately. Export and import your learning file to transfer progress.</span></p><div><button class="button" data-action="export">导出学习档案 / Export progress ↓</button><button class="button" data-action="import">导入学习档案 / Import progress ↑</button></div></div></div>`;}
+  function progress(){const answered=allQuizzes.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id]));const right=answered.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">YOUR LEARNING JOURNEY / 学习档案</div><h1 class="bilingual-title">一点一点，想得更清楚。<small>Clarity grows one idea at a time.</small></h1><p>主动标记已经理解的单元，留下自己的学习足迹。<br><span lang="en">Mark the units you understand and follow your progress.</span></p></div><div class="progress-page"><div class="stats-grid"><div class="stat"><strong><b data-count="${state.completed.length}">${state.completed.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allSections.length}</span></strong><span>已理解单元</span><small>UNITS UNDERSTOOD</small></div><div class="stat"><strong><b data-count="${answered.length}">${answered.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allQuizzes.filter(q=>q.type!=='reflection').length}</span></strong><span>已答选择题</span><small>QUESTIONS ANSWERED</small></div><div class="stat"><strong>${answered.length?`<b data-count="${Math.round(right.length/answered.length*100)}" data-suffix="%">${Math.round(right.length/answered.length*100)}%</b>`:'—'}</strong><span>当前答案正确率</span><small>ACCURACY OF SAVED ANSWERS</small></div></div>${chapters.map(c=>{const n=c.sections.filter(s=>state.completed.includes(s.id)).length;const tried=c.quiz.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id])).length;return `<a class="progress-row" href="#/chapter/${c.id}"><span class="num">${String(c.id).padStart(2,'0')}</span><span><h3>${escape(c.title.zh)}</h3><small lang="en">${escape(c.title.en)}</small><div class="progress-track"><span style="width:${n/c.sections.length*100}%"></span></div></span><span class="row-data">${n}/${c.sections.length} 单元<small>${tried} 题已答<br>QUESTIONS TRIED ↗</small></span></a>`}).join('')}<div class="progress-actions"><p>进度保存在当前设备的当前浏览器；本地版与在线版分别保存。换设备时，可导出学习档案，再在另一设备导入。<br><span lang="en">Progress stays in this browser on this device. Local and online copies store it separately. Export and import your learning file to transfer progress.</span></p><div><button class="button" data-action="export">导出学习档案 / Export progress ↓</button><button class="button" data-action="import">导入学习档案 / Import progress ↑</button></div></div></div>`;}
   function render(){
     previousRoute=route;route=parseRoute();if(!['learn','slides','terms','quiz'].includes(route.tab))route.tab='learn';
     const main = $('#main');
     const routeChanged = previousRoute.type !== route.type || previousRoute.id !== route.id;
+    const tabChanged = !routeChanged && route.type === 'chapter' && previousRoute.tab !== route.tab;
+    document.documentElement.dataset.view = route.type;
     $$('.main-nav a').forEach(a=>a.classList.toggle('active',route.type===a.getAttribute('href').split('/')[1]||(a.getAttribute('href')==='#/chapters'&&route.type==='chapter')));
     document.title=route.type==='chapter'&&chapterMap[route.id]?`${chapterMap[route.id].title.zh} · 观问 INQUIRY`:'观问 INQUIRY — 从一个问题开始';
     main.innerHTML=route.type==='home'?home():route.type==='chapters'?curriculum():route.type==='chapter'?chapter(chapterMap[route.id]):route.type==='review'?review():route.type==='progress'?progress():home();
     if(routeChanged){window.scrollTo({top:0,behavior:'instant'});}else if(route.type==='chapter'&&route.tab!==previousRoute.tab){$('.chapter-tabs')?.scrollIntoView({block:'start',behavior:'instant'});}
     if(route.type==='chapter'&&route.tab==='learn'&&route.target){const target=document.getElementById(route.target);if(target){target.open=true;requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));}}
     window.inquiryHero?.mount($('.hero', main));
+    window.inquiryHome?.mount(main);
     syncSettings();
     if(focusTab){$(`[role="tab"][data-value="${focusTab}"]`)?.focus();focusTab='';}
     if(route.type === 'chapter' && route.tab === 'terms' && route.target) showTerm(route.target);
     window.inquiryMotion?.mount(main, {routeChanged: Boolean(previousRoute.type) && routeChanged});
+    window.inquiryChapter?.mount(main, {tabChanged});
+    if (routeChanged && route.type === 'progress' && motionAllowed()) animateProgress(main);
+    document.documentElement.classList.add('app-ready');
   }
+  function animateProgress(main) {
+    const digits = $$('[data-count]', main).filter(el => Number(el.dataset.count) > 0);
+    if (!digits.length) return;
+    const start = performance.now();
+    function tick(now) {
+      const progress = motionAllowed() ? Math.min(1, (now - start) / 580) : 1;
+      for (const el of digits) {
+        if (!el.isConnected) return;
+        const value = Math.round(Number(el.dataset.count) * (1 - (1 - progress) ** 3));
+        el.textContent = value + (el.dataset.suffix || '');
+      }
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function changeRoute() {
+    const next = parseRoute();
+    const transitionNeeded = next.type !== route.type || next.id !== route.id;
+    activeTransition?.skipTransition();
+    if (!transitionNeeded || !motionAllowed() || !document.startViewTransition) {
+      render();
+      return;
+    }
+
+    // 只捕捉学习内容，导航与焦点控件留在原位。快速切换时跳过过期的动画。
+    const requestedHash = location.hash;
+    const transition = document.startViewTransition(() => {
+      if (location.hash === requestedHash) render();
+    });
+    activeTransition = transition;
+    transition.finished.catch(() => {}).finally(() => {
+      if (activeTransition === transition) activeTransition = null;
+    });
+  }
+
   function openSources() {
     const courseLinks = (window.SOURCE_INVENTORY || []).map(item => `<p class="course-credit">
       <a href="${escape(sourceUrl(item.id))}" target="_blank" rel="noopener noreferrer">${escape(item.file)} ↗</a>
@@ -249,7 +368,10 @@
     else if(action==='sources')openSources();
     else if(action==='reading'){state.reading=!state.reading;save();syncSettings();notify(state.reading?'已切换舒适阅读':'已切换沉浸浏览',state.reading?'Reading mode enabled':'Cinematic mode enabled');}
     else if(action==='motion'){state.motion=!state.motion;save();syncSettings();}
-    else if(action==='tab')navigate(`#/chapter/${route.id}/${b.dataset.value}`);
+    else if(action==='tab'){
+      if (event.detail === 0) focusTab = b.dataset.value;
+      navigate(`#/chapter/${route.id}/${b.dataset.value}`);
+    }
     else if(action==='expand-all')$$('.section-accordion').forEach(d=>d.open=true);
     else if(action==='collapse-all')$$('.section-accordion').forEach(d=>d.open=false);
     else if(action==='complete'){
@@ -285,13 +407,13 @@
     else if(el.id==='wrong-only'){reviewFilter.wrong=el.checked;reviewFilter.round=false;render();}
     else if(el.matches('[data-viz-input]')&&window.inquiryVizInput)window.inquiryVizInput(el);
     else if(el.id==='import-progress'&&el.files[0]){
-      try{if(el.files[0].size>2000000)throw Error('large');const imported=JSON.parse(await el.files[0].text());if(imported.app!=='inquiry-3192'||imported.version!==1||!imported.progress)throw Error('format');const p=imported.progress;if(!Array.isArray(p.completed)||!p.answers||typeof p.answers!=='object')throw Error('data');state.completed=[...new Set(p.completed.filter(id=>allSections.some(s=>s.id===id)))];state.answers={};for(const [id,n] of Object.entries(p.answers)){if(quizMap[id]&&Number.isInteger(n)&&n>=0&&n<4)state.answers[id]=n;}if(themes.includes(p.theme))state.theme=p.theme;if(typeof p.reading==='boolean')state.reading=p.reading;if(typeof p.motion==='boolean')state.motion=p.motion;if(chapterMap[Number(p.lastChapter)])state.lastChapter=Number(p.lastChapter);save();render();notify('学习档案已导入','Progress imported');}catch{notify('文件格式不正确，未修改进度','Invalid file; progress unchanged');}el.value='';
+      try{if(el.files[0].size>2000000)throw Error('large');const imported=JSON.parse(await el.files[0].text());if(imported.app!=='inquiry-3192'||imported.version!==1||!imported.progress)throw Error('format');const p=imported.progress;if(!Array.isArray(p.completed)||!p.answers||typeof p.answers!=='object')throw Error('data');state.completed=[...new Set(p.completed.filter(id=>allSections.some(s=>s.id===id)))];state.answers={};for(const [id,n] of Object.entries(p.answers)){if(quizMap[id]&&Number.isInteger(n)&&n>=0&&n<4)state.answers[id]=n;}if(themes.includes(p.theme)||p.theme==='forest')state.theme=themeValue(p.theme);if(typeof p.reading==='boolean')state.reading=p.reading;if(typeof p.motion==='boolean')state.motion=p.motion;if(chapterMap[Number(p.lastChapter)])state.lastChapter=Number(p.lastChapter);save();render();notify('学习档案已导入','Progress imported');}catch{notify('文件格式不正确，未修改进度','Invalid file; progress unchanged');}el.value='';
     }
   });
   document.addEventListener('input',event=>{if(event.target.id==='search-input'){clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(event.target.value),120);}else if(event.target.matches('[data-viz-input]')&&window.inquiryVizInput)window.inquiryVizInput(event.target);});
   function updateReviewSummary(){if(route.type!=='review'||!$('.round-summary'))return;const qs=filteredQuizzes(),tried=qs.filter(q=>Number.isInteger(state.answers[q.id])),correct=tried.filter(q=>state.answers[q.id]===q.answer);$('.round-summary').textContent=`本组 ${qs.length} 题 · 已答 ${tried.length} · 正确 ${correct.length} / ${qs.length} questions · ${tried.length} answered · ${correct.length} correct`;}
   document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();$('#search-dialog').showModal();$('#search-input').focus();}if(event.target.matches('[role="tab"]')&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const tabs=$$('[role="tab"]');let i=tabs.indexOf(event.target);i=event.key==='Home'?0:event.key==='End'?tabs.length-1:(i+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;focusTab=tabs[i].dataset.value;tabs[i].click();}});
-  window.addEventListener('hashchange',render);
+  window.addEventListener('hashchange',changeRoute);
   reducedMotion.addEventListener('change', syncSettings);
   render();
 })();

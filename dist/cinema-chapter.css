@@ -1,0 +1,142 @@
+@media screen {
+  :root {
+    --chapter-gold: #dcc18a;
+  }
+
+  html:is([data-theme="paper"], [data-theme="sand"]) {
+    --chapter-gold: #81531f;
+  }
+
+  .chapter-hero h1 {
+    font-family: "Songti SC", "Noto Serif CJK SC", SimSun, var(--serif);
+    font-weight: 500;
+    letter-spacing: -.025em;
+    line-height: 1.14;
+  }
+
+  .chapter-hero h1 small {
+    font-size: clamp(1rem, 1.7vw, 1.55rem);
+    letter-spacing: .01em;
+    line-height: 1.3;
+  }
+
+  .chapter-hero .eyebrow { color: #e5cb95; }
+
+  html:not(.reading) .chapter-hero::after {
+    background:
+      linear-gradient(0deg, rgb(10 13 10 / .92), rgb(10 13 10 / .08) 78%),
+      linear-gradient(90deg, rgb(10 13 10 / .66), transparent 87%);
+  }
+
+  @media (min-width: 901px) {
+    html:not(.reading) .chapter-hero {
+      min-height: clamp(340px, 34vw, 500px);
+      padding-block: 58px;
+    }
+
+    /* 用深色上下边沿裁切横幅画面，同时保留标题的安全区。 */
+    html:not(.reading) .chapter-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      box-shadow: inset 0 10px #0a0d0a, inset 0 -10px #0a0d0a;
+    }
+  }
+
+  .chapter-tabs button[role="tab"] { flex: 0 0 auto; }
+  .chapter-tabs button.active { border-bottom-color: var(--chapter-gold); }
+  .chapter-tabs[data-chapter-tab-marker] button.active { border-bottom-color: transparent; }
+
+  .chapter-tab-marker {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--chapter-gold);
+    transform-origin: left center;
+    pointer-events: none;
+  }
+
+  .unit-heading {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .unit-teaser {
+    margin-block-start: .65rem;
+    max-width: 72ch;
+    color: var(--muted);
+    font-size: .85rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+
+  .unit-teaser [lang="en"] {
+    display: block;
+    margin-block-start: .2rem;
+    font-size: .9em;
+  }
+
+  .section-body .example-box {
+    border: 1px solid var(--line);
+    border-inline-start: 3px solid var(--chapter-gold);
+    background: var(--surface);
+  }
+
+  .section-body .example-box .box-label {
+    color: var(--chapter-gold);
+    font-size: .68rem;
+  }
+
+  .section-body mark.concept-mark {
+    padding-inline: .13em;
+    color: var(--ink);
+    background: var(--surface2);
+    background: color-mix(in srgb, var(--chapter-gold) 19%, var(--surface));
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  @media (max-width: 650px) {
+    .unit-teaser { font-size: .8rem; }
+  }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.cinema-chapter-ready:not(.reading, .no-motion, .reduced-motion) .chapter-tab-enter > :first-child {
+    animation: chapter-tab-enter 320ms cubic-bezier(.22,.65,.3,1) both;
+  }
+
+  html.cinema-chapter-ready:not(.reading, .no-motion, .reduced-motion) .chapter-tab-enter > :first-child:focus-within {
+    animation: none;
+  }
+
+  /* 保留 details 的原生开合行为，让支持自动高度插值的浏览器平滑过渡。 */
+  @supports (interpolate-size: allow-keywords) and (transition-behavior: allow-discrete) and selector(details::details-content) {
+    html.cinema-chapter-ready:not(.reading, .no-motion, .reduced-motion) .section-accordion {
+      interpolate-size: allow-keywords;
+    }
+
+    html.cinema-chapter-ready:not(.reading, .no-motion, .reduced-motion) .section-accordion::details-content {
+      block-size: 0;
+      opacity: 0;
+      overflow: clip;
+      transition:
+        block-size 340ms cubic-bezier(.22,.65,.3,1),
+        content-visibility 340ms allow-discrete,
+        opacity 200ms ease;
+    }
+
+    html.cinema-chapter-ready:not(.reading, .no-motion, .reduced-motion) .section-accordion[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes chapter-tab-enter {
+  from { opacity: .68; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}

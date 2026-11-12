@@ -25,4 +25,4 @@ INQUIRY is an interactive bilingual philosophy learning site. Its eight chapters
 
 项目原创代码、文档与自编学习材料采用 MIT 许可证。章节配图遵循图片署名所列许可。课件 PDF、课件截图及逐页译文在完整学习站中提供。 / The MIT license covers the original code, documentation and authored learning materials. Image terms are listed separately. The lecture PDFs, slide images and full translations are available on the full course site.
 
-[MIT License](LICENSE) · [图片署名 / Image credits](docs/IMAGE-CREDITS.md)
+[MIT License](LICENSE) · [图片署名 / Image credits](docs/IMAGE-CREDITS.md) · [GSAP 许可 / GSAP license](dist/assets/vendor/gsap-3.13.0/NOTICE.md)

@@ -21,7 +21,8 @@ for (const asset of html.matchAll(/<(?:link|script)\b[^>]*\b(?:src|href)="([^"]+
 }
 for (const script of scripts) {
   const code = new vm.Script(read(script), {filename: script});
-  if (!['app.js', 'visualizations.js', 'cinema-hero.js', 'cinema-motion.js'].includes(script)) {
+  // 浏览器动效依赖 DOM，静态验收仅检查语法及入口资源。
+  if (!script.startsWith('assets/vendor/') && !['app.js', 'visualizations.js', 'cinema-hero.js', 'cinema-motion.js', 'cinema-home.js', 'cinema-chapter.js'].includes(script)) {
     code.runInContext(context, {timeout: 3000});
   }
 }

@@ -1,2 +1,6 @@
 * text=auto eol=lf
 *.jpg binary
+*.woff2 binary
+# 保留第三方发行文件的原始字节、版权注释和许可证。
+dist/assets/fonts/*-OFL.txt -text -whitespace
+dist/assets/vendor/**/*.min.js -text -whitespace linguist-vendored

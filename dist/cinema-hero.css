@@ -1,57 +1,124 @@
-.hero .hero-photo {
-  animation: none;
-  transform: translate3d(var(--hero-shift-x, 0px), var(--hero-shift-y, 0px), 0) scale(1.06);
+.hero.inquiry-nebula {
+  --nebula-gold: #e8c87a;
+  display: grid;
+  place-items: center;
+  place-content: center;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: max(36rem, calc(100svh - 76px));
+  padding: clamp(4rem, 12vh, 8rem) clamp(1rem, 5vw, 5rem);
+  background: #060503;
+  color: #f7efd9;
+  text-align: center;
 }
 
-.hero::before {
+/* 静态星点和暖色云带在关闭画布时仍可见。 */
+.hero.inquiry-nebula::before {
   background:
-    linear-gradient(90deg, rgb(8 12 8 / .81), rgb(8 12 8 / .49) 47%, transparent 90%),
-    linear-gradient(0deg, rgb(9 14 9 / .96), transparent 48%, rgb(9 14 9 / .23)),
-    radial-gradient(ellipse at 70% 36%, rgb(226 208 153 / .12), transparent 49%);
+    radial-gradient(circle at 12% 64%, #d7a859 0 1px, transparent 2px),
+    radial-gradient(circle at 25% 31%, #a47644 0 .8px, transparent 1.8px),
+    radial-gradient(circle at 33% 73%, #d1a05b 0 .75px, transparent 1.8px),
+    radial-gradient(circle at 67% 26%, #a78148 0 .7px, transparent 1.8px),
+    radial-gradient(circle at 78% 60%, #f0bf7c 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 34%, #bd9359 0 1px, transparent 2px),
+    radial-gradient(circle at 92% 47%, #cba57b 0 .8px, transparent 1.7px),
+    radial-gradient(ellipse at 73% 34%, rgb(164 103 41 / .32), transparent 42%),
+    radial-gradient(ellipse at 22% 63%, rgb(125 71 25 / .34), transparent 47%),
+    radial-gradient(ellipse at 52% 59%, #211409, #080604 73%);
 }
 
-.hero-top::after {
-  --mark: rgb(230 235 207 / .38);
-  --corner: clamp(14px, 2vw, 28px);
-  content: "";
-  pointer-events: none;
-  position: absolute;
+.hero.inquiry-nebula::after {
   z-index: -1;
-  top: 18%;
-  right: 12%;
-  width: clamp(190px, 27vw, 480px);
-  aspect-ratio: 5 / 4;
+  opacity: 1;
+  mix-blend-mode: normal;
   background:
-    linear-gradient(var(--mark), var(--mark)) left top / var(--corner) 1px,
-    linear-gradient(var(--mark), var(--mark)) left top / 1px var(--corner),
-    linear-gradient(var(--mark), var(--mark)) right top / var(--corner) 1px,
-    linear-gradient(var(--mark), var(--mark)) right top / 1px var(--corner),
-    linear-gradient(var(--mark), var(--mark)) left bottom / var(--corner) 1px,
-    linear-gradient(var(--mark), var(--mark)) left bottom / 1px var(--corner),
-    linear-gradient(var(--mark), var(--mark)) right bottom / var(--corner) 1px,
-    linear-gradient(var(--mark), var(--mark)) right bottom / 1px var(--corner),
-    linear-gradient(var(--mark), var(--mark)) center / 17px 1px,
-    linear-gradient(var(--mark), var(--mark)) center / 1px 17px;
-  background-repeat: no-repeat;
+    radial-gradient(ellipse at 50% 49%, rgb(6 4 3 / .36), transparent 59%),
+    linear-gradient(to bottom, rgb(5 4 3 / .66), transparent 25% 72%, #060503);
 }
 
-.hero .hero-copy { animation: none; }
-.hero #cinema-dust { visibility: hidden; }
-.hero[data-hero-live] #cinema-dust { visibility: visible; }
+.hero.inquiry-nebula #cinema-dust { z-index: -2; visibility: hidden; }
+.hero.inquiry-nebula[data-hero-live] #cinema-dust { visibility: visible; }
 
-.hero[data-hero-motion] .hero-photo {
-  animation: inquiry-lens-drift 26s ease-in-out infinite alternate;
-  animation-play-state: paused;
+.hero.inquiry-nebula .hero-copy {
+  max-width: 72rem;
+  padding: 0;
+  animation: none;
 }
 
-.hero[data-hero-live] .hero-photo { animation-play-state: running; }
-
-.hero[data-hero-intro] h1,
-.hero[data-hero-intro] .hero-english {
-  animation: inquiry-hero-enter .78s cubic-bezier(.2, .65, .25, 1) both;
+.hero.inquiry-nebula .nebula-title {
+  display: grid;
+  justify-items: center;
+  row-gap: clamp(1rem, 2.25vw, 2rem);
+  margin: 0;
+  font-family: var(--inquiry-serif, Georgia), "Songti SC", "SimSun", serif;
+  font-size: clamp(4.8rem, 13vw, 10rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1;
+  text-shadow: 0 0 .46em rgb(246 188 99 / .21);
 }
 
-.hero[data-hero-intro] .hero-english { animation-delay: .1s; }
+.inquiry-nebula .nebula-zh {
+  display: flex;
+  gap: .24em;
+}
+
+.inquiry-nebula .nebula-zh > span { display: block; }
+
+.inquiry-nebula .nebula-english {
+  padding-inline-start: .44em;
+  color: var(--nebula-gold);
+  font-size: clamp(1.2rem, 3.2vw, 2.7rem);
+  font-weight: 400;
+  letter-spacing: .44em;
+  line-height: 1.2;
+}
+
+.inquiry-nebula .nebula-subtitle {
+  margin: clamp(1.25rem, 2.6vw, 2.25rem) 0 clamp(1.8rem, 4vw, 3rem);
+  color: #e9ddc7;
+  font-size: clamp(.92rem, 1.65vw, 1.15rem);
+  letter-spacing: .13em;
+}
+
+.inquiry-nebula .nebula-subtitle span {
+  display: block;
+  margin-top: .58rem;
+  color: #ccaf7a;
+  font-family: var(--inquiry-mono, ui-monospace, monospace);
+  font-size: .7rem;
+  letter-spacing: .18em;
+}
+
+.inquiry-nebula .hero-actions { justify-content: center; }
+
+.hero.inquiry-nebula .hero-actions .button.primary {
+  min-height: 3rem;
+  padding: .85rem 1.25rem;
+  border-color: rgb(232 200 122 / .63);
+  background: rgb(17 11 5 / .66);
+  color: #f2dba0;
+  text-align: left;
+}
+
+.hero.inquiry-nebula .hero-actions .button.primary:is(:hover, :focus-visible) {
+  background: var(--nebula-gold);
+  color: #1b1207;
+}
+
+.inquiry-nebula .hero-actions .button small {
+  font-family: var(--inquiry-mono, ui-monospace, monospace);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .inquiry-nebula[data-hero-intro] .nebula-zh > span {
+    animation: inquiry-nebula-focus 860ms cubic-bezier(.2, .65, .25, 1) backwards;
+    animation-delay: calc(90ms + var(--glyph-index, 0) * 115ms);
+  }
+
+  .inquiry-nebula[data-hero-intro] .nebula-english {
+    animation: inquiry-nebula-focus 850ms cubic-bezier(.2, .65, .25, 1) 280ms backwards;
+  }
+}
 
 /* 光环只提供视觉反馈，系统指针继续负责指示位置和链接状态。 */
 .hero-pointer {
@@ -64,8 +131,10 @@
   margin: -17px 0 0 -17px;
   pointer-events: none;
   visibility: hidden;
-  color: #e2efba;
+  color: var(--nebula-gold, #e8c87a);
 }
+
+.hero-pointer-label { display: none; }
 
 @media (any-hover: hover) and (any-pointer: fine) and (prefers-reduced-motion: no-preference) {
   .hero[data-hero-live][data-hero-pointer] .hero-pointer { visibility: visible; }
@@ -81,7 +150,7 @@
 
   .hero-pointer::before {
     border: 1px solid currentColor;
-    box-shadow: 0 0 0 1px rgb(17 22 12 / .7);
+    box-shadow: 0 0 0 1px rgb(14 9 4 / .76);
     opacity: .8;
   }
 
@@ -96,6 +165,22 @@
 
   .hero-pointer[data-cta]::before { scale: 1.19; opacity: .94; }
   .hero-pointer[data-cta]::after { scale: 1.19; opacity: .72; }
+
+  .hero-pointer[data-cta] .hero-pointer-label {
+    display: block;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    translate: -50% 0;
+    padding: .18rem .4rem;
+    border: 1px solid rgb(232 200 122 / .45);
+    border-radius: 2px;
+    background: #0d0905;
+    color: #f1d896;
+    font: .6rem/1.5 var(--inquiry-mono, ui-monospace, monospace);
+    letter-spacing: .06em;
+    white-space: nowrap;
+  }
 
   .hero[data-hero-pointer] .hero-actions .button {
     transition-property: background-color, border-color, color;
@@ -124,37 +209,15 @@
   .hero-pointer { display: none; }
 }
 
-@keyframes inquiry-lens-drift {
-  from { scale: 1; }
-  to { scale: 1.06; }
-}
-
-@keyframes inquiry-hero-enter {
-  from { opacity: 0; transform: translateY(.24em); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes inquiry-nebula-focus {
+  from { opacity: .2; filter: blur(9px); transform: translateY(.14em); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
 }
 
 @media (max-width: 650px) {
-  .hero-top::after { width: min(42vw, 210px); right: 9%; top: 17%; opacity: .64; }
+  .hero.inquiry-nebula { min-height: max(32rem, calc(100svh - 95px)); }
+  .hero.inquiry-nebula .nebula-title { font-size: clamp(4.2rem, 20vw, 7.8rem); }
+  .inquiry-nebula .nebula-english { letter-spacing: .32em; padding-inline-start: .32em; }
 }
 
-:is(.reading, .no-motion, .reduced-motion) .hero .hero-photo {
-  animation: none;
-  transform: scale(1.06);
-}
-
-:is(.reading, .no-motion, .reduced-motion) .hero #cinema-dust,
-.reading .hero-top::after { visibility: hidden; }
-
-:is(.reading, .no-motion, .reduced-motion) .hero :is(h1, .hero-english) {
-  animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero[data-hero-motion] .hero-photo {
-    animation: none;
-    transform: scale(1.06);
-  }
-  .hero[data-hero-live] #cinema-dust { visibility: hidden; }
-  .hero[data-hero-intro] :is(h1, .hero-english) { animation: none; }
-}
+:is(.reading, .no-motion, .reduced-motion) .hero.inquiry-nebula #cinema-dust { visibility: hidden; }
