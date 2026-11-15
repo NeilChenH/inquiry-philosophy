@@ -88,6 +88,19 @@ for (const [offset, maxPage] of pagesByChapter.entries()) {
     checkPageReferences(term.pages, maxPage, term.en);
     stats.terms++;
   }
+  // 核对目标卡的来源与单元跳转，避免章节编辑后出现失效链接。
+  const outcomes = chapter.learningOutcomes;
+  if (id === 7 || id === 8) {
+    assert.equal(outcomes?.page, 2, `Chapter ${id} learning outcomes source`);
+    assert.equal(outcomes.items.length, 3, `Chapter ${id} learning outcomes count`);
+    for (const item of outcomes.items) {
+      bilingual(item, `Chapter ${id} learning outcome`);
+      assert(item.units?.length && item.units.every(unitId => chapter.sections.some(unit => unit.id === unitId)),
+        `Chapter ${id} learning outcome points to an unknown unit`);
+    }
+  } else {
+    assert.equal(outcomes, undefined, `Chapter ${id} has no source learning outcomes`);
+  }
   for (const question of chapter.quiz) {
     unique(question.id);
     bilingual(question.question, question.id);

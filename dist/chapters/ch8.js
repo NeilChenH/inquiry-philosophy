@@ -13,6 +13,26 @@ window.COURSE_CHAPTERS[8]={
     "zh": "本章把去殖民化从政治制度的独立扩展到文化、语言、心理与知识框架。课程先介绍殖民历史及三阶段去殖民化，再以笛卡尔二元论、人类中心主义和欧洲中心主义为分析路径，提出本土智慧、自主参照与Sejahtera整体福祉。页码索引可定位完整在线版的对应课件。",
     "en": "This chapter extends decolonisation beyond political independence to culture, language, psychology, and knowledge frameworks. It introduces colonial history and three stages of decolonisation, then uses Cartesian dualism, anthropocentrism, and Eurocentrism as a course framework before proposing local wisdom, self-reference, and Sejahtera well-being. Use the page index to find the matching slides in the full online edition."
   },
+  "learningOutcomes": {
+    "page": 2,
+    "items": [
+      {
+        "zh": "区分殖民化与去殖民化。",
+        "en": "Distinguish colonisation from decolonisation.",
+        "units": ["c8-s1"]
+      },
+      {
+        "zh": "说明课件如何从笛卡尔哲学出发讨论环境破坏。",
+        "en": "Explain how the slides discuss environmental destruction through Descartes’ philosophy.",
+        "units": ["c8-s5"]
+      },
+      {
+        "zh": "阐述 Sejahtera 福祉哲学如何理解和推进去殖民化。",
+        "en": "Describe the approach to decolonisation taken by the Sejahtera philosophy of well-being.",
+        "units": ["c8-s8"]
+      }
+    ]
+  },
   "sections": [
     {
       "id": "c8-s1",

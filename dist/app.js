@@ -95,8 +95,19 @@
     else output=learnTab(c);
     return output+`<nav class="chapter-pager" aria-label="章节翻页 / Chapter navigation">${c.id>1?`<a href="#/chapter/${c.id-1}">← 上一章<small>PREVIOUS · ${escape(chapterMap[c.id-1]?.title.en)}</small></a>`:''}${c.id<8?`<a href="#/chapter/${c.id+1}">下一章 →<small>NEXT · ${escape(chapterMap[c.id+1]?.title.en)}</small></a>`:`<a href="#/review">进入综合复习 →<small>CONTINUE TO REVIEW</small></a>`}</nav>`;
   }
-  function notesFor(c,pages){return [...(c.notes||[]),...(window.COURSE_SUPPLEMENTS?.[c.id]||[])].filter(n=>!pages || (n.pages||[]).some(p=>pages.includes(p)));}
+  function notesFor(c,pages){return [...(c.notes||[]),...(window.COURSE_SUPPLEMENTS?.[c.id]||[])].filter(n=>n.kind!=='course-code' && (!pages || (n.pages||[]).some(p=>pages.includes(p))));}
   function noteMarkup(n){return `<aside class="source-note"><div class="note-label">${n.kind==='verified'?'补充辨析 / VERIFIED CLARIFICATION':'课程语境与原文提示 / SOURCE & CONTEXT'}</div><h4>${title(n.title)}</h4>${bi({zh:n.zh,en:n.en})}${n.references?.length?`<div style="margin-top:10px">${n.references.map(r=>`<a href="${escape(r.url)}" target="_blank" rel="noopener noreferrer">${escape(r.label)} ↗</a>`).join('')}</div>`:''}</aside>`;}
+  // 编号提示只出现在指定章节、关联单元或课件原标注页。
+  function courseCodeNotice(chapter, placement, pages) {
+    const note = chapter.notes?.find(n => n.kind === 'course-code' &&
+      (placement === 'slide' || n.placement === placement) &&
+      (!pages || n.pages.some(page => pages.includes(page))));
+    if (!note) return '';
+    return `<aside class="source-note course-code-notice" aria-label="${escape(note.title.zh)} / ${escape(note.title.en)}">
+      <p class="note-label">${escape(note.title.zh)} / <span lang="en">${escape(note.title.en)}</span></p>
+      ${bi(note)}
+    </aside>`;
+  }
   // 只用本单元来源页对应的术语做高亮。每种语言最多标出一个词。
   function markConcept(text, terms, language) {
     const candidates = terms.map(term => term[language]).filter(word => word.length >= (language === 'zh' ? 2 : 3));
@@ -131,6 +142,7 @@
         <span class="expand-icon" aria-hidden="true"></span>
       </summary>
       <div class="section-body">
+        ${courseCodeNotice(chapter, 'unit', pages)}
         <div class="section-lead">${bi(unit.lead)}</div>
         ${(unit.blocks || []).map(block => studyPair(block, relatedTerms)).join('')}
         ${unit.example ? `<div class="example-box"><div class="box-label">用一个例子想清楚 / A CONCRETE EXAMPLE</div>${bi(unit.example)}</div>` : ''}
@@ -147,10 +159,34 @@
     </details>`;
   }
 
+  function learningOutcomes(chapter) {
+    const outcomes = chapter.learningOutcomes;
+    if (!outcomes) return '';
+    // 用现有章节锚点定位知识单元，页码入口同时兼容索引版和离线完整版。
+    return `<section class="learning-outcomes" aria-labelledby="learning-outcomes-title">
+      <div class="learning-outcomes-header">
+        <h2 id="learning-outcomes-title">课件学习目标<small lang="en">Learning outcomes from the slides</small></h2>
+        <a data-outcome-source href="#/chapter/${chapter.id}/slides/${outcomes.page}">课件第 ${outcomes.page} 页 / <span lang="en">Slide ${outcomes.page}</span></a>
+      </div>
+      <ol>
+        ${outcomes.items.map(item => {
+          const units = item.units.map(id => chapter.sections.find(unit => unit.id === id));
+          return `<li>${bi(item)}
+            <ul class="learning-outcome-links" aria-label="对应知识单元 / Related units">
+              ${units.map(unit => `<li><a data-outcome-unit href="#/chapter/${chapter.id}/learn/${escape(unit.id)}">${escape(unit.title.zh)} / <span lang="en">${escape(unit.title.en)}</span></a></li>`).join('')}
+            </ul>
+          </li>`;
+        }).join('')}
+      </ol>
+    </section>`;
+  }
+
   function learnTab(chapter) {
     const units = chapter.sections.map((unit, index) => studyUnit(chapter, unit, index));
     const visualization = window.renderVisualization?.(chapter.id) || '';
     return `<div class="overview">${bi(chapter.overview, true)}</div>
+      ${courseCodeNotice(chapter, 'overview')}
+      ${learningOutcomes(chapter)}
       <div class="toolbar">
         <h2>知识主线<small>THE LEARNING PATH</small></h2>
         <div><button class="text-button" data-action="expand-all">全部展开 / Expand all</button>
@@ -200,6 +236,7 @@
         </div>
         <a href="${escape(link.url)}" target="_blank" rel="noopener noreferrer">${link.label} ↗</a>
       </div>
+      ${courseCodeNotice(c, 'slide', [n])}
       ${figure}
       <div class="slide-transcript">
         <h3 class="slide-title">${title(heading)}</h3>
@@ -257,7 +294,17 @@
     document.title=route.type==='chapter'&&chapterMap[route.id]?`${chapterMap[route.id].title.zh} · 观问 INQUIRY`:'观问 INQUIRY — 从一个问题开始';
     main.innerHTML=route.type==='home'?home():route.type==='chapters'?curriculum():route.type==='chapter'?chapter(chapterMap[route.id]):route.type==='review'?review():route.type==='progress'?progress():home();
     if(routeChanged){window.scrollTo({top:0,behavior:'instant'});}else if(route.type==='chapter'&&route.tab!==previousRoute.tab){$('.chapter-tabs')?.scrollIntoView({block:'start',behavior:'instant'});}
-    if(route.type==='chapter'&&route.tab==='learn'&&route.target){const target=document.getElementById(route.target);if(target){target.open=true;requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'instant'}));}}
+    if (route.type === 'chapter' && route.tab === 'learn' && route.target) {
+      const unit = document.getElementById(route.target);
+      if (unit?.matches('.section-accordion')) {
+        unit.open = true;
+        requestAnimationFrame(() => {
+          if (!unit.isConnected) return;
+          $('summary', unit).focus({preventScroll: true});
+          unit.scrollIntoView({block: 'start', behavior: 'instant'});
+        });
+      }
+    }
     window.inquiryHero?.mount($('.hero', main));
     window.inquiryHome?.mount(main);
     syncSettings();
@@ -363,6 +410,13 @@
     const d=event.target;if(d.matches?.('[data-source-fold]')&&d.open&&!d.dataset.loaded){const c=chapterMap[Number(d.dataset.ch)];const pages=d.dataset.pages.split(',').map(Number);$('.source-pages-container',d).innerHTML=reader(c,pages);d.dataset.loaded='true';}
   },true);
   document.addEventListener('click',event=>{
+    const outcomeLink = event.target.closest('[data-outcome-unit], [data-outcome-source]');
+    if (outcomeLink && !event.defaultPrevented && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+      event.preventDefault();
+      if (outcomeLink.hasAttribute('data-outcome-source')) focusTab = 'slides';
+      navigate(outcomeLink.hash);
+      return;
+    }
     if (event.target.closest('.brand') && route.type === 'home') {
       event.preventDefault();
       window.scrollTo({top:0,behavior:'instant'});

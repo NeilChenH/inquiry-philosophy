@@ -10,8 +10,28 @@ window.COURSE_CHAPTERS[7]={
     "en": "Modernity, Postmodernism, Relativism and Value Choices"
   },
   "overview": {
-    "zh": "本章按课件框架比较世俗主义、现代主义与后现代主义，讨论相对主义的论证和生活影响，再进入宗教回应与二元论。第 38 页标注适用于 MPU3193。",
-    "en": "This chapter follows the lecture’s comparison of secularism, modernism and postmodernism, then examines relativism, religious responses and dualism. Page 38 carries the MPU3193 label."
+    "zh": "本章按课件框架比较世俗主义、现代主义与后现代主义，讨论相对主义的论证和生活影响，再进入宗教回应与二元论。",
+    "en": "This chapter follows the lecture’s comparison of secularism, modernism and postmodernism, then examines relativism, religious responses and dualism."
+  },
+  "learningOutcomes": {
+    "page": 2,
+    "items": [
+      {
+        "zh": "说明世俗主义、现代主义与后现代主义的思想脉络及其挑战。",
+        "en": "Explain the development and challenges of secularism, modernism and postmodernism.",
+        "units": ["c7-s2", "c7-s4", "c7-s5"]
+      },
+      {
+        "zh": "阐述后现代相对主义的特征及其影响。",
+        "en": "Describe the characteristics and effects of postmodern relativism.",
+        "units": ["c7-s7", "c7-s8"]
+      },
+      {
+        "zh": "解释二元论及其影响。",
+        "en": "Explain dualism and its effects.",
+        "units": ["c7-s9"]
+      }
+    ]
   },
   "sections": [
     {
@@ -209,8 +229,8 @@ window.COURSE_CHAPTERS[7]={
         "en": "Site-authored example: When told there is one successful life path, ask who defines success, how the standard formed and whose experiences are unheard, while still requiring reasons for claims."
       },
       "takeaway": {
-        "zh": "把对权威和叙事的追问，与否认一切理由的说法区分开。",
-        "en": "Distinguish questioning authority or narratives from denying the need for reasons altogether."
+        "zh": "把对权威和叙事的追问，与否认一切理由的说法区分开。第25页未解释马尔萨斯、达尔文图卡与“社会建构主义”的关系，不能凭同页排版给人物归类。",
+        "en": "Distinguish questioning authority or narratives from denying the need for reasons altogether. Page 25 does not explain how the Malthus and Darwin cards relate to social constructivism. Their placement alone does not establish their school of thought."
       }
     },
     {
@@ -1493,17 +1513,27 @@ window.COURSE_CHAPTERS[7]={
       "kind": "context"
     },
     {
+      "pages": [38],
+      "title": {
+        "zh": "第 38 页课件编号",
+        "en": "Course code on slide 38"
+      },
+      "zh": "第 38 页原课件标注 For MPU3193。考试范围以授课教师通知为准。",
+      "en": "Slide 38 is marked For MPU3193. Follow your lecturer’s guidance on exam coverage.",
+      "kind": "course-code",
+      "placement": "unit"
+    },
+    {
       "pages": [
-        38,
         39,
         40
       ],
       "title": {
-        "zh": "MPU3193 标记与信仰语境",
-        "en": "MPU3193 Label and Faith Context"
+        "zh": "信仰语境",
+        "en": "Faith context"
       },
-      "zh": "第38页标明 For MPU3193。网站完整覆盖文件，不表示已确认3192考试范围。第39至40页的宗教信念与绝对真理讨论保留其宗教立场；“任何宗教都如此”的表述不是本站核验的比较结论。",
-      "en": "Page 38 is marked For MPU3193. Full coverage does not confirm MPU3192 exam scope. Pages 39–40 retain their religious standpoint; generalisations about every religion are not independently verified comparative findings.",
+      "zh": "第39至40页的宗教信念与绝对真理讨论保留其宗教立场；“任何宗教都如此”的表述不是本站核验的比较结论。",
+      "en": "Pages 39–40 retain their religious standpoint; generalisations about every religion are not independently verified comparative findings.",
       "kind": "context"
     },
     {

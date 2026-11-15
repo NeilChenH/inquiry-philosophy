@@ -7,6 +7,69 @@
     --chapter-gold: #81531f;
   }
 
+  /* 目标和来源提示沿用章节主题色，双语正文共用现有双栏与窄屏布局。 */
+  .learning-outcomes {
+    margin-block-end: 2rem;
+    padding: clamp(1rem, 3vw, 1.75rem);
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  .learning-outcomes-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+  }
+
+  .learning-outcomes h2 { font-size: 1.125rem; }
+
+  .learning-outcomes h2 small {
+    display: block;
+    margin-block-start: .2rem;
+    color: var(--muted);
+    font-size: .8rem;
+    font-weight: inherit;
+  }
+
+  .learning-outcomes > ol { margin: .5rem 0 0; padding-inline-start: 1.35rem; }
+
+  .learning-outcomes > ol > li {
+    padding-block: .85rem .35rem;
+    border-block-start: 1px solid var(--line);
+  }
+
+  .learning-outcomes > ol > li::marker { color: var(--chapter-gold); }
+
+  .learning-outcome-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .learning-outcomes a {
+    display: inline-grid;
+    align-content: center;
+    min-block-size: 44px;
+    color: var(--chapter-gold);
+    font-size: .85rem;
+    text-decoration: underline;
+    text-underline-offset: .2em;
+  }
+
+  .learning-outcomes a > span { font-size: .78rem; }
+
+  .course-code-notice {
+    margin-block: 0 1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .course-code-notice .note-label { margin-block-end: .45rem; font-size: .75rem; }
+  .slide-reader > .course-code-notice { margin: .8rem 1rem; }
+
   .chapter-hero h1 {
     font-family: "Songti SC", "Noto Serif CJK SC", SimSun, var(--serif);
     font-weight: 500;

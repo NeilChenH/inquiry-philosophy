@@ -55,3 +55,5 @@ Both editions were exercised from a fresh browser origin, starting at the homepa
 
 - 两版均从断网本地入口在全新 Chrome 会话实测桌面和 390px 窗口。通过中英搜索打开 Sejahtera 术语卡，第 1、4、8 章主译名一致，能查看词典释义、课程用法及 NEP／FPK 对照。 / Fresh offline sessions verified bilingual search, consistent glossary labels, the dictionary and course senses, and the NEP/FPK cross-reference.
 - 96 张章节题卡及综合复习的 80 道选择题均显示双语自编标记，两道辨析题另有类别标记。键盘作答、解析、刷新和重试通过，已有答案与学习进度可继续使用。 / All chapter and review cards show bilingual authorship labels. Both clarification questions have an additional label. Keyboard answers, feedback, reload, retry and existing progress passed.
+- 第 7、8 章各三项目标可用键盘或触屏打开对应知识单元及第 2 页。完整版断网显示原图、双语课件正文及对应 PDF 链接，开源版显示对应页码索引。 / Each chapter's three outcomes link to the matching study units and slide 2. Keyboard and touch navigation passed. The full edition loaded the original slide and both languages offline, and the open edition selected the matching index page.
+- 两版核对第 5 章第 18 页与第 7 章第 38 页的编号提示，以及第 7 章第 25 页图卡小结。同步前后，304 项课件、原图、来源数据及逐页内容校验值一致。 / Both editions showed the course code notes and the note about the Chapter 7 figure cards. All 304 source assets and page data checksums matched the baseline.

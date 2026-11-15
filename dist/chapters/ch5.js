@@ -1323,17 +1323,16 @@ window.COURSE_CHAPTERS[5]={
   "notes": [
     {
       "pages": [
-        1,
-        18,
-        43
+        18
       ],
       "title": {
-        "zh": "来源范围与课码",
-        "en": "Source scope and course codes"
+        "zh": "课件编号并列",
+        "en": "Course codes in the source material"
       },
-      "zh": "原文件名为CHAPTER_5_METAPHYSICS_3193_Latest.pdf，第18页页脚又标MPU3192。按用户要求完整纳入资料，不据文件名推定它是3192正式必考内容。页码均为PDF物理页码。",
-      "en": "The filename is CHAPTER_5_METAPHYSICS_3193_Latest.pdf, while page 18 says MPU3192. The supplied material is included in full without claiming that the filename establishes official 3192 examination coverage. Page references are physical PDF pages.",
-      "kind": "source"
+      "zh": "原课件文件名 CHAPTER_5_METAPHYSICS_3193_Latest.pdf 含 3193，第 18 页页脚标注 MPU3192。考试范围以授课教师通知为准。",
+      "en": "The source filename CHAPTER_5_METAPHYSICS_3193_Latest.pdf contains 3193. Page 18 has MPU3192 in its footer. Follow your lecturer’s guidance on exam coverage.",
+      "kind": "course-code",
+      "placement": "overview"
     },
     {
       "pages": [
