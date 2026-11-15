@@ -663,9 +663,9 @@ window.COURSE_CHAPTERS[7]={
     },
     {
       "en": "Justification",
-      "zh": "证成／理由支持",
+      "zh": "证成",
       "note": {
-        "zh": "第42页要求思想选择有强理由，并与逻辑推理一致。",
+        "zh": "第42页要求思想选择有充分的合理根据，并与逻辑推理一致。",
         "en": "Page 42 calls for strong grounds for ideological choices, consistent with logical reasoning."
       },
       "pages": [
@@ -678,8 +678,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q1",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：哪项最符合本章对意识形态的介绍？",
-        "en": "Site-authored practice: Which best matches this chapter’s account of ideology?"
+        "zh": "哪项最符合本章对意识形态的介绍？",
+        "en": "Which best matches this chapter’s account of ideology?"
       },
       "options": [
         {
@@ -713,8 +713,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q2",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：按第12页，哪组对应正确？",
-        "en": "Site-authored practice: Which mapping matches page 12?"
+        "zh": "按第12页，哪组对应正确？",
+        "en": "Which mapping matches page 12?"
       },
       "options": [
         {
@@ -748,8 +748,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q3",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：哪一项属于第10页的世俗主义概念？",
-        "en": "Site-authored practice: Which is a secularism concept on page 10?"
+        "zh": "哪一项属于第10页的世俗主义概念？",
+        "en": "Which is a secularism concept on page 10?"
       },
       "options": [
         {
@@ -782,8 +782,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q4",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：复述课件对现代主义的介绍时，哪种做法最严谨？",
-        "en": "Site-authored practice: Which is the most careful way to restate the lecture’s modernism account?"
+        "zh": "复述课件对现代主义的介绍时，哪种做法最严谨？",
+        "en": "Which is the most careful way to restate the lecture’s modernism account?"
       },
       "options": [
         {
@@ -819,8 +819,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q5",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：“科学实践受社会因素影响”能直接推出什么？",
-        "en": "Site-authored practice: What follows directly from “scientific practice is influenced by social factors”?"
+        "zh": "“科学实践受社会因素影响”能直接推出什么？",
+        "en": "What follows directly from “scientific practice is influenced by social factors”?"
       },
       "options": [
         {
@@ -853,8 +853,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q6",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：利奥塔图卡最直接关联哪个概念？",
-        "en": "Site-authored practice: Which concept is most directly associated with Lyotard’s card?"
+        "zh": "利奥塔图卡最直接关联哪个概念？",
+        "en": "Which concept is most directly associated with Lyotard’s card?"
       },
       "options": [
         {
@@ -888,8 +888,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q7",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：对“不存在任何绝对真理”的自指检验，首先应问什么？",
-        "en": "Site-authored practice: What should a self-reference test first ask about “No absolute truth exists”?"
+        "zh": "对“不存在任何绝对真理”的自指检验，首先应问什么？",
+        "en": "What should a self-reference test first ask about “No absolute truth exists”?"
       },
       "options": [
         {
@@ -922,8 +922,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q8",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：下列哪项最需要另找因果证据，不能只凭影响清单确立？",
-        "en": "Site-authored practice: Which claim needs causal evidence beyond an implications list?"
+        "zh": "下列哪项最需要另找因果证据，不能只凭影响清单确立？",
+        "en": "Which claim needs causal evidence beyond an implications list?"
       },
       "options": [
         {
@@ -957,8 +957,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q9",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：关于第38页的范围，哪项准确？",
-        "en": "Site-authored practice: Which statement correctly describes page 38’s scope?"
+        "zh": "关于第38页的范围，哪项准确？",
+        "en": "Which statement correctly describes page 38’s scope?"
       },
       "options": [
         {
@@ -991,8 +991,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q10",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：讨论二元论时，哪种区分最重要？",
-        "en": "Site-authored practice: Which distinction matters when discussing dualism?"
+        "zh": "讨论二元论时，哪种区分最重要？",
+        "en": "Which distinction matters when discussing dualism?"
       },
       "options": [
         {
@@ -1025,8 +1025,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q11",
       "type": "reflection",
       "question": {
-        "zh": "本站自编思考：选择一个教育或技术问题，分别用本课的现代与后现代视角提出问题，再评价各自可取之处和局限。",
-        "en": "Site-authored reflection: Choose an educational or technological issue, formulate questions from the course’s modern and postmodern perspectives, and evaluate strengths and limits."
+        "zh": "选择一个教育或技术问题，分别用本课的现代与后现代视角提出问题，再评价各自可取之处和局限。",
+        "en": "Choose an educational or technological issue, formulate questions from the course’s modern and postmodern perspectives, and evaluate strengths and limits."
       },
       "modelAnswer": {
         "zh": "参考要点：例如 AI 评分。现代视角可要求可靠证据、一致标准和可检验效果；后现代视角可追问谁定义标准、哪些经验被排除、数据与权力如何相关。前者有助验证，但不能自动处理所有价值；后者揭示情境，但不能免除自身给出理由的责任。说明这是运用课程框架的分析，不把所有思想家归为统一立场。开放题无唯一答案。",
@@ -1046,8 +1046,8 @@ window.COURSE_CHAPTERS[7]={
       "id": "c7-q12",
       "type": "reflection",
       "question": {
-        "zh": "本站自编思考：如何检查“不同文化有不同判断，所以任何行为都不能评价”这个论证？",
-        "en": "Site-authored reflection: How would you examine “Cultures judge differently, so no action can be evaluated”?"
+        "zh": "如何检查“不同文化有不同判断，所以任何行为都不能评价”这个论证？",
+        "en": "How would you examine “Cultures judge differently, so no action can be evaluated”?"
       },
       "modelAnswer": {
         "zh": "参考要点：把前提“存在差异”与结论“无法评价”分开；要求连接两者的理由；说明讨论领域，是礼仪偏好、事实判断还是伤害与责任；比较可共同讨论的证据与价值；对话时尊重人，同时评价具体主张。承认差异不自动证明评价不可能。本站自编练习，不是原题或官方答案。",

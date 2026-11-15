@@ -636,8 +636,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q1",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】哪一问题最直接属于本体论？",
-        "en": "[Original practice] Which question most directly concerns ontology?"
+        "zh": "哪一问题最直接属于本体论？",
+        "en": "Which question most directly concerns ontology?"
       },
       "options": [
         {
@@ -671,8 +671,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q2",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】课件以椅子说明的实体被描述为什么？",
-        "en": "[Original practice] How do the slides describe substance in the chair example?"
+        "zh": "课件以椅子说明的实体被描述为什么？",
+        "en": "How do the slides describe substance in the chair example?"
       },
       "options": [
         {
@@ -705,8 +705,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q3",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】哪一项更集中于宇宙的起源？",
-        "en": "[Original practice] Which term focuses more specifically on the universe's origin?"
+        "zh": "哪一项更集中于宇宙的起源？",
+        "en": "Which term focuses more specifically on the universe's origin?"
       },
       "options": [
         {
@@ -740,8 +740,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q4",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】“思想依赖大脑的物理活动”最接近哪一课件立场？",
-        "en": "[Original practice] Which course position best fits thought depending on physical brain activity?"
+        "zh": "“思想依赖大脑的物理活动”最接近哪一课件立场？",
+        "en": "Which course position best fits thought depending on physical brain activity?"
       },
       "options": [
         {
@@ -776,8 +776,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q5",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】课件将康德归在哪一种唯心主义？",
-        "en": "[Original practice] Which kind of idealism does the course assign to Kant?"
+        "zh": "课件将康德归在哪一种唯心主义？",
+        "en": "Which kind of idealism does the course assign to Kant?"
       },
       "options": [
         {
@@ -810,8 +810,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q6",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】纵向关系中的“上／下”在课件中主要表达什么？",
-        "en": "[Original practice] What does above/below chiefly express in the vertical relationship?"
+        "zh": "纵向关系中的“上／下”在课件中主要表达什么？",
+        "en": "What does above/below chiefly express in the vertical relationship?"
       },
       "options": [
         {
@@ -844,8 +844,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q7",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】“人可能无法知道神是否存在”最接近哪一立场？",
-        "en": "[Original practice] Which position best matches humans possibly being unable to know whether God exists?"
+        "zh": "“人可能无法知道神是否存在”最接近哪一立场？",
+        "en": "Which position best matches humans possibly being unable to know whether God exists?"
       },
       "options": [
         {
@@ -879,8 +879,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q8",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】依第31页，从中心到外圈的顺序是哪一个？",
-        "en": "[Original practice] What is the centre-to-outside order on page 31?"
+        "zh": "依第31页，从中心到外圈的顺序是哪一个？",
+        "en": "What is the centre-to-outside order on page 31?"
       },
       "options": [
         {
@@ -914,8 +914,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q9",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】哪一种立场主张普遍概念主要是对个别事物的名称？",
-        "en": "[Original practice] Which position treats universal concepts chiefly as names for particulars?"
+        "zh": "哪一种立场主张普遍概念主要是对个别事物的名称？",
+        "en": "Which position treats universal concepts chiefly as names for particulars?"
       },
       "options": [
         {
@@ -948,8 +948,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q10",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】要求说明科学概念对应的实验程序与适用条件，最接近什么？",
-        "en": "[Original practice] Which position asks for the experimental procedures and conditions corresponding to a scientific concept?"
+        "zh": "要求说明科学概念对应的实验程序与适用条件，最接近什么？",
+        "en": "Which position asks for the experimental procedures and conditions corresponding to a scientific concept?"
       },
       "options": [
         {
@@ -982,8 +982,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q11",
       "type": "reflection",
       "question": {
-        "zh": "【自编思考题】用同一个例子比较唯物主义与一种明确命名的唯心主义，并说明哪部分是定义、哪部分是课程评价。",
-        "en": "[Original reflection] Compare materialism with one specified form of idealism using the same example. Separate definitions from course evaluations."
+        "zh": "用同一个例子比较唯物主义与一种明确命名的唯心主义，并说明哪部分是定义、哪部分是课程评价。",
+        "en": "Compare materialism with one specified form of idealism using the same example. Separate definitions from course evaluations."
       },
       "modelAnswer": {
         "zh": "参考要点：先说明例子，例如思想与大脑；唯物主义强调思想对物理过程的依赖；选择贝克莱、康德或黑格尔中的一种，按第18页说明其基础；在同一维度比较，避免把各种唯心主义混为一谈；第15页的道德和宗教负面评价应归属于课件立场，不能当作定义已经证明的结果。",
@@ -1000,8 +1000,8 @@ window.COURSE_CHAPTERS[5]={
       "id": "c5-q12",
       "type": "reflection",
       "question": {
-        "zh": "【自编思考题】以一种自然资源利用为例，解释横向关系和宇宙论—生态—经济模型。",
-        "en": "[Original reflection] Use a case of natural-resource use to explain horizontal relations and the cosmology–ecology–economy model."
+        "zh": "以一种自然资源利用为例，解释横向关系和宇宙论—生态—经济模型。",
+        "en": "Use a case of natural-resource use to explain horizontal relations and the cosmology–ecology–economy model."
       },
       "modelAnswer": {
         "zh": "参考要点：说明人与人之间的公平合作及人与自然的关系；描述世界观怎样影响对环境的理解，再影响资源与财富使用；明确同心圆顺序来自第31页；可比较道家与宗教材料，但应保留各自语境；无需声称某一个案例证明整套模型是唯一正确框架。",

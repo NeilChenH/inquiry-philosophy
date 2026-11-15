@@ -31,7 +31,7 @@ window.COURSE_CHAPTERS[6]={
       },
       "blocks": [
         {
-          "zh": "episteme意为知识，logos意为研究、学问或理论。认识论既问知识是什么，也问知识怎样获得、何时可以接受、哪些事情可能超出人的认识能力。它不是只罗列知识内容，而是检查知识主张成立的条件。",
+          "zh": "episteme意为知识，logos意为研究、学问或理论。认识论（亦称知识论）既问知识是什么，也问知识怎样获得、何时可以接受、哪些事情可能超出人的认识能力。它不是只罗列知识内容，而是检查知识主张成立的条件。",
           "en": "Episteme means knowledge and logos means study, science, or theory. Epistemology asks what knowledge is, how it is acquired, when it is acceptable, and what might exceed human capacities. It examines conditions for knowledge claims rather than merely listing information."
         },
         {
@@ -291,7 +291,7 @@ window.COURSE_CHAPTERS[6]={
   "terms": [
     {
       "en": "Epistemology",
-      "zh": "认识论／知识论",
+      "zh": "认识论",
       "note": {
         "zh": "研究知识的来源、本质、方法与限度。",
         "en": "Study of the origin, nature, methods, and limits of knowledge."
@@ -351,9 +351,9 @@ window.COURSE_CHAPTERS[6]={
     },
     {
       "en": "Justification",
-      "zh": "证成／合理根据",
+      "zh": "证成",
       "note": {
-        "zh": "支持信念的可接受理由或证据。",
+        "zh": "信念获得合理根据的条件，涉及支持它的理由或证据。",
         "en": "Acceptable reasons or evidence supporting a belief."
       },
       "pages": [
@@ -480,7 +480,7 @@ window.COURSE_CHAPTERS[6]={
       "en": "Skepticism",
       "zh": "怀疑主义",
       "note": {
-        "zh": "课件列出的其他知识论方法之一。",
+        "zh": "课件列出的其他认识论方法之一。",
         "en": "One of the additional epistemological approaches listed."
       },
       "pages": [
@@ -503,7 +503,7 @@ window.COURSE_CHAPTERS[6]={
       "en": "Revelation",
       "zh": "启示",
       "note": {
-        "zh": "伊斯兰知识论栏中被赋予最高地位的来源。",
+        "zh": "伊斯兰认识论栏中被赋予最高地位的来源。",
         "en": "The source given priority in the Islamic epistemology column."
       },
       "pages": [
@@ -589,8 +589,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q1",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】认识论最直接研究什么？",
-        "en": "[Original practice] What does epistemology most directly investigate?"
+        "zh": "认识论最直接研究什么？",
+        "en": "What does epistemology most directly investigate?"
       },
       "options": [
         {
@@ -625,8 +625,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q2",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】哪一组合对应本课的JTB模型？",
-        "en": "[Original practice] Which combination matches the course's JTB model?"
+        "zh": "哪一组合对应本课的JTB模型？",
+        "en": "Which combination matches the course's JTB model?"
       },
       "options": [
         {
@@ -660,8 +660,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q3",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】一个猜测碰巧为真，最明显仍需检查什么？",
-        "en": "[Original practice] If a guess happens to be true, what most clearly still needs examination?"
+        "zh": "一个猜测碰巧为真，最明显仍需检查什么？",
+        "en": "If a guess happens to be true, what most clearly still needs examination?"
       },
       "options": [
         {
@@ -694,8 +694,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q4",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】a priori在本课中指什么？",
-        "en": "[Original practice] What does a priori mean here?"
+        "zh": "a priori在本课中指什么？",
+        "en": "What does a priori mean here?"
       },
       "options": [
         {
@@ -728,8 +728,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q5",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】白板比喻在课件中主要关联什么？",
-        "en": "[Original practice] What is the blank-slate metaphor mainly associated with in the slides?"
+        "zh": "白板比喻在课件中主要关联什么？",
+        "en": "What is the blank-slate metaphor mainly associated with in the slides?"
       },
       "options": [
         {
@@ -763,8 +763,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q6",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】水中汤匙看似弯曲的例子主要提醒什么？",
-        "en": "[Original practice] What does the apparently bent spoon primarily illustrate?"
+        "zh": "水中汤匙看似弯曲的例子主要提醒什么？",
+        "en": "What does the apparently bent spoon primarily illustrate?"
       },
       "options": [
         {
@@ -798,8 +798,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q7",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】“这句话是否与实际天气相符？”运用了哪一标准？",
-        "en": "[Original practice] Which criterion asks whether a statement matches the actual weather?"
+        "zh": "“这句话是否与实际天气相符？”运用了哪一标准？",
+        "en": "Which criterion asks whether a statement matches the actual weather?"
       },
       "options": [
         {
@@ -833,8 +833,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q8",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】考察一组相关陈述是否一致、是否矛盾，最接近什么？",
-        "en": "[Original practice] Which approach examines consistency and contradiction among related statements?"
+        "zh": "考察一组相关陈述是否一致、是否矛盾，最接近什么？",
+        "en": "Which approach examines consistency and contradiction among related statements?"
       },
       "options": [
         {
@@ -868,8 +868,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q9",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】第18页伊斯兰认识论一栏把哪个来源置于最高地位？",
-        "en": "[Original practice] Which source has priority in the Islamic epistemology column on page 18?"
+        "zh": "第18页伊斯兰认识论一栏把哪个来源置于最高地位？",
+        "en": "Which source has priority in the Islamic epistemology column on page 18?"
       },
       "options": [
         {
@@ -902,8 +902,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q10",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】第19页的来源差异是什么？",
-        "en": "[Original practice] What source inconsistency appears on page 19?"
+        "zh": "第19页的来源差异是什么？",
+        "en": "What source inconsistency appears on page 19?"
       },
       "options": [
         {
@@ -938,8 +938,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q11",
       "type": "reflection",
       "question": {
-        "zh": "【自编思考题】比较理性主义与经验主义，各用一个恰当例子说明，不要把两者解释成完全不用另一类方法。",
-        "en": "[Original reflection] Compare rationalism and empiricism with suitable examples without claiming either completely excludes the other kind of method."
+        "zh": "比较理性主义与经验主义，各用一个恰当例子说明，不要把两者解释成完全不用另一类方法。",
+        "en": "Compare rationalism and empiricism with suitable examples without claiming either completely excludes the other kind of method."
       },
       "modelAnswer": {
         "zh": "参考要点：理性主义强调理性、先天观念、演绎及某些先验知识，列笛卡尔等；经验主义强调感觉经验、白板与后验知识，列洛克等；例子需说明推理或观察在其中承担的任务；指出第17页是教学简表，不代表所有代表人物的细节完全相同。",
@@ -957,8 +957,8 @@ window.COURSE_CHAPTERS[6]={
       "id": "c6-q12",
       "type": "reflection",
       "question": {
-        "zh": "【自编思考题】对同一条校园消息，分别用知识三条件和三种真理论进行分析。",
-        "en": "[Original reflection] Analyze one campus report using the three knowledge conditions and the three truth theories."
+        "zh": "对同一条校园消息，分别用知识三条件和三种真理论进行分析。",
+        "en": "Analyze one campus report using the three knowledge conditions and the three truth theories."
       },
       "modelAnswer": {
         "zh": "参考要点：先写清消息主张；分别检查信念、真实性和证成；符合方向核对现实或可靠记录，融贯方向检查与其他相关陈述是否一致，实用方向说明它在实践中的作用；不能用“有用”直接替代所有事实核验；区分消息来源类别与证据质量。",

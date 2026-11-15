@@ -662,8 +662,8 @@ window.COURSE_CHAPTERS[3]={
       "id": "c3-q2",
       "type": "mcq",
       "question": {
-        "zh": "补充辨析：演绎论证“有效”最准确地表示什么？",
-        "en": "Supplementary clarification: what does deductive validity most accurately mean?"
+        "zh": "演绎论证“有效”最准确地表示什么？",
+        "en": "what does deductive validity most accurately mean?"
       },
       "options": [
         {
@@ -692,7 +692,8 @@ window.COURSE_CHAPTERS[3]={
         8,
         11,
         12
-      ]
+      ],
+      "kind": "clarification"
     },
     {
       "id": "c3-q3",
@@ -972,8 +973,8 @@ window.COURSE_CHAPTERS[3]={
       "id": "c3-q11",
       "type": "reflection",
       "question": {
-        "zh": "自编思考题：把一条你见过的校园主张改写为P1、P2与C，再分别检查前提真假与推理支持。",
-        "en": "Original reflection: Rewrite a campus claim as P1, P2 and C, then separately examine premise truth and inferential support."
+        "zh": "把一条你见过的校园主张改写为P1、P2与C，再分别检查前提真假与推理支持。",
+        "en": "Rewrite a campus claim as P1, P2 and C, then separately examine premise truth and inferential support."
       },
       "modelAnswer": {
         "zh": "参考要点：准确写出原主张，避免为对方增添未说出的内容；分清理由与结论；说明证据来源；若主张是必然推出，尝试构造前提真而结论假的反例；若只是归纳，评估样本与替代因素。参考答案不要求把每个真实论证都强塞成恰好两个前提。",
@@ -991,8 +992,8 @@ window.COURSE_CHAPTERS[3]={
       "id": "c3-q12",
       "type": "reflection",
       "question": {
-        "zh": "自编思考题：选一则广告或日常论证，说明它是否把流行、情感或权威当成充分证据，并提出修复方法。",
-        "en": "Original reflection: Choose an advertisement or everyday argument. Assess whether popularity, emotion or authority substitutes for adequate evidence, and propose a repair."
+        "zh": "选一则广告或日常论证，说明它是否把流行、情感或权威当成充分证据，并提出修复方法。",
+        "en": "Choose an advertisement or everyday argument. Assess whether popularity, emotion or authority substitutes for adequate evidence, and propose a repair."
       },
       "modelAnswer": {
         "zh": "参考要点：先引用或准确概括结论与理由；说明所需证据是什么；分析流行、情感或权威在这个情境中的相关性。可补充可靠效果数据、相关专业依据或完整选项。避免一看见名人、情感或多数人就直接宣布有谬误；关键是支持关系。",

@@ -50,3 +50,8 @@ Both editions were exercised from a fresh browser origin, starting at the homepa
 - 在 320 至 1440 像素的八种宽度核对页头、双语正文、四主题和舒适阅读。键盘可收展知识单元、切换学习标签、答题并阅读解析，刷新后保留学习进度。 / Eight widths covered header controls, bilingual reading, all themes and reading mode. Keyboard navigation, quiz feedback and progress persistence passed.
 - 阻断 GSAP 文件后，本地站仍能通过原生动效高亮章门，进入章节并展开双语单元。 / With GSAP scripts blocked, the native fallback still highlighted doors and supported chapter navigation and keyboard disclosures.
 - 同步完整本地版后，从断网的 HTML 入口打开第一章第 3 页，核对原图、双语内容和翻页，并从来源面板打开本地 PDF。完整课件通过 3,339 项校验，324 个受保护文件的哈希与同步前一致。 / The full local edition passed an offline walkthrough covering the slide image, both languages, page navigation and a local PDF. The full course passed 3,339 validation checks and all 324 protected files retained their hashes.
+
+## 内容改进首次访问 / Content update first visit
+
+- 两版均从断网本地入口在全新 Chrome 会话实测桌面和 390px 窗口。通过中英搜索打开 Sejahtera 术语卡，第 1、4、8 章主译名一致，能查看词典释义、课程用法及 NEP／FPK 对照。 / Fresh offline sessions verified bilingual search, consistent glossary labels, the dictionary and course senses, and the NEP/FPK cross-reference.
+- 96 张章节题卡及综合复习的 80 道选择题均显示双语自编标记，两道辨析题另有类别标记。键盘作答、解析、刷新和重试通过，已有答案与学习进度可继续使用。 / All chapter and review cards show bilingual authorship labels. Both clarification questions have an additional label. Keyboard answers, feedback, reload, retry and existing progress passed.

@@ -184,7 +184,7 @@ window.COURSE_CHAPTERS[1]={
         25
       ],
       "lead": {
-        "zh": "怎样共同生活得更好是普遍问题，Rukun Negara 是本课程在马来西亚情境下讨论它的入口。",
+        "zh": "怎样共同生活得更好是普遍问题，马来西亚国家原则（Rukun Negara）是本课程讨论这个问题的入口。",
         "en": "How to live well together is a universal question; Rukun Negara provides a Malaysian entry point in this course."
       },
       "blocks": [
@@ -193,7 +193,7 @@ window.COURSE_CHAPTERS[1]={
           "en": "Fairness, well-being and unity can be discussed across societies, while institutions, history and shared language shape concrete questions. The lecture therefore combines universality with local context. National philosophy concerns a country’s fundamental shared aims; this discussion follows the course’s Malaysian setting."
         },
         {
-          "zh": "本章把 Rukun Negara 视为国家意识形态和国家哲学。第21页同时给出目标和原则：目标描述希望形成的社会，包括团结、公平、民主生活与科学进步；原则提供价值指引。复习时先区分目标与原则，再说明价值如何支持目标。",
+          "zh": "本章把国家原则视为国家意识形态和国家哲学。第21页同时给出目标和原则：目标描述希望形成的社会，包括团结、公平、民主生活与科学进步；原则提供价值指引。复习时先区分目标与原则，再说明价值如何支持目标。",
           "en": "The chapter treats Rukun Negara as national ideology and national philosophy. Page 21 distinguishes objectives, describing the desired society of unity, fairness, democratic life and scientific progress, from principles, offering normative guidance. Distinguish them before explaining how values support aims."
         },
         {
@@ -303,13 +303,13 @@ window.COURSE_CHAPTERS[1]={
         37
       ],
       "lead": {
-        "zh": "Sejahtera 在本课程中讨论平衡、和谐与整体福祉，不只是短暂的愉快。",
-        "en": "Sejahtera in this course concerns balance, harmony and holistic well-being beyond a passing pleasant feeling."
+        "zh": "Sejahtera（平衡的整体福祉）在本课程中关乎个人生活与周围环境的协调。",
+        "en": "In this course, Sejahtera means balanced holistic well-being and concerns how people live in relation to their surroundings."
       },
       "blocks": [
         {
-          "zh": "第32页从和平、和谐、繁荣出发，并指出英语没有完全对应的词。宜保留 Sejahtera 并解释为平衡的整体福祉，避免把它只缩减为财富、健康或幸福。这说明本章用法，不是在建立普遍的测量定义。",
-          "en": "Page 32 begins with peace, harmony and prosperity and notes the lack of an exact English equivalent. Retaining Sejahtera with an explanation of balanced holistic well-being avoids reducing it to wealth, health or happiness alone. This clarifies chapter usage rather than defining a universal measure."
+          "zh": "第32页引《Kamus Dewan》第四版，将马来语 Sejahtera 释为和平、和谐与繁荣。课件另用“平衡的福祉”说明当代用法，并指出英语没有完全对应的词。本站保留原词，用“平衡的整体福祉”概括其课程含义。",
+          "en": "Page 32 cites the fourth edition of Kamus Dewan, which defines the Malay word Sejahtera as peace, harmony and prosperity. The slides separately describe contemporary usage as balanced well-being and note that English has no exact equivalent. This site retains the Malay term and uses balanced holistic well-being to explain its meaning in the course."
         },
         {
           "zh": "第34页有内部六项：身体、情绪、精神、智力、认知、伦理；外部四项：文化、生态、经济、社会。智力与认知分列，须保留两个标签。概念图提醒个人与环境相连，不表示这些类别彼此完全不重叠。",
@@ -458,10 +458,10 @@ window.COURSE_CHAPTERS[1]={
     },
     {
       "en": "Logic",
-      "zh": "逻辑学",
+      "zh": "逻辑",
       "note": {
-        "zh": "研究推理及理由如何支持结论。",
-        "en": "Inquiry into reasoning and how reasons support conclusions."
+        "zh": "关注推理及理由如何支持结论。作为研究这些问题的学科，也称逻辑学。",
+        "en": "Concerns reasoning and how reasons support conclusions. Logic also names the discipline that studies these questions."
       },
       "pages": [
         14
@@ -494,7 +494,7 @@ window.COURSE_CHAPTERS[1]={
     },
     {
       "en": "Rukun Negara",
-      "zh": "国家原则",
+      "zh": "马来西亚国家原则",
       "note": {
         "zh": "本章讨论的马来西亚国家意识形态与国家哲学，保留原名以辨明语境。",
         "en": "The Malaysian national ideology and philosophy discussed here; retain the Malay name for context."
@@ -511,8 +511,8 @@ window.COURSE_CHAPTERS[1]={
       "en": "National Education Philosophy (NEP)",
       "zh": "国家教育哲学",
       "note": {
-        "zh": "本章的 NEP 指教育哲学，不是其他同缩写政策。",
-        "en": "NEP here means educational philosophy, not another policy with the same initials."
+        "zh": "NEP 是 National Education Philosophy 的英文缩写。第8章使用马来文缩写 FPK（Falsafah Pendidikan Kebangsaan），两者在这里都指国家教育哲学。",
+        "en": "NEP stands for National Education Philosophy. Chapter 8 uses the Malay initials FPK (Falsafah Pendidikan Kebangsaan) for the same philosophy."
       },
       "pages": [
         26,
@@ -522,7 +522,7 @@ window.COURSE_CHAPTERS[1]={
     },
     {
       "en": "PESI",
-      "zh": "身体、情绪、精神、智力",
+      "zh": "身体、情绪、精神／灵性、智力",
       "note": {
         "zh": "Physical、Emotional、Spiritual、Intellectual 的缩写，课件也用 intellect。",
         "en": "Mnemonic for Physical, Emotional, Spiritual and Intellectual; the source also uses intellect."
@@ -534,10 +534,10 @@ window.COURSE_CHAPTERS[1]={
     },
     {
       "en": "Sejahtera",
-      "zh": "平衡、和谐与整体福祉",
+      "zh": "平衡的整体福祉",
       "note": {
-        "zh": "马来语本土概念，课件强调无准确的英语对应词，宜保留原词加解释。",
-        "en": "An indigenous Malay concept without a precise English equivalent in the lecture; retain with explanation."
+        "zh": "马来语概念。第32页引词典释义“和平、和谐与繁荣”；在本课程中指平衡的整体福祉。",
+        "en": "A Malay concept. Page 32 cites the dictionary definition of peace, harmony and prosperity; in the course, it refers to balanced holistic well-being."
       },
       "pages": [
         32,
@@ -679,8 +679,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q1",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：哪项最能体现哲学追问？",
-        "en": "Site-authored practice: Which best illustrates philosophical inquiry?"
+        "zh": "哪项最能体现哲学追问？",
+        "en": "Which best illustrates philosophical inquiry?"
       },
       "options": [
         {
@@ -715,8 +715,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q2",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：Philosophia 的词源解释是什么？",
-        "en": "Site-authored practice: How is philosophia explained etymologically?"
+        "zh": "Philosophia 的词源解释是什么？",
+        "en": "How is philosophia explained etymologically?"
       },
       "options": [
         {
@@ -749,8 +749,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q3",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：“凭什么相信这个说法为真？”最直接属于哪一分支？",
-        "en": "Site-authored practice: Which branch most directly asks for grounds to accept a claim as true?"
+        "zh": "“凭什么相信这个说法为真？”最直接属于哪一分支？",
+        "en": "Which branch most directly asks for grounds to accept a claim as true?"
       },
       "options": [
         {
@@ -783,8 +783,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q4",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：第12页哪组概念与儒家对应？",
-        "en": "Site-authored practice: Which concepts belong to Confucianism in the page-12 table?"
+        "zh": "第12页哪组概念与儒家对应？",
+        "en": "Which concepts belong to Confucianism in the page-12 table?"
       },
       "options": [
         {
@@ -817,8 +817,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q5",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：哪项符合第18页中 Rukun Negara 与 NEP 的关系？",
-        "en": "Site-authored practice: Which matches the relationship on page 18?"
+        "zh": "哪项符合第18页中 Rukun Negara 与 NEP 的关系？",
+        "en": "Which matches the relationship on page 18?"
       },
       "options": [
         {
@@ -852,8 +852,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q6",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：怎样区分宪法至上与法治的重心？",
-        "en": "Site-authored practice: How do constitutional supremacy and the rule of law differ in emphasis?"
+        "zh": "怎样区分宪法至上与法治的重心？",
+        "en": "How do constitutional supremacy and the rule of law differ in emphasis?"
       },
       "options": [
         {
@@ -887,8 +887,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q7",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：PESI 中的 E 是什么？",
-        "en": "Site-authored practice: What does E in PESI represent?"
+        "zh": "PESI 中的 E 是什么？",
+        "en": "What does E in PESI represent?"
       },
       "options": [
         {
@@ -923,8 +923,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q8",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：哪项符合 NEP 的整体教育观？",
-        "en": "Site-authored practice: Which matches NEP’s holistic educational view?"
+        "zh": "哪项符合 NEP 的整体教育观？",
+        "en": "Which matches NEP’s holistic educational view?"
       },
       "options": [
         {
@@ -959,8 +959,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q9",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：哪项属于第34页的外部维度？",
-        "en": "Site-authored practice: Which is an external ingredient on page 34?"
+        "zh": "哪项属于第34页的外部维度？",
+        "en": "Which is an external ingredient on page 34?"
       },
       "options": [
         {
@@ -993,8 +993,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q10",
       "type": "mcq",
       "question": {
-        "zh": "本站自编：怎样使用第31页关于考试和排名的文字较妥当？",
-        "en": "Site-authored practice: How should the discussion of exams and rankings on page 31 be used?"
+        "zh": "怎样使用第31页关于考试和排名的文字较妥当？",
+        "en": "How should the discussion of exams and rankings on page 31 be used?"
       },
       "options": [
         {
@@ -1027,8 +1027,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q11",
       "type": "reflection",
       "question": {
-        "zh": "本站自编思考：用学习活动说明 NEP、PESI 与 Sejahtera 如何相连，同时说明它们不是同义词。",
-        "en": "Site-authored reflection: Use a learning activity to connect NEP, PESI and Sejahtera while explaining why they are not synonyms."
+        "zh": "用学习活动说明 NEP、PESI 与 Sejahtera 如何相连，同时说明它们不是同义词。",
+        "en": "Use a learning activity to connect NEP, PESI and Sejahtera while explaining why they are not synonyms."
       },
       "modelAnswer": {
         "zh": "参考要点：NEP 是总体教育哲学框架；PESI 是身体、情绪、精神、智力四维；Sejahtera 是本课的平衡与整体福祉概念。例：环保调研结合资料论证、实地活动、情绪合作与价值反思，并联系社区和生态。解释各维度如何被支持，不能只列缩写。开放题无唯一标准措辞。",
@@ -1046,8 +1046,8 @@ window.COURSE_CHAPTERS[1]={
       "id": "c1-q12",
       "type": "reflection",
       "question": {
-        "zh": "本站自编思考：面对“多数人这样做，所以这样做是对的”，如何继续哲学追问？",
-        "en": "Site-authored reflection: How would you question “Most people do this, so it is right”?"
+        "zh": "面对“多数人这样做，所以这样做是对的”，如何继续哲学追问？",
+        "en": "How would you question “Most people do this, so it is right”?"
       },
       "modelAnswer": {
         "zh": "参考要点：澄清多数、对及情境；区分事实描述与价值判断；询问从多数行为到正当性的理由；考虑多数人也可能犯错的情形；分析对他人、公平与福祉的影响。给出理由，不只表态。这是本站练习，不是课件原题或考试真题。",

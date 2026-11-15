@@ -305,12 +305,12 @@ window.COURSE_CHAPTERS[8]={
         41
       ],
       "lead": {
-        "zh": "Sejahtera在本课程中是整体福祉与平衡发展的目标，不能只化约为经济增长。",
-        "en": "Sejahtera names holistic well-being and balanced development in this course, beyond economic growth alone."
+        "zh": "Sejahtera（平衡的整体福祉）在本课程中涵盖个人、社会与环境的协调发展。",
+        "en": "In this course, Sejahtera means balanced holistic well-being and includes how people, society and the environment develop together."
       },
       "blocks": [
         {
-          "zh": "神圣维度以Rukun Negara的信仰原则及khalifah受托责任来说明人的角色。课件把人与神、人与人、人与自然的关系连在一起，并强调保护环境、公平正义。它也援引道家与自然和谐的思想。",
+          "zh": "神圣维度以马来西亚国家原则（Rukun Negara）中的信仰原则及 khalifah 的受托责任来说明人的角色。课件把人与神、人与人、人与自然的关系连在一起，并强调保护环境、公平正义。它也援引道家与自然和谐的思想。",
           "en": "The divine dimension draws on Rukun Negara's belief principle and khalifah, or entrusted stewardship. It links relations with God, other people, and nature, emphasizing environmental protection and justice, and also invokes Taoist harmony with nature."
         },
         {
@@ -570,7 +570,7 @@ window.COURSE_CHAPTERS[8]={
     },
     {
       "en": "Sejahtera",
-      "zh": "整体福祉、安宁与平衡",
+      "zh": "平衡的整体福祉",
       "note": {
         "zh": "保留马来原词，避免只译成物质繁荣。",
         "en": "Retain the Malay term rather than reducing it to material prosperity."
@@ -620,8 +620,8 @@ window.COURSE_CHAPTERS[8]={
       "en": "FPK / National Education Philosophy",
       "zh": "国家教育哲学",
       "note": {
-        "zh": "第38页把它与整体平衡及Sejahtera相连。",
-        "en": "Page 38 connects it with holistic balance and Sejahtera."
+        "zh": "FPK 是 Falsafah Pendidikan Kebangsaan 的马来文缩写，对应第1章的英文缩写 NEP。第38页把国家教育哲学与整体平衡及 Sejahtera 相连。",
+        "en": "FPK stands for Falsafah Pendidikan Kebangsaan in Malay and corresponds to the English initials NEP in Chapter 1. Page 38 links the philosophy to holistic balance and Sejahtera."
       },
       "pages": [
         38
@@ -633,8 +633,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q1",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】哪一项最符合本章扩展的去殖民化含义？",
-        "en": "[Original practice] Which best matches the chapter's extended meaning of decolonisation?"
+        "zh": "哪一项最符合本章扩展的去殖民化含义？",
+        "en": "Which best matches the chapter's extended meaning of decolonisation?"
       },
       "options": [
         {
@@ -668,8 +668,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q2",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】美国革命与海地独立在课件中属于哪个阶段？",
-        "en": "[Original practice] Which stage includes the American Revolution and Haitian independence in the course?"
+        "zh": "美国革命与海地独立在课件中属于哪个阶段？",
+        "en": "Which stage includes the American Revolution and Haitian independence in the course?"
       },
       "options": [
         {
@@ -703,8 +703,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q3",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】哪一项不是第20页列出的主要因素？",
-        "en": "[Original practice] Which is not one of the main factors listed on page 20?"
+        "zh": "哪一项不是第20页列出的主要因素？",
+        "en": "Which is not one of the main factors listed on page 20?"
       },
       "options": [
         {
@@ -737,8 +737,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q4",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】笛卡尔二元论的基本区分是什么？",
-        "en": "[Original practice] What is the basic distinction in Cartesian dualism?"
+        "zh": "笛卡尔二元论的基本区分是什么？",
+        "en": "What is the basic distinction in Cartesian dualism?"
       },
       "options": [
         {
@@ -771,8 +771,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q5",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】anthropogenic主要描述什么？",
-        "en": "[Original practice] What does anthropogenic primarily describe?"
+        "zh": "anthropogenic主要描述什么？",
+        "en": "What does anthropogenic primarily describe?"
       },
       "options": [
         {
@@ -806,8 +806,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q6",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】把欧洲经验当作优越且唯一尺度来衡量其他文明，最接近哪个概念？",
-        "en": "[Original practice] Which concept best fits treating European experience as the superior sole measure of other civilizations?"
+        "zh": "把欧洲经验当作优越且唯一尺度来衡量其他文明，最接近哪个概念？",
+        "en": "Which concept best fits treating European experience as the superior sole measure of other civilizations?"
       },
       "options": [
         {
@@ -840,8 +840,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q7",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】解释Occidentalism时最应注意什么？",
-        "en": "[Original practice] What is essential when explaining Occidentalism here?"
+        "zh": "解释Occidentalism时最应注意什么？",
+        "en": "What is essential when explaining Occidentalism here?"
       },
       "options": [
         {
@@ -874,8 +874,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q8",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】本土智慧在课件中包括什么？",
-        "en": "[Original practice] What does local wisdom include in the course?"
+        "zh": "本土智慧在课件中包括什么？",
+        "en": "What does local wisdom include in the course?"
       },
       "options": [
         {
@@ -908,8 +908,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q9",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】第35页为何提到不能只看GNP？",
-        "en": "[Original practice] Why does page 35 say development should not consider GNP alone?"
+        "zh": "第35页为何提到不能只看GNP？",
+        "en": "Why does page 35 say development should not consider GNP alone?"
       },
       "options": [
         {
@@ -942,8 +942,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q10",
       "type": "mcq",
       "question": {
-        "zh": "【自编练习】依第37页，khalifah的责任包含什么？",
-        "en": "[Original practice] According to page 37, what belongs to khalifah responsibilities?"
+        "zh": "依第37页，khalifah的责任包含什么？",
+        "en": "According to page 37, what belongs to khalifah responsibilities?"
       },
       "options": [
         {
@@ -977,8 +977,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q11",
       "type": "reflection",
       "question": {
-        "zh": "【自编思考题】怎样区分笛卡尔二元论的定义与课件关于殖民、环境破坏的批判链？",
-        "en": "[Original reflection] How can you distinguish the definition of Cartesian dualism from the course's critique linking it to colonisation and environmental destruction?"
+        "zh": "怎样区分笛卡尔二元论的定义与课件关于殖民、环境破坏的批判链？",
+        "en": "How can you distinguish the definition of Cartesian dualism from the course's critique linking it to colonisation and environmental destruction?"
       },
       "modelAnswer": {
         "zh": "参考要点：先定义心灵与身体为不同实体；再归属课件把人类中心、知识支配、欧洲中心与生态后果相连的模型；说明从概念到实际历史结果还需要中间机制、情境和证据；避免把因果链写成所有学者共同证明的必然规律；可提出具体资源利用情境，但要标明是例子。",
@@ -996,8 +996,8 @@ window.COURSE_CHAPTERS[8]={
       "id": "c8-q12",
       "type": "reflection",
       "question": {
-        "zh": "【自编思考题】提出一种结合本土智慧与Sejahtera的学习或社区实践，并解释怎样评估它。",
-        "en": "[Original reflection] Propose a learning or community practice combining local wisdom with Sejahtera and explain how to assess it."
+        "zh": "提出一种结合本土智慧与Sejahtera的学习或社区实践，并解释怎样评估它。",
+        "en": "Propose a learning or community practice combining local wisdom with Sejahtera and explain how to assess it."
       },
       "modelAnswer": {
         "zh": "参考要点：说明具体本土知识及其传承、价值和适用环境；说明实践如何兼顾人的需要、公平和自然关系；以自主参照选择评价标准，同时保留证据和批判；不要只用经济收益作为唯一指标；若引入khalifah等宗教框架，应明确归属，不假设所有人采用相同信仰。",

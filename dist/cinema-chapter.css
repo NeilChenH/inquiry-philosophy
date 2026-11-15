@@ -140,3 +140,24 @@
   from { opacity: .68; transform: translateY(7px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* 题目来源在很窄的屏幕上也能换行，不挤占题型或来源页码。 */
+.quiz-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin: .6rem 0 .85rem;
+}
+
+.quiz-labels > span {
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: .25rem .5rem;
+  color: var(--ink);
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+.quiz-labels .quiz-origin {
+  border-inline-start: 2px solid var(--accent);
+}

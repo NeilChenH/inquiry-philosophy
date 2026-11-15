@@ -983,8 +983,8 @@ window.COURSE_CHAPTERS[2]={
       "id": "c2-q11",
       "type": "reflection",
       "question": {
-        "zh": "自编思考题：选一个校园情境，分别提出一个理论哲学问题与一个实践哲学问题，并解释区别。",
-        "en": "Original reflection: Choose a campus situation. Formulate one theoretical and one practical philosophical question, and explain the distinction."
+        "zh": "选一个校园情境，分别提出一个理论哲学问题与一个实践哲学问题，并解释区别。",
+        "en": "Choose a campus situation. Formulate one theoretical and one practical philosophical question, and explain the distinction."
       },
       "modelAnswer": {
         "zh": "参考要点：例如校园使用人工智能学习工具。理论问题可问“我们如何知道它给出的答案可靠”，说明这是认识论；实践问题可问“教师和学生应如何公平地使用它”，说明这是伦理与制度安排。交代问题、所属分支和理由，并承认同一情境可以跨分支。此为参考思路，不是原课件标准答案。",
@@ -1002,8 +1002,8 @@ window.COURSE_CHAPTERS[2]={
       "id": "c2-q12",
       "type": "reflection",
       "question": {
-        "zh": "自编思考题：学校计划用技术提高资源使用效率。请同时从技术哲学、生态哲学与组织哲学提出评价问题。",
-        "en": "Original reflection: A school plans to use technology to improve resource efficiency. Develop evaluative questions from philosophy of technology, ecology and organization."
+        "zh": "学校计划用技术提高资源使用效率。请同时从技术哲学、生态哲学与组织哲学提出评价问题。",
+        "en": "A school plans to use technology to improve resource efficiency. Develop evaluative questions from philosophy of technology, ecology and organization."
       },
       "modelAnswer": {
         "zh": "参考要点：技术哲学问新能力怎样改变人的行为、是否带来依赖或风险；生态哲学问是否减少整体消耗、是否尊重人与自然的关系；组织哲学问谁决定目标、成员能否参与、规则与宣称的价值是否一致。使用具体情境、事实与原则支撑判断，比较受益与代价，避免只说“先进所以好”。此题为自编，答案可以有多种合理路线。",

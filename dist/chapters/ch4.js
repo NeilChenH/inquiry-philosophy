@@ -307,7 +307,7 @@ window.COURSE_CHAPTERS[4]={
           "en": "PESI includes Physical, Emotional, Spiritual and Intellectual dimensions. The slides connect them with vitality, noble conduct, relations to the divine, and thinking and argument. This is a holistic development framework in the course and National Education Philosophy, not a clinical diagnostic model."
         },
         {
-          "zh": "Sejahtera把内在自我与外在环境连接起来，列出身体、情绪、精神、智力、认知、伦理、文化、生态、经济、社会十个要素。不要因为智力与认知接近就删掉一项；更合适的办法是保留课件标签，并讨论它们的重叠。",
+          "zh": "Sejahtera（平衡的整体福祉）把内在自我与外在环境连接起来，列出身体、情绪、精神、智力、认知、伦理、文化、生态、经济、社会十个要素。不要因为智力与认知接近就删掉一项；更合适的办法是保留课件标签，并讨论它们的重叠。",
           "en": "Sejahtera connects the internal self with the external environment through ten elements: physical, emotional, spiritual, intellectual, cognitive, ethical, cultural, ecological, economic and societal. Do not remove a label merely because intellect and cognition overlap. Preserve the labels and discuss their relations."
         },
         {
@@ -593,7 +593,7 @@ window.COURSE_CHAPTERS[4]={
     },
     {
       "en": "Sejahtera",
-      "zh": "整体福祉与和谐平衡",
+      "zh": "平衡的整体福祉",
       "note": {
         "zh": "保留马来语原词，连接个人内在发展与外在环境。",
         "en": "Retain the Malay term, linking inner development and the external environment."
@@ -690,8 +690,8 @@ window.COURSE_CHAPTERS[4]={
       "id": "c4-q3",
       "type": "mcq",
       "question": {
-        "zh": "补充辨析：物种进化与个体发育最主要的区别是什么？",
-        "en": "Supplementary clarification: what chiefly distinguishes species evolution from individual development?"
+        "zh": "物种进化与个体发育最主要的区别是什么？",
+        "en": "what chiefly distinguishes species evolution from individual development?"
       },
       "options": [
         {
@@ -719,7 +719,8 @@ window.COURSE_CHAPTERS[4]={
       "pages": [
         11,
         12
-      ]
+      ],
+      "kind": "clarification"
     },
     {
       "id": "c4-q4",
@@ -965,8 +966,8 @@ window.COURSE_CHAPTERS[4]={
       "id": "c4-q11",
       "type": "reflection",
       "question": {
-        "zh": "自编思考题：比较课件中两种人观。分别说明它们回答什么问题、依据什么，以及怎样连接人的责任。",
-        "en": "Original reflection: Compare two accounts of humanity in the slides. Explain their questions, grounds and connections to responsibility."
+        "zh": "比较课件中两种人观。分别说明它们回答什么问题、依据什么，以及怎样连接人的责任。",
+        "en": "Compare two accounts of humanity in the slides. Explain their questions, grounds and connections to responsibility."
       },
       "modelAnswer": {
         "zh": "参考要点：例如比较亚里士多德的理性动物与伊斯兰仆人／受托者。前者突出理性特征；后者在宗教依据下突出与真主、他人和自然的责任。写明来源页，避免声称所有西方思想或所有宗教都相同；不能仅凭不同术语就认定它们完全冲突或完全一致。可选择其他两种观点并给出合理比较。",
@@ -982,8 +983,8 @@ window.COURSE_CHAPTERS[4]={
       "id": "c4-q12",
       "type": "reflection",
       "question": {
-        "zh": "自编思考题：依据第30页活动，为自己设计一个体现PESI的学习周计划，并解释它与社会或环境责任的联系。",
-        "en": "Original reflection: Based on the activity on page 30, design a study-week plan using PESI and explain its link to social or environmental responsibility."
+        "zh": "依据第30页活动，为自己设计一个体现PESI的学习周计划，并解释它与社会或环境责任的联系。",
+        "en": "Based on the activity on page 30, design a study-week plan using PESI and explain its link to social or environmental responsibility."
       },
       "modelAnswer": {
         "zh": "参考要点：给四个维度各列一个具体、可持续的习惯，例如身体活动与休息、情绪沟通、反思或适合个人信仰的实践、有理由的学习讨论；说明习惯之间如何支持或发生冲突，再连接公平分工、关心他人或保护环境。计划是个人反思，不是临床评估，也不保证达成完全平衡或幸福。",
