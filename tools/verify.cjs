@@ -144,3 +144,27 @@ assert.deepEqual(stats, {
 });
 console.log(JSON.stringify(stats, null, 2));
 console.log('All open edition checks passed.');
+
+// 测验使用独立数据；核对原答案表、四选一结构及解析中的课件入口。
+const {INQUIRY_TEST_JUNE: june, INQUIRY_TEST_OCTOBER: october} = context.window;
+for (const [name, paper] of [['June', june], ['October', october]]) {
+  assert.equal(paper.questions.length, 20, name);
+  assert.equal(paper.questions.filter(q => q.type === 'combination').length, 4, name);
+  assert.equal(paper.questions.filter(q => q.type === 'reverse').length, 1, name);
+  paper.questions.forEach((q, index) => {
+    const label = `${name} Q${index + 1}`;
+    assert(q.stem.trim() && q.options.length === 4 && new Set(q.options).size === 4, label);
+    assert(q.options.every(option => option.trim()) && Number.isInteger(q.answer) && q.answer >= 0 && q.answer < 4, label);
+    assert(['single', 'reverse', 'combination'].includes(q.type) && ['basic', 'applied', 'advanced'].includes(q.difficulty), label);
+    assert.equal(q.statements?.length || 0, q.type === 'combination' ? 4 : 0, label);
+    bilingual(q.topic, label);
+    bilingual(q.explanation, label);
+    if (q.distinction) bilingual(q.distinction, label);
+    assert(q.references.length > 0, label);
+    q.references.forEach(ref => checkPageReferences([ref.page], pagesByChapter[ref.chapter - 1], label));
+  });
+}
+assert.equal(june.questions.map(q => 'ABCD'[q.answer]).join(''), 'DDCDACDAADBADDACCDAC');
+[9, 12, 18].forEach(i => bilingual(june.questions[i].distinction, `June Q${i + 1} source distinction`));
+assert.deepEqual([1, 2, 3, 4].map(ch => october.questions.filter(q => q.references[0].chapter === ch).length), [5, 4, 5, 6]);
+console.log('Both 20-question Test 1 papers passed.');

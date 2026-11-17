@@ -14,6 +14,12 @@ INQUIRY is an interactive bilingual philosophy learning site. Its eight chapters
 2. Select a PDF page from **Expand page references** or **Page Index** and follow the link to the original slide, English text and Chinese translation. [Full online site](https://philosophy-3192-cinema-20261111.chencanhongcch.chatgpt.site/)
 3. Open **Progress** to export or import your learning progress as JSON.
 
+## Test 1 测验专区 / Test 1 practice
+
+在 **综合复习 → Test 1 测验专区** 打开六月学期原卷或十月自编模拟卷。每套卷各有 30 分钟计时和独立的双语答案解析。测验尝试保存在当前浏览器。
+
+Open **Review → Test 1 practice** for the June Trimester paper or the site-authored October mock. Each paper has its own 30-minute timer and bilingual answer review. Attempts stay in the current browser.
+
 ## 源码与开发记录 / Source and development
 
 - `dist/index.html` 是静态入口。界面与交互由 `styles.css`、`app.js` 和 `visualizations.js` 提供。 / The static entry point loads the styles, application and interactive diagrams.
@@ -24,5 +30,7 @@ INQUIRY is an interactive bilingual philosophy learning site. Its eight chapters
 ## 许可 / License
 
 项目原创代码、文档与自编学习材料采用 MIT 许可证。章节配图遵循图片署名所列许可。课件 PDF、课件截图及逐页译文在完整学习站中提供。 / The MIT license covers the original code, documentation and authored learning materials. Image terms are listed separately. The lecture PDFs, slide images and full translations are available on the full course site.
+
+六月卷题目与答案表来源为 Universiti Tunku Abdul Rahman 的 MPU3192 June 2026 Trimester Test 1，保留原作品署名。解析与十月模拟卷由本站编写。 / The June questions and answer key are credited to Universiti Tunku Abdul Rahman, MPU3192 June 2026 Trimester Test 1. The explanations and the October mock are authored for this site.
 
 [MIT License](LICENSE) · [图片署名 / Image credits](docs/IMAGE-CREDITS.md) · [GSAP 许可 / GSAP license](dist/assets/vendor/gsap-3.13.0/NOTICE.md)

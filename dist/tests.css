@@ -1,0 +1,75 @@
+/* 测验沿用全站主题，常用操作集中在计时条与题号区。 */
+.test-area {
+  --test-sticky-top: 88px;
+  width: min(1120px, 92%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 4rem) 0 4rem;
+}
+
+.test-area h1, .test-area h2 { line-height: 1.15; }
+.test-area h1 { margin: .8rem 0 1rem; font-size: clamp(2rem, 5vw, 4.25rem); letter-spacing: -.025em; }
+.test-area h1 small, .test-area h2 small { display: block; margin-top: .5rem; font-size: .52em; color: var(--muted); }
+.test-area p { line-height: 1.65; }
+.test-back, .test-refs a { color: var(--accent); text-decoration: underline; text-underline-offset: .2em; }
+.test-back { display: inline-block; padding-block: .55rem; }
+.test-source, .test-meta { color: var(--muted); font-size: .88rem; }
+
+.test-paper-list, .test-paper-layout { display: grid; gap: 1rem; align-items: start; margin-block: 1.5rem; }
+.test-paper-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.test-paper-layout { grid-template-columns: 230px minmax(0, 1fr); }
+.test-panel { background: var(--surface); border: 1px solid var(--line); padding: clamp(.85rem, 2vw, 1.5rem); }
+.test-intro, .test-result, .test-style { margin-block: 1.5rem; }
+.test-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+.test-area .button { min-height: 44px; max-width: 100%; text-align: start; white-space: normal; }
+.test-intro > .button { margin-top: 1.25rem; }
+.test-score strong { color: var(--accent); font-size: clamp(2.6rem, 9vw, 5rem); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.test-controls { position: sticky; top: var(--test-sticky-top); z-index: 3; }
+.test-controls-top { display: flex; align-items: end; flex-wrap: wrap; gap: .6rem; justify-content: space-between; }
+.test-controls-top p { margin: 0; font-size: .8rem; }
+.test-time-label { display: block; font-size: .75rem; color: var(--muted); }
+.test-timer { display: block; font: 600 1.75rem/1.1 var(--inquiry-mono, monospace); font-variant-numeric: tabular-nums; }
+.test-controls > .button { margin-top: .7rem; width: 100%; justify-content: center; }
+.test-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; margin-top: .75rem; }
+.test-grid button { color: var(--ink); min-height: 40px; border: 1px solid var(--line); background: var(--surface2); font-variant-numeric: tabular-nums; }
+.test-grid button:hover { border-color: var(--accent); }
+.test-grid button.answered { color: var(--accentInk); background: var(--accent); border-color: var(--accent); font-weight: 700; }
+.test-grid small { display: block; color: var(--accent); }
+.test-grid-review { grid-template-columns: repeat(10, minmax(0, 1fr)); margin-block: 1rem; }
+
+.test-questions, .test-review-list { display: grid; gap: 1.1rem; min-width: 0; }
+.test-question, .test-explanation { min-inline-size: 0; scroll-margin-top: calc(var(--test-sticky-top) + 1rem); }
+.test-question legend { max-width: 100%; font-weight: 600; line-height: 1.55; padding: 0 .35rem; white-space: pre-line; }
+.test-question-number { display: inline-block; color: var(--accent); margin-inline-end: .3rem; }
+.test-statements, .test-review-options { padding-inline-start: 2rem; line-height: 1.6; }
+.test-statements li, .test-review-options li { padding-inline-start: .2rem; margin-block: .4rem; }
+.test-options { display: grid; gap: .4rem; }
+.test-option { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: .6rem; min-height: 44px; align-items: start; padding: .65rem; border: 1px solid var(--line); line-height: 1.45; cursor: pointer; }
+.test-option input { margin: .2rem 0 0; accent-color: var(--accent); }
+.test-option:has(input:checked) { border-color: var(--accent); background: var(--surface2); }
+.test-letter { color: var(--accent); font-weight: 700; }
+.test-explanation summary { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .3rem 1rem; min-height: 44px; align-items: center; cursor: pointer; }
+.test-answer-marker, .test-review-options .correct { color: var(--accent); font-weight: 650; }
+.test-stem { white-space: pre-line; font-weight: 600; }
+.test-distinction { border-inline-start: 2px solid var(--accent); padding-inline-start: .75rem; margin-top: 1rem; }
+.test-confirm { max-width: min(530px, 92vw); color: var(--ink); }
+.test-confirm h2 { margin-block: 0 .7rem; }
+.test-confirm form { margin: 0; }
+.test-review-entry { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; margin-bottom: 1.6rem; }
+.test-review-entry h2 { margin: 0; font-size: 1.2rem; }
+.test-review-entry h2 small { display: block; color: var(--muted); margin-top: .3rem; }
+
+@media (max-width: 900px) {
+  .test-area { --test-sticky-top: 112px; }
+  .test-paper-layout, .test-paper-list { grid-template-columns: minmax(0, 1fr); }
+  .test-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .65rem; padding: .55rem .65rem; }
+  .test-controls-top { align-items: center; }
+  .test-controls-top p { font-size: .72rem; }
+  .test-controls .test-grid { grid-column: 1 / -1; grid-row: 2; display: flex; overflow-x: auto; padding-bottom: 2px; margin-top: .15rem; }
+  .test-controls .test-grid button { flex: 0 0 40px; }
+  .test-controls > .button { grid-column: 2; margin: 0; padding: .45rem .65rem; }
+  .test-question { scroll-margin-top: calc(var(--test-sticky-top) + 8rem); }
+}
+
+@media (max-width: 540px) {
+  .test-grid-review { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}

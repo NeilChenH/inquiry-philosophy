@@ -57,3 +57,8 @@ Both editions were exercised from a fresh browser origin, starting at the homepa
 - 96 张章节题卡及综合复习的 80 道选择题均显示双语自编标记，两道辨析题另有类别标记。键盘作答、解析、刷新和重试通过，已有答案与学习进度可继续使用。 / All chapter and review cards show bilingual authorship labels. Both clarification questions have an additional label. Keyboard answers, feedback, reload, retry and existing progress passed.
 - 第 7、8 章各三项目标可用键盘或触屏打开对应知识单元及第 2 页。完整版断网显示原图、双语课件正文及对应 PDF 链接，开源版显示对应页码索引。 / Each chapter's three outcomes link to the matching study units and slide 2. Keyboard and touch navigation passed. The full edition loaded the original slide and both languages offline, and the open edition selected the matching index page.
 - 两版核对第 5 章第 18 页与第 7 章第 38 页的编号提示，以及第 7 章第 25 页图卡小结。同步前后，304 项课件、原图、来源数据及逐页内容校验值一致。 / Both editions showed the course code notes and the note about the Chapter 7 figure cards. All 304 source assets and page data checksums matched the baseline.
+
+## Test 1 测验专区 / Test 1 practice
+
+- 对照两份原 PDF，六月卷 20 道题的英文题干、组合陈述、选项顺序和答案一致。十月卷复做及数据检查通过，前四章题量为 5／4／5／6。 / The June text and answer key matched the original PDFs. An independent walkthrough checked the October answers and 5/4/5/6 chapter distribution.
+- 两版在全新 Chrome 的桌面与 390px 窗口断网实测。覆盖两卷独立计时、换页与刷新、键盘改选、手机跳转至第 20 题、未答提醒、超时交卷、重做及直接打开双语解析。原有学习进度保持可用。 / Both editions passed fresh offline desktop and mobile walkthroughs covering the two timers, navigation, reloads, keyboard and touch, manual and automatic submission, retakes, bilingual review and existing course progress.
