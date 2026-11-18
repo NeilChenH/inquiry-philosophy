@@ -62,3 +62,9 @@ Both editions were exercised from a fresh browser origin, starting at the homepa
 
 - 对照两份原 PDF，六月卷 20 道题的英文题干、组合陈述、选项顺序和答案一致。十月卷复做及数据检查通过，前四章题量为 5／4／5／6。 / The June text and answer key matched the original PDFs. An independent walkthrough checked the October answers and 5/4/5/6 chapter distribution.
 - 两版在全新 Chrome 的桌面与 390px 窗口断网实测。覆盖两卷独立计时、换页与刷新、键盘改选、手机跳转至第 20 题、未答提醒、超时交卷、重做及直接打开双语解析。原有学习进度保持可用。 / Both editions passed fresh offline desktop and mobile walkthroughs covering the two timers, navigation, reloads, keyboard and touch, manual and automatic submission, retakes, bilingual review and existing course progress.
+
+## 学习档案迁移 / Learning archive transfer
+
+全新桌面和 390px 浏览器会话使用两个独立测试网址，验证一次导出、导入可恢复阅读、练习和两套已交卷测验。旧格式仍可导入，已开始的测验及较新的交卷记录得到保留，错误文件不会导入部分进度。两版本地文件断网也可导出新版档案。
+
+Fresh desktop and 390px sessions used two distinct test origins to verify transfer of chapter progress, practice answers and submitted records for both papers. Legacy files import, active and newer attempts are retained, and invalid files are rejected before storing any changes. Offline export works in both editions.

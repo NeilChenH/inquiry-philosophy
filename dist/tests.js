@@ -77,6 +77,52 @@
     return paper.questions.reduce((total, q, i) => total + Number(a.answers[i + 1] === q.answer), 0);
   }
 
+  function validSubmission(a) {
+    return a?.status === 'submitted' && Number.isSafeInteger(a.deadline) &&
+      Number.isSafeInteger(a.submittedAt) && a.submittedAt > 0 && a.submittedAt <= a.deadline;
+  }
+
+  function exportSubmissions() {
+    load();
+    expire();
+    return Object.fromEntries(Object.entries(attempts)
+      .filter(([, a]) => validSubmission(a))
+      .map(([id, a]) => [id, {...a, score: score(papers[id], a)}]));
+  }
+
+  function prepareSubmissionImport(archive) {
+    // 先校验整份测验记录，等章节档案通过后再一并保存。
+    if (!archive || typeof archive !== 'object' || Array.isArray(archive)) throw Error('test archive');
+    const incoming = Object.entries(archive).map(([id, a]) => {
+      if (!Object.hasOwn(papers, id) || !validSubmission(a) ||
+          !a.answers || typeof a.answers !== 'object' || Array.isArray(a.answers)) throw Error('test attempt');
+      const questions = papers[id].questions;
+      const answers = Object.entries(a.answers);
+      for (const [number, choice] of answers) {
+        const question = questions[Number(number) - 1];
+        if (!/^[1-9]\d*$/.test(number) || !question || !Number.isInteger(choice) ||
+            choice < 0 || choice >= question.options.length) throw Error('test answer');
+      }
+      // 成绩由导入的答案重新计算，不读取文件中的分数字段。
+      return [id, {status: 'submitted', deadline: a.deadline, submittedAt: a.submittedAt,
+        answers: Object.fromEntries(answers)}];
+    });
+
+    load();
+    const next = {...attempts};
+    const now = Date.now();
+    let restored = 0;
+    for (const [id, a] of incoming) {
+      const local = attempts[id];
+      const localSubmission = local?.status === 'active' ? local.deadline : local?.submittedAt;
+      // 保留当前进行中的测验，以及同卷已经更新的交卷记录。
+      if ((local?.status === 'active' && local.deadline > now) || localSubmission >= a.submittedAt) continue;
+      next[id] = a;
+      restored++;
+    }
+    return {write: restored ? [key, JSON.stringify(next)] : null, restored, kept: incoming.length - restored};
+  }
+
   function title(zh, en) {
     return `<h1 tabindex="-1">${zh}<small lang="en">${en}</small></h1>`;
   }
@@ -363,5 +409,5 @@
     main.querySelector('.test-area > h1')?.focus({preventScroll: true});
   }
 
-  window.inquiryTests = {render, mount};
+  window.inquiryTests = {render, mount, exportSubmissions, prepareSubmissionImport};
 })();

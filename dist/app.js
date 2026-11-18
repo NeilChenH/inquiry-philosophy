@@ -40,6 +40,101 @@
   const hasOriginalSlides = c => Boolean(window.SOURCE_PAGES?.[c.id]?.[0]?.image && c.pages?.[0]?.zh);
   function save(){ try { localStorage.setItem('inquiry-3192',JSON.stringify(state)); } catch {} }
   function notify(zh,en){ const box=$('#toast');box.textContent=`${zh} / ${en}`;box.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>box.classList.remove('visible'),2400); }
+
+  function exportArchive() {
+    // 一份本地文件同时备份章节学习与已经交卷的两套测验，方便换网址。
+    const archive = {
+      app: 'inquiry-3192',
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      progress: state,
+      testAttempts: window.inquiryTests.exportSubmissions()
+    };
+    const blob = new Blob([JSON.stringify(archive, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '观问_学习档案.json';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function prepareArchive(archive) {
+    const p = archive?.progress;
+    if (archive?.app !== 'inquiry-3192' || ![1, 2].includes(archive.version) ||
+        !Array.isArray(p?.completed) || !p.answers || typeof p.answers !== 'object' || Array.isArray(p.answers)) {
+      throw Error('archive format');
+    }
+    const answers = {};
+    for (const [id, value] of Object.entries(p.answers)) {
+      if (!Object.hasOwn(quizMap, id) || quizMap[id].type === 'reflection') continue;
+      if (!Number.isInteger(value) || value < 0 || value >= quizMap[id].options.length) throw Error('practice answer');
+      answers[id] = value;
+    }
+    // 合并本地已有进度，有冲突时保留当前浏览器的练习答案。
+    const progress = {
+      ...state,
+      completed: [...new Set([...state.completed, ...p.completed.filter(id => allSections.some(unit => unit.id === id))])],
+      answers: {...answers, ...state.answers}
+    };
+    if (themes.includes(p.theme) || p.theme === 'forest') progress.theme = themeValue(p.theme);
+    if (typeof p.reading === 'boolean') progress.reading = p.reading;
+    if (typeof p.motion === 'boolean') progress.motion = p.motion;
+    if (Object.hasOwn(chapterMap, Number(p.lastChapter))) progress.lastChapter = Number(p.lastChapter);
+    const tests = archive.version === 2 ? window.inquiryTests.prepareSubmissionImport(archive.testAttempts) : null;
+    return {progress, tests};
+  }
+
+  function storeArchive({progress, tests}) {
+    // 完整校验后才写入；若第二项保存失败，尽量撤销本次已写入的第一项。
+    const writes = [['inquiry-3192', JSON.stringify(progress)]];
+    if (tests?.write) writes.push(tests.write);
+    const previous = writes.map(([key]) => localStorage.getItem(key));
+    let written = 0;
+    try {
+      for (const [key, data] of writes) {
+        localStorage.setItem(key, data);
+        written++;
+      }
+    } catch (error) {
+      while (written > 0) {
+        const [key, data] = writes[--written];
+        try {
+          if (localStorage.getItem(key) !== data) continue;
+          if (previous[written] === null) localStorage.removeItem(key);
+          else localStorage.setItem(key, previous[written]);
+        } catch {}
+      }
+      throw error;
+    }
+    Object.assign(state, progress);
+  }
+
+  async function importArchive(file) {
+    let data;
+    try {
+      if (file.size > 2000000) throw Error('file too large');
+      data = prepareArchive(JSON.parse(await file.text()));
+    } catch {
+      notify('文件格式不正确，未修改进度', 'Invalid file; progress unchanged');
+      return;
+    }
+    try {
+      storeArchive(data);
+    } catch {
+      notify('浏览器无法保存学习档案', 'Could not save the archive in this browser');
+      return;
+    }
+    render();
+    const {tests} = data;
+    if (tests?.restored || tests?.kept) {
+      notify(`学习档案已导入，恢复 ${tests.restored} 套测验，保留 ${tests.kept} 套本站记录`,
+        `Archive imported, ${tests.restored} test records restored, ${tests.kept} kept`);
+    } else {
+      notify('学习档案已导入', 'Progress imported');
+    }
+  }
+
   const motionAllowed = () => state.motion && !state.reading && !reducedMotion.matches;
   function syncSettings(){
     const animate = motionAllowed();
@@ -283,7 +378,7 @@
   function quizTab(c){return `<div class="toolbar" style="margin-top:0;margin-bottom:22px"><h2>理解之后，再测一次<small>TEST YOUR UNDERSTANDING</small></h2></div>${quizIntro()}${c.quiz.map((q,i)=>quizMarkup({...q,chapter:c.id},i)).join('')}`;}
   function filteredQuizzes(){let qs=allQuizzes.filter(q=>q.type!=='reflection');if(reviewFilter.chapter!=='all')qs=qs.filter(q=>q.chapter===Number(reviewFilter.chapter));if(reviewFilter.wrong)qs=qs.filter(q=>Number.isInteger(state.answers[q.id])&&state.answers[q.id]!==q.answer);if(reviewFilter.round)qs=qs.filter(q=>roundIds.includes(q.id));return qs;}
   function review(){const qs=filteredQuizzes();const attempted=qs.filter(q=>Number.isInteger(state.answers[q.id]));const correct=attempted.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">REVISIT & REFLECT / 综合复习</div><h1 class="bilingual-title">把概念，变成自己的理解。<small>Make the ideas your own.</small></h1><p>重新追问容易混淆的地方。选择一个章节，或抽取十题做一轮混合练习。<br><span lang="en">Revisit distinctions that are easy to miss. Choose a chapter or draw ten questions for a mixed round.</span></p></div><div class="review-page"><section class="test-panel test-review-entry"><h2>Test 1 测验专区<small lang="en">TEST 1 PRACTICE</small></h2><a class="button primary" href="#/tests">进入测验 / Open tests ↗</a></section><div class="review-filters"><label class="sr-only" for="review-chapter">选择章节 / Choose chapter</label><select id="review-chapter"><option value="all">全部章节 / All chapters</option>${chapters.map(c=>`<option value="${c.id}" ${reviewFilter.chapter===String(c.id)?'selected':''}>${c.id}. ${escape(c.title.zh)} / ${escape(c.title.en)}</option>`).join('')}</select><label><input type="checkbox" id="wrong-only" ${reviewFilter.wrong?'checked':''}> 仅错题 / Mistakes only</label><button class="button" data-action="new-round">随机十题 / Draw 10 ↗</button>${reviewFilter.round?'<button class="text-button" data-action="all-questions">显示全部 / Show all</button>':''}</div>${quizIntro()}<div class="round-summary" aria-live="polite">本组 ${qs.length} 题 · 已答 ${attempted.length} · 正确 ${correct.length} / ${qs.length} questions · ${attempted.length} answered · ${correct.length} correct</div>${qs.length?qs.map(quizMarkup).join(''):`<div class="empty-state">这里暂时没有题目 / No questions here<p>选择其他章节，或先完成几道题，再回看错题。<br>Choose another chapter, or answer some questions before reviewing mistakes.</p><a class="button" href="#/chapters">浏览章节 / Explore chapters ↗</a></div>`}</div>`;}
-  function progress(){const answered=allQuizzes.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id]));const right=answered.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">YOUR LEARNING JOURNEY / 学习档案</div><h1 class="bilingual-title">一点一点，想得更清楚。<small>Clarity grows one idea at a time.</small></h1><p>主动标记已经理解的单元，留下自己的学习足迹。<br><span lang="en">Mark the units you understand and follow your progress.</span></p></div><div class="progress-page"><div class="stats-grid"><div class="stat"><strong><b data-count="${state.completed.length}">${state.completed.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allSections.length}</span></strong><span>已理解单元</span><small>UNITS UNDERSTOOD</small></div><div class="stat"><strong><b data-count="${answered.length}">${answered.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allQuizzes.filter(q=>q.type!=='reflection').length}</span></strong><span>已答选择题</span><small>QUESTIONS ANSWERED</small></div><div class="stat"><strong>${answered.length?`<b data-count="${Math.round(right.length/answered.length*100)}" data-suffix="%">${Math.round(right.length/answered.length*100)}%</b>`:'—'}</strong><span>当前答案正确率</span><small>ACCURACY OF SAVED ANSWERS</small></div></div>${chapters.map(c=>{const n=c.sections.filter(s=>state.completed.includes(s.id)).length;const tried=c.quiz.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id])).length;return `<a class="progress-row" href="#/chapter/${c.id}"><span class="num">${String(c.id).padStart(2,'0')}</span><span><h3>${escape(c.title.zh)}</h3><small lang="en">${escape(c.title.en)}</small><div class="progress-track"><span style="width:${n/c.sections.length*100}%"></span></div></span><span class="row-data">${n}/${c.sections.length} 单元<small>${tried} 题已答<br>QUESTIONS TRIED ↗</small></span></a>`}).join('')}<div class="progress-actions"><p>进度保存在当前设备的当前浏览器；本地版与在线版分别保存。换设备时，可导出学习档案，再在另一设备导入。<br><span lang="en">Progress stays in this browser on this device. Local and online copies store it separately. Export and import your learning file to transfer progress.</span></p><div><button class="button" data-action="export">导出学习档案 / Export progress ↓</button><button class="button" data-action="import">导入学习档案 / Import progress ↑</button></div></div></div>`;}
+  function progress(){const answered=allQuizzes.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id]));const right=answered.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">YOUR LEARNING JOURNEY / 学习档案</div><h1 class="bilingual-title">一点一点，想得更清楚。<small>Clarity grows one idea at a time.</small></h1><p>主动标记已经理解的单元，留下自己的学习足迹。<br><span lang="en">Mark the units you understand and follow your progress.</span></p></div><div class="progress-page"><div class="stats-grid"><div class="stat"><strong><b data-count="${state.completed.length}">${state.completed.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allSections.length}</span></strong><span>已理解单元</span><small>UNITS UNDERSTOOD</small></div><div class="stat"><strong><b data-count="${answered.length}">${answered.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allQuizzes.filter(q=>q.type!=='reflection').length}</span></strong><span>已答选择题</span><small>QUESTIONS ANSWERED</small></div><div class="stat"><strong>${answered.length?`<b data-count="${Math.round(right.length/answered.length*100)}" data-suffix="%">${Math.round(right.length/answered.length*100)}%</b>`:'—'}</strong><span>当前答案正确率</span><small>ACCURACY OF SAVED ANSWERS</small></div></div>${chapters.map(c=>{const n=c.sections.filter(s=>state.completed.includes(s.id)).length;const tried=c.quiz.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id])).length;return `<a class="progress-row" href="#/chapter/${c.id}"><span class="num">${String(c.id).padStart(2,'0')}</span><span><h3>${escape(c.title.zh)}</h3><small lang="en">${escape(c.title.en)}</small><div class="progress-track"><span style="width:${n/c.sections.length*100}%"></span></div></span><span class="row-data">${n}/${c.sections.length} 单元<small>${tried} 题已答<br>QUESTIONS TRIED ↗</small></span></a>`}).join('')}<div class="progress-actions"><p>导出一份学习档案，可在另一设备或网址恢复章节进度、练习和已交卷的 Test 1 成绩。进行中的测验需先交卷。<br><span lang="en">Export one file to transfer chapter progress, practice answers and submitted Test 1 results to a different device or site. Submit any in-progress test before exporting.</span></p><div><button class="button" data-action="export">导出学习档案 / Export progress ↓</button><button class="button" data-action="import">导入学习档案 / Import progress ↑</button></div></div></div>`;}
   function render(){
     previousRoute=route;route=parseRoute();if(!['learn','slides','terms','quiz'].includes(route.tab))route.tab='learn';
     const main = $('#main');
@@ -458,7 +553,7 @@
     else if(action==='new-round'){const qs=allQuizzes.filter(q=>q.type!=='reflection'&&(reviewFilter.chapter==='all'||q.chapter===Number(reviewFilter.chapter))&&(!reviewFilter.wrong||(Number.isInteger(state.answers[q.id])&&state.answers[q.id]!==q.answer)));for(let i=qs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[qs[i],qs[j]]=[qs[j],qs[i]];}roundIds=qs.slice(0,10).map(q=>q.id);reviewFilter.round=true;render();}
     else if(action==='all-questions'){reviewFilter.round=false;render();}
     else if(action==='search-go'){$('#search-dialog').close();navigate(b.dataset.hash);}
-    else if(action==='export'){const blob=new Blob([JSON.stringify({app:'inquiry-3192',version:1,exportedAt:new Date().toISOString(),progress:state},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='观问_学习档案.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    else if(action==='export')exportArchive();
     else if(action==='import')$('#import-progress').click();
     else if(action==='viz'&&window.inquiryVizAction)window.inquiryVizAction(b);
   });
@@ -470,7 +565,9 @@
     else if(el.id==='wrong-only'){reviewFilter.wrong=el.checked;reviewFilter.round=false;render();}
     else if(el.matches('[data-viz-input]')&&window.inquiryVizInput)window.inquiryVizInput(el);
     else if(el.id==='import-progress'&&el.files[0]){
-      try{if(el.files[0].size>2000000)throw Error('large');const imported=JSON.parse(await el.files[0].text());if(imported.app!=='inquiry-3192'||imported.version!==1||!imported.progress)throw Error('format');const p=imported.progress;if(!Array.isArray(p.completed)||!p.answers||typeof p.answers!=='object')throw Error('data');state.completed=[...new Set(p.completed.filter(id=>allSections.some(s=>s.id===id)))];state.answers={};for(const [id,n] of Object.entries(p.answers)){if(quizMap[id]&&Number.isInteger(n)&&n>=0&&n<4)state.answers[id]=n;}if(themes.includes(p.theme)||p.theme==='forest')state.theme=themeValue(p.theme);if(typeof p.reading==='boolean')state.reading=p.reading;if(typeof p.motion==='boolean')state.motion=p.motion;if(chapterMap[Number(p.lastChapter)])state.lastChapter=Number(p.lastChapter);save();render();notify('学习档案已导入','Progress imported');}catch{notify('文件格式不正确，未修改进度','Invalid file; progress unchanged');}el.value='';
+      const file = el.files[0];
+      el.value = '';
+      await importArchive(file);
     }
   });
   document.addEventListener('input',event=>{if(event.target.id==='search-input'){clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(event.target.value),120);}else if(event.target.matches('[data-viz-input]')&&window.inquiryVizInput)window.inquiryVizInput(event.target);});
