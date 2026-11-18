@@ -1,4 +1,4 @@
-window.FULL_COURSE_SITE = "https://philosophy-3192-cinema-20261111.chencanhongcch.chatgpt.site/";
+window.FULL_COURSE_SITE = "https://inquiry-philosophy.pages.dev/";
 window.SOURCE_INVENTORY = [
   {
     "id": 1,

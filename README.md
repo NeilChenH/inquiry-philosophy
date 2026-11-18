@@ -7,11 +7,11 @@ INQUIRY is an interactive bilingual philosophy learning site. Its eight chapters
 ## 打开学习站 / Open the site
 
 1. 在 GitHub 点 **Code → Download ZIP**，解压后双击 `打开学习站.html` 或 `dist/index.html`。页面、练习和内置配图可离线使用。
-2. 打开知识点下方的 **展开课件页码** 或章节的 **课件索引**，选择 PDF 物理页码后点链接，即可在完整在线版查看原页、英文原文与中文译文。在线版无需登录。 [完整在线学习站](https://philosophy-3192-cinema-20261111.chencanhongcch.chatgpt.site/)
+2. 打开知识点下方的 **展开课件页码** 或章节的 **课件索引**，选择 PDF 物理页码后点链接，即可在完整在线版查看原页、英文原文与中文译文。在线版无需登录。 [完整在线学习站](https://inquiry-philosophy.pages.dev/)
 3. 从 **学习档案** 导出或导入 JSON，可以跨设备或网址转移章节阅读进度、练习答案和已交卷的 Test 1 成绩。
 
 1. Select **Code → Download ZIP**, extract it and open `打开学习站.html` or `dist/index.html`. Lessons, practice and artwork work offline.
-2. Select a PDF page from **Expand page references** or **Page Index** and follow the link to the original slide, English text and Chinese translation. [Full online site](https://philosophy-3192-cinema-20261111.chencanhongcch.chatgpt.site/)
+2. Select a PDF page from **Expand page references** or **Page Index** and follow the link to the original slide, English text and Chinese translation. [Full online site](https://inquiry-philosophy.pages.dev/)
 3. Open **Progress** to transfer chapter progress, practice answers and submitted Test 1 results between devices or site addresses as a JSON file.
 
 ## Test 1 测验专区 / Test 1 practice

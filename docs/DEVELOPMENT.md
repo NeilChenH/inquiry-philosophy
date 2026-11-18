@@ -61,7 +61,7 @@ node tools/verify.cjs
 
 ## 06 发布 / Publish
 
-完整在线版用于逐页阅读。GitHub 公开仓库用于下载、运行和阅读源码，以及查看分阶段提交历史。 [完整在线版 / Full course](https://philosophy-3192-cinema-20261111.chencanhongcch.chatgpt.site/) · [开源提交 / Commits](https://github.com/NeilChenH/inquiry-philosophy/commits/main/)
+完整在线版用于逐页阅读。GitHub 公开仓库用于下载、运行和阅读源码，以及查看分阶段提交历史。 [完整在线版 / Full course](https://inquiry-philosophy.pages.dev/) · [开源提交 / Commits](https://github.com/NeilChenH/inquiry-philosophy/commits/main/)
 
 The full site hosts the original-slide reader. The GitHub repository publishes the open edition, its run instructions and this development history.
 
