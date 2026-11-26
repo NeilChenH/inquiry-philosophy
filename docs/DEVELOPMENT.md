@@ -116,3 +116,10 @@ GSAP timelines coordinate the nebula, bilingual title and entry link. ScrollTrig
 Motion follows the site control, reading mode and system reduced-motion preference. Leaving the homepage clears its triggers, and the canvas pauses offscreen. The local launcher uses bundled scripts and requires no build.
 
 [GSAP 版本与许可 / GSAP version and license](../dist/assets/vendor/gsap-3.13.0/NOTICE.md) · [验收记录 / Verification](VERIFICATION.md)
+
+
+## 2026-11-26 十月真题 / October actual paper
+
+新增独立题卷、原印字母标签与争议题排除计分，双语解析和逐题考点对照。新增浏览器私有纸卷复盘，与计时测验分别保存；档案v3兼容v1/v2并统一校验后写入。
+
+Added the actual October paper, explicit printed labels, disputed-item exclusion, bilingual explanations and topic comparisons. Private paper reviews use separate storage. Archive v3 retains v1/v2 compatibility and validates all records before writing.

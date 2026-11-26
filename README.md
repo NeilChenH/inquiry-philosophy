@@ -34,3 +34,12 @@ Open **Review → Test 1 practice** for the June Trimester paper or the site-aut
 六月卷题目与答案表来源为 Universiti Tunku Abdul Rahman 的 MPU3192 June 2026 Trimester Test 1，保留原作品署名。解析与十月模拟卷由本站编写。 / The June questions and answer key are credited to Universiti Tunku Abdul Rahman, MPU3192 June 2026 Trimester Test 1. The explanations and the October mock are authored for this site.
 
 [MIT License](LICENSE) · [图片署名 / Image credits](docs/IMAGE-CREDITS.md) · [GSAP 许可 / GSAP license](dist/assets/vendor/gsap-3.13.0/NOTICE.md)
+
+
+## 2026 十月真题与复盘 / October actual paper and review
+
+在 Test 1 测验专区选择「2026 十月学期真题」。20 题采用本站核实的参考答案，Q16 暂缓计分，参考满分 19 分。30 分钟是本站练习时长。第 8 题保留原印字母 A、B、D、C，按具体选项判分。
+
+个人纸卷作答从「纸卷作答复盘」导入 JSON 草稿，逐题确认后生成个人参考复盘。姓名、学号、原照片及个人草稿归档在网站仓库外的本地资料目录。学习档案版本 3 同时备份章节、已交卷计时测验和纸卷复盘，继续支持版本 1、2。
+
+Open **October 2026 Test 1** in the test hub. The site-verified reference key scores 19 questions, with Q16 under review. The 30-minute limit is a site practice duration. Q8 retains the printed A, B, D, C labels. Use **Paper review** to import and confirm a private answer draft. Progress archive v3 transfers chapters, submitted timed tests and separate paper reviews, and accepts v1/v2 archives.

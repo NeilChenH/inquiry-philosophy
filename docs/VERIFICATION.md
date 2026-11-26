@@ -68,3 +68,15 @@ Both editions were exercised from a fresh browser origin, starting at the homepa
 全新桌面和 390px 浏览器会话使用两个独立测试网址，验证一次导出、导入可恢复阅读、练习和两套已交卷测验。旧格式仍可导入，已开始的测验及较新的交卷记录得到保留，错误文件不会导入部分进度。两版本地文件断网也可导出新版档案。
 
 Fresh desktop and 390px sessions used two distinct test origins to verify transfer of chapter progress, practice answers and submitted records for both papers. Legacy files import, active and newer attempts are retained, and invalid files are rejected before storing any changes. Offline export works in both editions.
+
+
+## 2026-11-26 十月真题与纸卷复盘 / October actual paper
+
+- 对照五张照片录入20题，保留Q8的A/B/D/C和Q16的缺项组合。原有两卷答案与题序校验通过。
+- 全新本地HTTP浏览入口验证三卷入口、键盘作答、刷新恢复、未答提醒、19分制、Q8按选项判分和双语解析。390px验证解析、分析表格和纸卷确认，无整页横向溢出。
+- 导入未确认草稿，涂改题保持待确认。用独立合成作答生成19/19参考复盘；真实个人草稿仍是未确认记录。刷新保留确认状态，测试更换计时卷后仍保留纸卷复盘。
+- 通过受控过期样例核对自动交卷及六月/模拟卷继续独立计时。实际导出按钮生成版本3档案。
+- 两版分别通过50项隔离VM状态回归，覆盖v1/v2/v3、较新记录优先、非法文件拒绝及跨存储写失败回滚。完整本地版302项原课件、原图、章节与来源文件哈希一致。
+- 本轮file://浏览器实测被浏览器工具协议安全策略阻止，离线资源经静态及隔离执行校验。真实手机、macOS、iOS和微信内核尚待实机验证。
+
+Fresh local HTTP and 390px browser walkthroughs passed. Both editions passed 50 isolated state checks. Original course resources retained their hashes. A file-protocol walkthrough was blocked by the browser tool policy. Real-device and WeChat checks remain unverified.

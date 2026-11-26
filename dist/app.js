@@ -42,13 +42,14 @@
   function notify(zh,en){ const box=$('#toast');box.textContent=`${zh} / ${en}`;box.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>box.classList.remove('visible'),2400); }
 
   function exportArchive() {
-    // 一份本地文件同时备份章节学习与已经交卷的两套测验，方便换网址。
+    // 版本三额外保存纸卷复盘，和计时作答分别备份。
     const archive = {
       app: 'inquiry-3192',
-      version: 2,
+      version: 3,
       exportedAt: new Date().toISOString(),
       progress: state,
-      testAttempts: window.inquiryTests.exportSubmissions()
+      testAttempts: window.inquiryTests.exportSubmissions(),
+      paperReviews: window.inquiryPaperReviews.exportRecords()
     };
     const blob = new Blob([JSON.stringify(archive, null, 2)], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
@@ -61,7 +62,7 @@
 
   function prepareArchive(archive) {
     const p = archive?.progress;
-    if (archive?.app !== 'inquiry-3192' || ![1, 2].includes(archive.version) ||
+    if (archive?.app !== 'inquiry-3192' || ![1, 2, 3].includes(archive.version) ||
         !Array.isArray(p?.completed) || !p.answers || typeof p.answers !== 'object' || Array.isArray(p.answers)) {
       throw Error('archive format');
     }
@@ -81,14 +82,16 @@
     if (typeof p.reading === 'boolean') progress.reading = p.reading;
     if (typeof p.motion === 'boolean') progress.motion = p.motion;
     if (Object.hasOwn(chapterMap, Number(p.lastChapter))) progress.lastChapter = Number(p.lastChapter);
-    const tests = archive.version === 2 ? window.inquiryTests.prepareSubmissionImport(archive.testAttempts) : null;
-    return {progress, tests};
+    const tests = archive.version >= 2 ? window.inquiryTests.prepareSubmissionImport(archive.testAttempts) : null;
+    const reviews = archive.version >= 3 ? window.inquiryPaperReviews.prepareImport(archive.paperReviews) : null;
+    return {progress, tests, reviews};
   }
 
-  function storeArchive({progress, tests}) {
+  function storeArchive({progress, tests, reviews}) {
     // 完整校验后才写入；若第二项保存失败，尽量撤销本次已写入的第一项。
     const writes = [['inquiry-3192', JSON.stringify(progress)]];
     if (tests?.write) writes.push(tests.write);
+    if (reviews?.write) writes.push(reviews.write);
     const previous = writes.map(([key]) => localStorage.getItem(key));
     let written = 0;
     try {
@@ -126,7 +129,12 @@
       return;
     }
     render();
-    const {tests} = data;
+    const {tests, reviews} = data;
+    if (reviews?.restored || reviews?.kept) {
+      notify(`学习档案已导入，恢复 ${tests?.restored || 0} 套测验、${reviews.restored} 份纸卷复盘`,
+        `Archive imported, ${tests?.restored || 0} tests and ${reviews.restored} paper reviews restored`);
+      return;
+    }
     if (tests?.restored || tests?.kept) {
       notify(`学习档案已导入，恢复 ${tests.restored} 套测验，保留 ${tests.kept} 套本站记录`,
         `Archive imported, ${tests.restored} test records restored, ${tests.kept} kept`);
@@ -378,7 +386,7 @@
   function quizTab(c){return `<div class="toolbar" style="margin-top:0;margin-bottom:22px"><h2>理解之后，再测一次<small>TEST YOUR UNDERSTANDING</small></h2></div>${quizIntro()}${c.quiz.map((q,i)=>quizMarkup({...q,chapter:c.id},i)).join('')}`;}
   function filteredQuizzes(){let qs=allQuizzes.filter(q=>q.type!=='reflection');if(reviewFilter.chapter!=='all')qs=qs.filter(q=>q.chapter===Number(reviewFilter.chapter));if(reviewFilter.wrong)qs=qs.filter(q=>Number.isInteger(state.answers[q.id])&&state.answers[q.id]!==q.answer);if(reviewFilter.round)qs=qs.filter(q=>roundIds.includes(q.id));return qs;}
   function review(){const qs=filteredQuizzes();const attempted=qs.filter(q=>Number.isInteger(state.answers[q.id]));const correct=attempted.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">REVISIT & REFLECT / 综合复习</div><h1 class="bilingual-title">把概念，变成自己的理解。<small>Make the ideas your own.</small></h1><p>重新追问容易混淆的地方。选择一个章节，或抽取十题做一轮混合练习。<br><span lang="en">Revisit distinctions that are easy to miss. Choose a chapter or draw ten questions for a mixed round.</span></p></div><div class="review-page"><section class="test-panel test-review-entry"><h2>Test 1 测验专区<small lang="en">TEST 1 PRACTICE</small></h2><a class="button primary" href="#/tests">进入测验 / Open tests ↗</a></section><div class="review-filters"><label class="sr-only" for="review-chapter">选择章节 / Choose chapter</label><select id="review-chapter"><option value="all">全部章节 / All chapters</option>${chapters.map(c=>`<option value="${c.id}" ${reviewFilter.chapter===String(c.id)?'selected':''}>${c.id}. ${escape(c.title.zh)} / ${escape(c.title.en)}</option>`).join('')}</select><label><input type="checkbox" id="wrong-only" ${reviewFilter.wrong?'checked':''}> 仅错题 / Mistakes only</label><button class="button" data-action="new-round">随机十题 / Draw 10 ↗</button>${reviewFilter.round?'<button class="text-button" data-action="all-questions">显示全部 / Show all</button>':''}</div>${quizIntro()}<div class="round-summary" aria-live="polite">本组 ${qs.length} 题 · 已答 ${attempted.length} · 正确 ${correct.length} / ${qs.length} questions · ${attempted.length} answered · ${correct.length} correct</div>${qs.length?qs.map(quizMarkup).join(''):`<div class="empty-state">这里暂时没有题目 / No questions here<p>选择其他章节，或先完成几道题，再回看错题。<br>Choose another chapter, or answer some questions before reviewing mistakes.</p><a class="button" href="#/chapters">浏览章节 / Explore chapters ↗</a></div>`}</div>`;}
-  function progress(){const answered=allQuizzes.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id]));const right=answered.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">YOUR LEARNING JOURNEY / 学习档案</div><h1 class="bilingual-title">一点一点，想得更清楚。<small>Clarity grows one idea at a time.</small></h1><p>主动标记已经理解的单元，留下自己的学习足迹。<br><span lang="en">Mark the units you understand and follow your progress.</span></p></div><div class="progress-page"><div class="stats-grid"><div class="stat"><strong><b data-count="${state.completed.length}">${state.completed.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allSections.length}</span></strong><span>已理解单元</span><small>UNITS UNDERSTOOD</small></div><div class="stat"><strong><b data-count="${answered.length}">${answered.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allQuizzes.filter(q=>q.type!=='reflection').length}</span></strong><span>已答选择题</span><small>QUESTIONS ANSWERED</small></div><div class="stat"><strong>${answered.length?`<b data-count="${Math.round(right.length/answered.length*100)}" data-suffix="%">${Math.round(right.length/answered.length*100)}%</b>`:'—'}</strong><span>当前答案正确率</span><small>ACCURACY OF SAVED ANSWERS</small></div></div>${chapters.map(c=>{const n=c.sections.filter(s=>state.completed.includes(s.id)).length;const tried=c.quiz.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id])).length;return `<a class="progress-row" href="#/chapter/${c.id}"><span class="num">${String(c.id).padStart(2,'0')}</span><span><h3>${escape(c.title.zh)}</h3><small lang="en">${escape(c.title.en)}</small><div class="progress-track"><span style="width:${n/c.sections.length*100}%"></span></div></span><span class="row-data">${n}/${c.sections.length} 单元<small>${tried} 题已答<br>QUESTIONS TRIED ↗</small></span></a>`}).join('')}<div class="progress-actions"><p>导出一份学习档案，可在另一设备或网址恢复章节进度、练习和已交卷的 Test 1 成绩。进行中的测验需先交卷。<br><span lang="en">Export one file to transfer chapter progress, practice answers and submitted Test 1 results to a different device or site. Submit any in-progress test before exporting.</span></p><div><button class="button" data-action="export">导出学习档案 / Export progress ↓</button><button class="button" data-action="import">导入学习档案 / Import progress ↑</button></div></div></div>`;}
+  function progress(){const answered=allQuizzes.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id]));const right=answered.filter(q=>state.answers[q.id]===q.answer);return `<div class="page-intro"><div class="eyebrow">YOUR LEARNING JOURNEY / 学习档案</div><h1 class="bilingual-title">一点一点，想得更清楚。<small>Clarity grows one idea at a time.</small></h1><p>主动标记已经理解的单元，留下自己的学习足迹。<br><span lang="en">Mark the units you understand and follow your progress.</span></p></div><div class="progress-page"><div class="stats-grid"><div class="stat"><strong><b data-count="${state.completed.length}">${state.completed.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allSections.length}</span></strong><span>已理解单元</span><small>UNITS UNDERSTOOD</small></div><div class="stat"><strong><b data-count="${answered.length}">${answered.length}</b><span style="display:inline;font:normal 14px Arial;color:var(--muted)"> / ${allQuizzes.filter(q=>q.type!=='reflection').length}</span></strong><span>已答选择题</span><small>QUESTIONS ANSWERED</small></div><div class="stat"><strong>${answered.length?`<b data-count="${Math.round(right.length/answered.length*100)}" data-suffix="%">${Math.round(right.length/answered.length*100)}%</b>`:'—'}</strong><span>当前答案正确率</span><small>ACCURACY OF SAVED ANSWERS</small></div></div>${chapters.map(c=>{const n=c.sections.filter(s=>state.completed.includes(s.id)).length;const tried=c.quiz.filter(q=>q.type!=='reflection'&&Number.isInteger(state.answers[q.id])).length;return `<a class="progress-row" href="#/chapter/${c.id}"><span class="num">${String(c.id).padStart(2,'0')}</span><span><h3>${escape(c.title.zh)}</h3><small lang="en">${escape(c.title.en)}</small><div class="progress-track"><span style="width:${n/c.sections.length*100}%"></span></div></span><span class="row-data">${n}/${c.sections.length} 单元<small>${tried} 题已答<br>QUESTIONS TRIED ↗</small></span></a>`}).join('')}<div class="progress-actions"><p>导出一份学习档案，可在另一设备或网址恢复章节进度、练习、已交卷的 Test 1 成绩及纸卷复盘草稿与确认记录。进行中的测验需先交卷。<br><span lang="en">Export one file to transfer chapter progress, practice answers, submitted Test 1 results and paper-review drafts and confirmed records to another device or site. Submit any in-progress test before exporting.</span></p><div><button class="button" data-action="export">导出学习档案 / Export progress ↓</button><button class="button" data-action="import">导入学习档案 / Import progress ↑</button></div></div></div>`;}
   function render(){
     previousRoute=route;route=parseRoute();if(!['learn','slides','terms','quiz'].includes(route.tab))route.tab='learn';
     const main = $('#main');

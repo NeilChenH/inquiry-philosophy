@@ -1,0 +1,44 @@
+/* 纸卷复盘使用全站主题变量，阅读区只保留确认作答所需的反馈。 */
+.paper-review-area > p { margin-block: .8rem; }
+.paper-review-actions { margin-block: 1rem; }
+.paper-review-message { min-height: 1.7em; color: var(--accent); overflow-wrap: anywhere; }
+.paper-review-controls { margin-block: 1rem; }
+.paper-review-count { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .8rem; }
+.paper-review-question summary { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .4rem 1rem; cursor: pointer; min-height: 44px; }
+.paper-review-question summary > span { font-size: .8rem; color: var(--muted); }
+.paper-review-question.is-confirmed { border-color: var(--accent); }
+.paper-review-question.is-confirmed summary > span { color: var(--accent); }
+.paper-review-question { scroll-margin-top: calc(var(--test-sticky-top) + 1rem); }
+.paper-review-question-body { padding-top: 1rem; }
+.paper-review-question fieldset { margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.paper-review-question legend { padding: 0; line-height: 1.65; font-weight: 600; white-space: pre-line; margin-bottom: .9rem; }
+.paper-review-question-body > .button { margin-top: 1rem; }
+.paper-review-unanswered { color: var(--muted); }
+.paper-review-translation { margin-top: 1rem; border-top: 1px solid var(--line); padding-top: .7rem; }
+.paper-review-translation summary { color: var(--accent); font-size: .9rem; }
+.paper-review-translation > div { padding-top: .7rem; }
+.paper-review-translated-options { list-style: none; padding: 0; }
+.paper-review-translated-options li { margin-block: .4rem; }
+.paper-review-note { color: var(--muted); font-size: .86rem; margin-top: .7rem; }
+.paper-review-pending, .paper-review-result { margin-block: 1.2rem; }
+.paper-review-result h2 { scroll-margin-top: calc(var(--test-sticky-top) + 1rem); }
+.paper-review-result p { margin-block: .8rem; }
+.paper-review-result h3 { margin-block: 1.5rem .75rem; font-size: 1.1rem; }
+.paper-review-chapters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.paper-review-chapters a { display: grid; grid-template-columns: 1fr auto; gap: .5rem 1rem; padding: 1rem; border: 1px solid var(--line); }
+.paper-review-chapters strong { color: var(--accent); }
+.paper-review-chapters progress { grid-column: 1 / -1; width: 100%; height: .4rem; border: 0; background: var(--surface2); accent-color: var(--accent); }
+.paper-review-chapters progress::-webkit-progress-bar { background: var(--surface2); }
+.paper-review-chapters progress::-webkit-progress-value { background: var(--accent); }
+.paper-review-chapters progress::-moz-progress-bar { background: var(--accent); }
+.paper-review-mistakes { padding-left: 1.4rem; }
+.paper-review-mistakes > li { padding-block: 1rem; border-bottom: 1px solid var(--line); }
+.paper-review-mistakes .test-back { text-align: start; }
+.paper-review-mistakes .pair { gap: 1.5rem; }
+.paper-review-mistakes .test-refs { font-size: .86rem; }
+@media (max-width: 540px) {
+  .paper-review-chapters { grid-template-columns: minmax(0, 1fr); }
+  .paper-review-count { align-items: start; }
+  .paper-review-count > .button { width: 100%; justify-content: center; }
+  .paper-review-question summary > span { font-size: .76rem; }
+}

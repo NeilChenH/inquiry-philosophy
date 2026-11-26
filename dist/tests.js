@@ -9,6 +9,12 @@
       source: 'Universiti Tunku Abdul Rahman · MPU3192 · June 2026 Trimester',
       ...window.INQUIRY_TEST_JUNE
     },
+    'october-2026-actual': {
+      id: 'october-2026-actual', zh: '2026 十月学期真题', en: 'October 2026 Test 1',
+      source: '依据试卷照片整理 · 本站依据课件核实的参考答案 / Transcribed from paper photographs · Site-verified reference answers',
+      referenceKey: true,
+      ...window.INQUIRY_TEST_OCTOBER_ACTUAL
+    },
     october: {
       id: 'october', zh: '十月自编模拟卷', en: 'October Mock Test 1',
       source: '本站自编 · 参照六月学期考试 / Site-authored · Modeled on the June paper',
@@ -16,8 +22,14 @@
     }
   };
   const levels = { basic: '基础辨识 / Basic', applied: '辨析与应用 / Applied', advanced: '综合辨析 / Advanced' };
+  window.inquiryPaperReviews?.configure(papers);
   const types = { single: '单选 / Single best answer', combination: '组合 / Combination', reverse: '反选 / Negative stem' };
-  const letter = value => 'ABCD'[value] ?? '—';
+  // 原卷可能以不同字母顺序排印，显示标签与保存的选项索引分别处理。
+  const letter = (value, q) => (q?.optionLabels || ['A', 'B', 'C', 'D'])[value] ?? '—';
+  const maximum = paper => paper.questions.filter(q => Number.isInteger(q.answer)).length;
+  const answerMarker = q => Number.isInteger(q.answer) ? letter(q.answer, q) : '争议，暂不计分 / Under review';
+  const keyNotice = paper => paper.referenceKey
+    ? '<p class="test-distinction">本站依据课件核实的参考答案，Q16 暂不计分。30 分钟为本站练习时长。<br><span lang="en">Site-verified reference key. Q16 is excluded from scoring. The 30-minute duration is for practice on this site.</span></p>' : '';
   const route = (paper, view) => `#/tests/${paper.id}/${view}`;
   const escape = value => window.inquiryEscape(value);
   const pair = text => `<div class="pair"><p class="zh" lang="zh-CN">${escape(text.zh)}</p><p class="en" lang="en">${escape(text.en)}</p></div>`;
@@ -74,7 +86,8 @@
   }
 
   function score(paper, a) {
-    return paper.questions.reduce((total, q, i) => total + Number(a.answers[i + 1] === q.answer), 0);
+    // 争议题用空答案保留原题，成绩分母只包含已核实的可计分题。
+    return paper.questions.reduce((total, q, i) => total + Number(Number.isInteger(q.answer) && a.answers[i + 1] === q.answer), 0);
   }
 
   function validSubmission(a) {
@@ -148,10 +161,12 @@
         return `<section class="test-panel">
           <h2>${paper.zh}<small lang="en">${paper.en}</small></h2>
           <p class="test-source">${paper.source}</p>
-          <p>20 题 · 20 分 · 30 分钟<br><span lang="en">20 questions · 20 marks · 30 minutes</span></p>
+          <p>${paper.questions.length} 题 · ${maximum(paper)} 分 · 30 分钟<br><span lang="en">${paper.questions.length} questions · ${maximum(paper)} marks · 30 minutes</span></p>
+          ${keyNotice(paper)}
           <div class="test-actions">
             <a class="button primary" href="${route(paper, view)}">${button}</a>
             <a class="button" href="${route(paper, 'answers')}">答案与解析 / Answers &amp; explanations</a>
+            ${paper.referenceKey ? `<a class="button" href="${route(paper, 'analysis')}">出题分析 / Paper analysis</a><a class="button" href="${route(paper, 'paper-review')}">纸卷作答复盘 / Paper review</a>` : ''}
           </div>
         </section>`;
       }).join('')}</div>`);
@@ -160,10 +175,11 @@
   function preflight(paper) {
     return frame(`${bread()}${title(paper.zh, paper.en)}
       <p class="test-source">${paper.source}</p>
+      ${keyNotice(paper)}
       <div class="test-panel test-intro">
         ${pair({
-          zh: '20 道英文单选题，每题 1 分，限时 30 分钟。点击开始后，刷新或离开页面都不会暂停计时。按时交卷或等待自动交卷。',
-          en: 'Answer 20 multiple-choice questions for one mark each in 30 minutes. Once you start, reloading or leaving the page will not pause the timer. Submit when ready or let the test submit at time up.'
+          zh: `${paper.questions.length} 道英文四选一题，可计分题每题 1 分，共 ${maximum(paper)} 分，练习限时 30 分钟。点击开始后，刷新或离开页面都不会暂停计时。按时交卷或等待自动交卷。`,
+          en: `Answer ${paper.questions.length} multiple-choice questions in 30 minutes, with one mark per scored item and ${maximum(paper)} marks available. Once started, reloading or leaving does not pause the timer. Submit when ready or let the test submit at time up.`
         })}
         <button class="button primary" type="button" data-test-action="start">开始计时 / Start test</button>
       </div>`);
@@ -174,8 +190,8 @@
     return `<ol class="test-statements" type="I" lang="en">${q.statements.map(item => `<li>${escape(item)}</li>`).join('')}</ol>`;
   }
 
-  function optionLabel(option, i) {
-    return `<span class="test-letter" aria-hidden="true">${letter(i)}</span><span lang="en"><span class="sr-only">${letter(i)}. </span>${escape(option)}</span>`;
+  function optionLabel(option, i, q) {
+    return `<span class="test-letter" aria-hidden="true">${letter(i, q)}</span><span lang="en"><span class="sr-only">${letter(i, q)}. </span>${escape(option)}</span>`;
   }
 
   function question(q, index, a) {
@@ -185,7 +201,7 @@
       ${statements(q)}
       <div class="test-options">${q.options.map((option, i) => `<label class="test-option">
         <input type="radio" name="q${number}" data-test-answer="${number}" value="${i}" ${a.answers[number] === i ? 'checked' : ''}>
-        ${optionLabel(option, i)}
+        ${optionLabel(option, i, q)}
       </label>`).join('')}</div>
     </fieldset>`;
   }
@@ -237,7 +253,8 @@
     return frame(`${bread()}${title(paper.zh + '成绩', paper.en + ' result')}
       <div class="test-panel test-result">
         <p>${timedOut ? '时间到，已自动交卷 / Time is up. Test submitted.' : '已交卷 / Test submitted'}</p>
-        <p class="test-score"><strong data-test-score>${score(paper, a)}/20</strong> 分 / marks</p>
+        <p class="test-score"><strong data-test-score>${score(paper, a)}/${maximum(paper)}</strong> ${paper.referenceKey ? '参考分 / reference marks' : '分 / marks'}</p>
+        ${keyNotice(paper)}
         <p>未答 ${unanswered} 题 / ${unanswered} unanswered</p>
         <div class="test-actions">
           <a class="button primary" href="${route(paper, 'answers')}">答案与解析 / Answers &amp; explanations</a>
@@ -251,32 +268,56 @@
     const explanation = (q, i) => {
       const selected = graded ? a.answers[i + 1] : undefined;
       const selection = !graded ? '' : Number.isInteger(selected)
-        ? `你的答案 / Your answer · ${letter(selected)}`
+        ? `你的答案 / Your answer · ${letter(selected, q)}`
         : '未答 / Unanswered';
       const refs = q.references.map(({chapter, page}) =>
         `<a href="#/chapter/${chapter}/slides/${page}">第 ${chapter} 章第 ${page} 页 / Ch. ${chapter}, p. ${page}</a>`).join(' · ');
       return `<details class="test-panel test-explanation" id="test-exp-${i + 1}" data-test-explanation="${i + 1}">
         <summary><strong>Q${i + 1} · ${escape(q.topic.zh)} / <span lang="en">${escape(q.topic.en)}</span></strong>
-          <span class="test-answer-marker">答案 / Answer · ${letter(q.answer)}</span>
+          <span class="test-answer-marker">${paper.referenceKey ? '参考答案 / Reference' : '答案 / Answer'} · ${answerMarker(q)}</span>
         </summary>
         <div class="test-explanation-body">
           <p class="test-meta">${types[q.type]} · ${levels[q.difficulty]}${selection ? ' · ' + selection : ''}</p>
           <p class="test-stem" lang="en">${escape(q.stem)}</p>${statements(q)}
-          <ol class="test-review-options" type="A" lang="en">${q.options.map((option, ix) => `<li${ix === q.answer ? ' class="correct"' : ''}>${escape(option)}</li>`).join('')}</ol>
+          <ol class="test-review-options test-explicit-options" lang="en">${q.options.map((option, ix) => `<li${ix === q.answer ? ' class="correct"' : ''}><strong>${letter(ix, q)}.</strong> ${escape(option)}</li>`).join('')}</ol>
+          ${translation(q)}
           ${pair(q.explanation)}
           ${q.distinction ? `<aside class="test-distinction"><h3>原卷与课件辨析 / Paper and slide wording</h3>${pair(q.distinction)}</aside>` : ''}
           <p class="test-refs">课件 / Slides · ${refs}</p>
+          ${q.externalReferences?.length ? `<p class="test-refs">补充来源 / Further sources · ${q.externalReferences.map(ref => `<a href="${escape(ref.url)}" target="_blank" rel="noopener noreferrer">${escape(ref.title?.zh || ref.title || ref.url)}</a>`).join(' · ')}</p>` : ''}
+          ${q.sourcePages ? `<p class="test-meta">原卷印刷页 / Printed paper pages · ${q.sourcePages.join(', ')}</p>` : ''}
         </div>
       </details>`;
     };
     return frame(`${bread()}${title(paper.zh + '解析', paper.en + ' explanations')}
       <p class="test-source">${paper.source}</p>
+      ${keyNotice(paper)}
       <a class="button" href="${route(paper, graded ? 'result' : 'paper')}">${graded ? '返回成绩 / Back to result' : '进入试卷 / Open paper'}</a>
-      ${paper.style?.length ? `<section class="test-panel test-style"><h2>六月卷出题分析<small lang="en">June paper analysis</small></h2>
+      ${paper.referenceKey ? `<a class="button" href="${route(paper, 'analysis')}">出题分析 / Paper analysis</a>` : ''}
+      ${paper.style?.length ? `<section class="test-panel test-style"><h2>出题分析<small lang="en">Paper analysis</small></h2>
         ${paper.style.map(pair).join('')}</section>` : ''}
       <nav class="test-grid test-grid-review" aria-label="按题号查看解析 / Review by question">${paper.questions.map((q, i) =>
-        `<button type="button" data-test-action="question" data-number="${i + 1}" aria-label="第 ${i + 1} 题解析 / Q${i + 1} explanation">${i + 1}<small>${letter(q.answer)}</small></button>`).join('')}</nav>
+        `<button type="button" data-test-action="question" data-number="${i + 1}" aria-label="第 ${i + 1} 题解析 / Q${i + 1} explanation">${i + 1}<small>${Number.isInteger(q.answer) ? letter(q.answer, q) : '待定'}</small></button>`).join('')}</nav>
       <div class="test-review-list">${paper.questions.map(explanation).join('')}</div>`);
+  }
+
+  function translation(q) {
+    const t = q.translation;
+    if (!t) return '';
+    return `<section class="test-translation" lang="zh-CN"><h3>题面中文对照 / Chinese translation</h3><p>${escape(t.stem)}</p>
+      ${t.statements?.length ? `<ol type="I">${t.statements.map(s => `<li>${escape(s)}</li>`).join('')}</ol>` : ''}
+      <ol class="test-explicit-options">${t.options.map((s, i) => `<li><strong>${letter(i, q)}.</strong> ${escape(s)}</li>`).join('')}</ol></section>`;
+  }
+
+  function analysis(paper) {
+    const counts = p => ['single', 'combination', 'reverse'].map(type => p.questions.filter(q => q.type === type).length);
+    const matching = (id, numbers) => numbers?.length ? numbers.map(n => `<a href="${route(papers[id], 'answers')}" data-test-related="${id}:${n}">Q${n}</a>`).join(' · ') : '无直接同考点 / No direct match';
+    return frame(`${bread()}${title('十月真题出题分析', 'October paper analysis')}${keyNotice(paper)}
+      <div class="test-actions"><a class="button" href="${route(paper, 'paper')}">进入试卷 / Open paper</a><a class="button" href="${route(paper, 'answers')}">参考解析 / Reference explanations</a><a class="button" href="${route(paper, 'paper-review')}">个人复盘 / Personal review</a></div>
+      <section class="test-panel"><h2>题型变化 / Question formats</h2><div class="test-table-wrap"><table class="test-comparison"><thead><tr><th>试卷 / Paper</th><th>普通单选 / Single</th><th>组合 / I–IV</th><th>反选 / Negative</th></tr></thead><tbody>${[papers.june, paper, papers.october].map(p => `<tr><th>${p.zh}<small lang="en">${p.en}</small></th>${counts(p).map(n => `<td>${n}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
+      ${(paper.analysis || paper.style || []).map(item => `<section class="test-panel">${item.title ? `<h2>${escape(item.title.zh)}<small lang="en">${escape(item.title.en)}</small></h2>` : ''}${pair(item)}</section>`).join('')}
+      <section class="test-panel"><h2>逐题考点对应 / Topic correspondence</h2><p>按直接同考点列出对应题号；难度依据判断步骤和英文阅读量估计。<br><span lang="en">Links show direct topic matches. Difficulty estimates reflect reasoning steps and English reading demand.</span></p>
+      <div class="test-table-wrap"><table class="test-comparison"><thead><tr><th>十月真题 / Actual</th><th>六月 / June</th><th>原模拟 / Mock</th><th>课件 / Slides</th></tr></thead><tbody>${paper.questions.map((q, i) => `<tr><th><a href="${route(paper, 'answers')}">Q${i+1} · ${escape(q.topic.zh)}<small lang="en">${escape(q.topic.en)}</small></a></th><td>${matching('june',q.related?.june)}</td><td>${matching('october',q.related?.october)}</td><td>${q.references.map(r => `<a href="#/chapter/${r.chapter}/slides/${r.page}">${r.chapter} · ${r.page}</a>`).join(' / ')}</td></tr>`).join('')}</tbody></table></div></section>`);
   }
 
   function render(id, view) {
@@ -284,6 +325,8 @@
     expire();
     const paper = Object.hasOwn(papers, id) && papers[id];
     if (!paper?.questions?.length) return hub();
+    if (view === 'paper-review' && paper.referenceKey) return window.inquiryPaperReviews.render(paper, view);
+    if (view === 'analysis' && paper.referenceKey) return analysis(paper);
     const a = attempts[id];
     if (view === 'answers') return answers(paper, a);
     if (view === 'result' || a?.status === 'submitted') return result(paper, a);
@@ -296,6 +339,10 @@
     const id = current.paperId;
     const view = current.testView;
     const paper = Object.hasOwn(papers, id) && papers[id];
+    if (view === 'paper-review' && paper?.referenceKey) {
+      release = window.inquiryPaperReviews.mount(paper, view, main, rerender) || (() => {});
+      return;
+    }
     const controller = new AbortController();
     const {signal} = controller;
     let ticker;
@@ -406,6 +453,19 @@
       if (event.key === key) rerender();
     }, {signal});
     // 答题交互全部在当前正文中，换页时释放计时器和事件。
+    let target;
+    try { target = sessionStorage.getItem('inquiry-review-target'); } catch {}
+    if (target && view === 'answers') {
+      try { sessionStorage.removeItem('inquiry-review-target'); } catch {}
+      const item = main.querySelector(`#test-exp-${Number(target)}`);
+      if (item) { item.open = true; item.scrollIntoView({block:'start'}); }
+    }
+    main.addEventListener('click', event => {
+      const link = event.target.closest('[data-test-related]');
+      if (link) {
+        try { sessionStorage.setItem('inquiry-review-target', link.dataset.testRelated.split(':')[1]); } catch {}
+      }
+    }, {signal});
     main.querySelector('.test-area > h1')?.focus({preventScroll: true});
   }
 
