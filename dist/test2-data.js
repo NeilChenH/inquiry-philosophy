@@ -155,8 +155,8 @@
         'A community wants to protect a riverbank. Give one example of how residents can use local wisdom to help. Explain how this reflects Sejahtera.'
       ),
       model: text(
-        '居民知道哪些本地植物在河边生长得好。社区可以用这些知识选择修复河岸时要种植的植物。更健康的河岸有利于附近居民和河流生态，体现了 Sejahtera。',
-        'Residents know which native plants grow well by the river. The community can use this knowledge to choose plants when restoring the riverbank. A healthier riverbank benefits nearby people and the river ecosystem, which reflects Sejahtera.'
+        '居民知道哪些本地植物适合在河边种植。社区可以用这些知识在修复河岸时选种。这些植物有助于减少河岸侵蚀，保护附近房屋，也给野生动物提供栖息处，体现了 Sejahtera。',
+        'Residents know which native plants grow well by the river. They can use this knowledge to choose plants for the riverbank. These plants help protect nearby homes from erosion and give wildlife a place to live, which reflects Sejahtera.'
       ),
       points: [
         point('wisdom', '指出一项当地居民积累的具体知识，例如河水水位或本地植物。', 'Name one specific kind of locally developed knowledge, such as water levels or native plants.'),
