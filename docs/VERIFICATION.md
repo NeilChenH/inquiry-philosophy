@@ -87,3 +87,9 @@ Fresh local HTTP and 390px browser walkthroughs passed. Both editions passed 50 
 2026-11-26 已发布至 https://inquiry-philosophy.pages.dev/ ，生产版本 https://fa605e3c.inquiry-philosophy.pages.dev/ 。免登录验证三套卷入口、开始计时、Q8判分及19分制交卷。公网四主题和390px分析页面显示正常。实际通过界面把本地HTTP预览导出的v3合成档案导入公网，恢复20题确认记录及19/19合成参考复盘。合成成绩仅为QA样例。线上四项新增脚本和样式与完整本地版SHA-256相同。个人原始草稿仍待用户逐题确认。
 
 Published and anonymously verified the production site, including timed submission, printed option labels, four themes and the 390px analysis view. A real UI export/import restored a synthetic v3 paper review across origins. The synthetic 19/19 is a QA result. Public scripts and styles match the local edition.
+
+## 理论入门与交卷自动复盘 / Philosophy guide and submission review
+
+- 从空白浏览会话逐套作答和提交。六月卷、十月模拟卷、十月真题自动显示分析，十月真题仍按 19 分计，Q16 单列。用受控时间样例验证三卷到期返回自动显示同一分析。 / Three fresh browser submissions displayed automatic analysis. October still scored out of 19, and Q16 appeared separately. An isolated timer test confirmed analysis after expiry for all three papers.
+- 用中英文关键词筛选理论，键盘展开例子，并从成绩页的复习顺序跳到对应章的目录。核对八章 93 条、186 个双语例子及相互链接。 / Checked bilingual search, keyboard disclosures, chapter links from results, and all 93 entries and 186 bilingual examples.
+- 实测桌面及 390px 窗口、四主题和舒适阅读，七种宽度通过导航溢出检查。仅本机资源的预览中，开源版定位到第 6 章第 7 页索引，完整版加载原图和双语正文。完整本地版的 302 个原始课件、原图及章节相关文件哈希一致。 / Desktop and 390px walkthroughs covered all themes and reading mode. Seven widths passed navigation overflow checks. In local-resource-only previews, the open edition selected Chapter 6, p. 7 and the full edition loaded its original slide and both languages. All 302 protected files retained their hashes.

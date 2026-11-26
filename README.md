@@ -16,9 +16,15 @@ INQUIRY is an interactive bilingual philosophy learning site. Its eight chapters
 
 ## Test 1 测验专区 / Test 1 practice
 
-在 **综合复习 → Test 1 测验专区** 打开六月学期原卷或十月自编模拟卷。每套卷各有 30 分钟计时和独立的双语答案解析。测验尝试保存在当前浏览器。
+在 **复习 → Test 1 测验专区** 打开六月原卷、十月真题或十月自编模拟卷。每套卷有 30 分钟计时和独立的双语答案解析。交卷后，成绩页自动按章节与题型分析，列出错答、未答和复习入口。测验记录保存在当前浏览器。
 
-Open **Review → Test 1 practice** for the June Trimester paper or the site-authored October mock. Each paper has its own 30-minute timer and bilingual answer review. Attempts stay in the current browser.
+Open **Review → Test 1 practice** for the June paper, October paper or October mock. Each paper has its own 30-minute timer and bilingual answer page. After submission, the result groups scores by chapter and question type and links to missed items and study resources. Attempts stay in the current browser.
+
+## 哲学理论入门 / Philosophy explained
+
+从导航打开 **理论入门**，按中英文名称、章节和类型查找八章的 93 个条目。每个条目提供中英文解析、两个例子、易混点、关联条目与课件物理页码。
+
+Open **Theories** in the navigation to find 93 entries from the eight chapters by name, chapter or type. Each entry includes a bilingual explanation, two examples, a clarification, related reading and links to the corresponding slide pages.
 
 ## 源码与开发记录 / Source and development
 

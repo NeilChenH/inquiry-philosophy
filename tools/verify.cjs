@@ -27,6 +27,8 @@ for (const script of scripts) {
   }
 }
 
+context.window.inquiryEscape = value => String(value).replace(/[&<>"']/g, char =>
+  ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[char]);
 const {COURSE_CHAPTERS, COURSE_SUPPLEMENTS, SOURCE_INVENTORY, FULL_COURSE_SITE, IMAGE_CREDITS} = context.window;
 assert.equal(new URL(FULL_COURSE_SITE).protocol, 'https:');
 assert.equal(SOURCE_INVENTORY.length, pagesByChapter.length);
@@ -178,3 +180,57 @@ assert.deepEqual(Array.from(actual.questions[7].optionLabels), ['A','B','D','C']
 assert.equal(actual.questions[7].answer, 2);
 assert.deepEqual(Array.from(actual.questions[8].sourcePages), [3,4]);
 console.log('All three Test 1 papers passed; October actual has 19 scored items.');
+
+// 同时校验目录、深链接和课件引用，避免新增理论时损坏离线入口。
+const {items: theories} = context.window.INQUIRY_THEORIES;
+const theoryIds = new Set(theories.map(item => item.id));
+assert.equal(theoryIds.size, theories.length, 'Each theory has a unique route');
+const coveredChapters = new Set();
+for (const item of theories) {
+  const {id, name, intro, explanation, misconception, examples, related, chapters, references} = item;
+  assert(/^[a-z][a-z0-9-]*$/.test(id), id);
+  assert(['theory', 'tradition', 'method', 'framework', 'branch'].includes(item.kind), id);
+  [name, intro, explanation, misconception].forEach(text => bilingual(text, id));
+  assert.equal(examples.length, 2, id);
+  for (const example of examples) {
+    bilingual(example.title, id);
+    bilingual(example, id);
+  }
+  const referenceChapters = new Set();
+  for (const {chapter, page} of references) {
+    assert(COURSE_CHAPTERS[chapter], id);
+    checkPageReferences([page], pagesByChapter[chapter - 1], id);
+    referenceChapters.add(chapter);
+    coveredChapters.add(chapter);
+  }
+  assert.equal(referenceChapters.size, chapters.length, id);
+  assert(chapters.every(chapter => referenceChapters.has(chapter)), id);
+  assert(related.length && related.every(other => other !== id && theoryIds.has(other)), id);
+  for (const ref of item.externalReferences || []) assert.equal(new URL(ref.url).protocol, 'https:');
+  const article = context.window.inquiryTheories.render(id);
+  assert(article.includes(`#/chapter/${references[0].chapter}/slides/${references[0].page}`), id);
+  assert(article.includes('lang="zh-CN"') && article.includes('lang="en"'), id);
+}
+assert.deepEqual([...coveredChapters].sort(), [1, 2, 3, 4, 5, 6, 7, 8]);
+assert.equal((context.window.inquiryTheories.render('').match(/data-theory-id=/g) || []).length, theories.length);
+console.log(`Theory guide verified: ${theories.length} entries and ${theories.length * 2} bilingual worked examples.`);
+
+// 评分保留原印刷标签，争议题在三类作答状态之外单列。
+for (const [paper, excluded] of [[june, 0], [october, 0], [{...actual, referenceKey: true}, 1]]) {
+  const render = context.window.inquiryTestSummary.render;
+  const complete = Object.fromEntries(paper.questions.flatMap((q, index) => q.answer === null ? [] : [[index + 1, q.answer]]));
+  const summary = render(paper, complete);
+  assert.match(summary, new RegExp(`data-summary-count="correct">[\\s\\S]*?<dd>${20 - excluded}</dd>`));
+  assert(!summary.includes('data-summary-state="incorrect"'));
+  const partial = render(paper, {1: (paper.questions[0].answer + 1) % 4});
+  assert.match(partial, /data-summary-count="incorrect">[\s\S]*?<dd>1<\/dd>/);
+  assert.match(partial, new RegExp(`data-summary-count="unanswered">[\\s\\S]*?<dd>${19 - excluded}</dd>`));
+  assert(partial.includes('data-summary-state="incorrect"') && partial.includes('data-summary-state="unanswered"'));
+  assert(partial.includes('href="#/theories/chapter-'));
+  assert.equal(partial.includes('data-summary-state="disputed"'), Boolean(excluded));
+  if (excluded) {
+    const q8 = partial.slice(partial.indexOf('id="test-summary-q8"'), partial.indexOf('id="test-summary-q9"'));
+    assert(q8.includes('Reference answer') && q8.includes('D. Emotional.'));
+  }
+}
+console.log('Automatic review verified for full, partial and disputed scoring.');

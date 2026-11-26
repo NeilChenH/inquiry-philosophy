@@ -260,7 +260,7 @@
           <a class="button primary" href="${route(paper, 'answers')}">答案与解析 / Answers &amp; explanations</a>
           <button class="button" type="button" data-test-action="retry">重新作答 / Retake</button>
         </div>
-      </div>${confirmDialog()}`);
+      </div>${window.inquiryTestSummary.render(paper, a.answers)}${confirmDialog()}`);
   }
 
   function answers(paper, a) {

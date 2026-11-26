@@ -1,0 +1,30 @@
+/* 复盘嵌入成绩页，沿用站内主题与舒适阅读。 */
+.test-auto-summary { margin-block: 1.5rem; }
+.test-summary-counts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(125px, 100%), 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+.test-summary-counts > div { border-top: 1px solid var(--line); padding-top: .7rem; }
+.test-summary-counts dt span { display: block; color: var(--muted); font-size: .86rem; }
+.test-summary-counts dd { margin: .25rem 0 0; font-size: 1.8rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.test-summary-priorities ol { padding-inline-start: 1.5rem; }
+.test-summary-priorities li { padding: .45rem 0; }
+.test-summary-priorities li > span { display: block; color: var(--muted); font-size: .85rem; }
+.test-summary-priorities a { color: var(--accent); text-decoration: underline; text-underline-offset: .2em; }
+.test-summary-format { border-inline-start: 2px solid var(--accent); padding-inline-start: .9rem; margin-block: 1rem 1.4rem; }
+.test-summary-format h3 { margin: 0; }
+.test-summary-format p { margin: .6rem 0; }
+.test-summary-detail { border-top: 1px solid var(--line); padding: .7rem 0; }
+.test-summary-detail > summary, .test-summary-item > summary { cursor: pointer; padding: .45rem .1rem; }
+.test-summary-detail > summary span, .test-summary-item > summary small { color: var(--muted); }
+.test-summary-breakdown { list-style: none; padding: 0; margin: 1rem 0; }
+.test-summary-breakdown li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .8rem; border-bottom: 1px solid var(--line); padding: .75rem 0; }
+.test-summary-breakdown li p { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: .9rem; }
+.test-summary-breakdown-score { font-variant-numeric: tabular-nums; }
+.test-summary-item { border-top: 1px solid var(--line); padding: .55rem .1rem; }
+.test-summary-item summary small { display: block; margin-top: .25rem; }
+.test-summary-item-body { padding-inline-start: .85rem; }
+.test-auto-summary .test-actions { margin-top: 1rem; }
+.test-summary-priorities h3 small, .test-summary-detail h3 small, .test-summary-format h3 small { display: block; color: var(--muted); font-weight: 400; }
