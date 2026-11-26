@@ -234,3 +234,67 @@ for (const [paper, excluded] of [[june, 0], [october, 0], [{...actual, reference
   }
 }
 console.log('Automatic review verified for full, partial and disputed scoring.');
+
+// Test 2 的 15 个学习采分点与 100 分命题拟合度分别校验。
+const test2 = context.window.INQUIRY_TEST2;
+const shortQuestions = test2.questions;
+assert.deepEqual(Array.from(shortQuestions, question => question.chapter), [5, 6, 6, 7, 8]);
+assert.equal(new Set(shortQuestions.map(question => question.id)).size, 5);
+const scoreFit = question => test2.dimensions.reduce((sum, dimension) => sum + question.fit[dimension.id].score, 0);
+assert.deepEqual(Array.from(test2.dimensions, dimension => dimension.max), [6, 6, 5, 3]);
+for (const question of shortQuestions) {
+  for (const field of ['topic', 'stem', 'model', 'choice', 'design', 'commonMiss']) bilingual(question[field], `${question.id} ${field}`);
+  checkPageReferences(question.pages, pagesByChapter[question.chapter - 1], question.id);
+  assert(question.model.en.split(/(?<=[.!?])\s+/).length >= 2 && question.model.en.split(/(?<=[.!?])\s+/).length <= 3, question.id);
+  assert.equal(question.points.length, 3, question.id);
+  assert.equal(new Set(question.points.map(point => point.id)).size, 3, question.id);
+  question.points.forEach(point => bilingual(point, question.id));
+  for (const dimension of test2.dimensions) {
+    const assessment = question.fit[dimension.id];
+    bilingual(assessment, `${question.id} fit ${dimension.id}`);
+    assert([0, dimension.max / 2, dimension.max].includes(assessment.score), question.id);
+  }
+}
+const totalFit = shortQuestions.reduce((sum, question) => sum + scoreFit(question), 0);
+assert(totalFit >= 90 && totalFit <= 100);
+const priorQuestion = shortQuestions.find(question => question.id === test2.revision.question);
+const draftFit = totalFit - scoreFit(priorQuestion) + Object.values(test2.revision.scores).reduce((sum, value) => sum + value, 0);
+assert(draftFit < 90 && draftFit < totalFit);
+for (const observations of Object.values(test2.audit)) {
+  assert.equal(observations.length, 20);
+  observations.forEach(entry => {
+    assert(['definition', 'purpose', 'distinction', 'scenario'].includes(entry.demand));
+    bilingual(entry.observation, 'Test 1 item observation');
+  });
+}
+for (const comparison of test2.comparisons) {
+  bilingual(comparison.title, 'paired evidence title');
+  bilingual(comparison.body, 'paired evidence text');
+  for (const paper of ['june', 'actual']) assert(comparison[paper].every(n => n >= 1 && n <= 20));
+}
+
+const test2Data = new Map();
+context.localStorage = {
+  getItem: key => test2Data.get(key) ?? null,
+  setItem: (key, value) => test2Data.set(key, value)
+};
+const shortTest = context.window.inquiryTest2;
+assert(shortTest.entry().includes('href="#/test2"'));
+const freshShortPaper = shortTest.render('review');
+assert.equal((freshShortPaper.match(/<textarea/g) || []).length, 5);
+assert(!freshShortPaper.includes('Bilingual model answer'));
+const firstShort = shortQuestions[0];
+test2Data.set('inquiry-3192-test2-november-v1', JSON.stringify({
+  reviewed: true,
+  answers: {[firstShort.id]: '<my response>'},
+  checked: {[firstShort.id]: [firstShort.points[0].id, firstShort.points[0].id, 'unknown'], [shortQuestions[1].id]: ['reason']}
+}));
+const goodShortReview = shortTest.render('review');
+assert.match(goodShortReview, /data-test2-score>1 \/ 15/);
+assert(goodShortReview.includes('&lt;my response&gt;') && !goodShortReview.includes('<my response>'));
+assert.equal((goodShortReview.match(/test2-checklist" disabled/g) || []).length, 4);
+const analysisPage = shortTest.render('analysis');
+assert.equal((analysisPage.match(/data-test2-round=/g) || []).length, 3);
+assert.equal((analysisPage.match(/data-test2-fit-item=/g) || []).length, 5);
+assert(analysisPage.includes(`${draftFit} 分，复评 ${totalFit} 分`));
+console.log(`Test 2 verified: 5 questions, 15 marking points, 40 audit entries and fit ${totalFit}/100.`);

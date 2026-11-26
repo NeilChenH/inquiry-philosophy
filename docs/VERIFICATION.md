@@ -93,3 +93,10 @@ Published and anonymously verified the production site, including timed submissi
 - 从空白浏览会话逐套作答和提交。六月卷、十月模拟卷、十月真题自动显示分析，十月真题仍按 19 分计，Q16 单列。用受控时间样例验证三卷到期返回自动显示同一分析。 / Three fresh browser submissions displayed automatic analysis. October still scored out of 19, and Q16 appeared separately. An isolated timer test confirmed analysis after expiry for all three papers.
 - 用中英文关键词筛选理论，键盘展开例子，并从成绩页的复习顺序跳到对应章的目录。核对八章 93 条、186 个双语例子及相互链接。 / Checked bilingual search, keyboard disclosures, chapter links from results, and all 93 entries and 186 bilingual examples.
 - 实测桌面及 390px 窗口、四主题和舒适阅读，七种宽度通过导航溢出检查。仅本机资源的预览中，开源版定位到第 6 章第 7 页索引，完整版加载原图和双语正文。完整本地版的 302 个原始课件、原图及章节相关文件哈希一致。 / Desktop and 390px walkthroughs covered all themes and reading mode. Seven widths passed navigation overflow checks. In local-resource-only previews, the open edition selected Chapter 6, p. 7 and the full edition loaded its original slide and both languages. All 302 protected files retained their hashes.
+
+## 11 月 Test 2 简答练习 / November Test 2 practice
+
+- 核对五道题覆盖第 5–8 章、每题三个采分点、每份原卷各 20 条观察及三个分析部分。按已知命题特征核对初稿 88 分、改写后 94 分。 / Verified five questions from Chapters 5–8, three marking points per item, 20 observations per source paper and three analysis rounds. The revised draft moved from 88 to 94 on the known-pattern rubric.
+- 用空白浏览器来源实测作答、中译展开、留空提示和取消、自评汇总、待补要点以及刷新。编辑一道题后只清除该题勾选，其他已确认点可继续使用。 / Tested drafting, Chinese disclosures, blank-answer confirmation, self-assessment, points to revisit and reload. Editing a response cleared its own marks and preserved the others.
+- 在 390px 窗口实测四个主题、舒适阅读、三轮分析和逐题评分展开。课件定位到第 6 章第 20 页，三套 Test 1 入口、学习档案入口及 51 项既有测验和档案回归通过。 / The 390px walkthrough covered all themes, reading mode, three rounds and item-level fit evidence. The page 20 reference, Test 1 and archive entry points, and 51 existing state checks passed.
+- 完整版在仅本机资源的预览中完成五题并勾选全部 15 个采分点，验证第 6 章第 20 页的原图和双语正文。同步核对 302 个课件相关文件哈希及 3,341 项完整版校验。 / The local-resource-only preview completed all five questions and 15 points, and loaded Chapter 6, p. 20 with both languages. The full edition passed 3,341 checks and retained 302 course-file hashes.

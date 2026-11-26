@@ -1,0 +1,74 @@
+/* 简答练习沿用站内试卷与双语排版，编辑区保留清晰焦点和足够的触控尺寸。 */
+.test2-entry-meta { margin: .45rem 0 0; }
+.test2-area .test2-pair { margin-block: .65rem 1rem; }
+.test2-pair p, .test2-area .test-meta { overflow-wrap: anywhere; }
+.test2-area .test2-pair p { margin: .15rem 0; }
+.test2-top-actions { margin-block: 1rem 1.5rem; }
+.test2-end-actions { margin-block-start: 1.4rem; }
+.test2-question { min-inline-size: 0; }
+.test2-question > legend, .test2-checklist > legend {
+  padding-inline: .3rem;
+  font-weight: 650;
+  max-width: 100%;
+}
+.test2-question .test-meta { margin: .15rem 0 .5rem; }
+.test2-question > label { display: block; margin: .85rem 0 .45rem; font-weight: 600; }
+.test2-question textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 6rem;
+  resize: vertical;
+  color: var(--ink);
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  padding: .75rem;
+  font: inherit;
+  font-size: max(16px, 1em);
+  line-height: 1.6;
+}
+.test2-question textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.test2-disclosure { border-block-start: 1px solid var(--line); padding-block: .35rem; }
+.test2-disclosure > summary { padding-block: .75rem; cursor: pointer; }
+.test2-disclosure > summary:hover { color: var(--accent); }
+.test2-disclosure > summary small, .test2-area h3 small { display: block; color: var(--muted); font-weight: 450; margin-block-start: .3rem; }
+.test2-round { padding: clamp(.85rem, 2vw, 1.5rem); }
+.test2-round > summary { font-size: clamp(1.1rem, 2vw, 1.35rem); }
+.test2-translation { margin-block: .65rem; }
+.test2-overview { margin-block: 1.35rem; }
+.test2-overview progress { display: block; width: 100%; max-width: 31rem; accent-color: var(--accent); }
+.test2-overview .test2-top-actions { margin-bottom: 0; }
+.test2-score { margin: .6rem 0; }
+.test2-score strong { color: var(--accent); font-size: clamp(2rem, 7vw, 3.25rem); font-variant-numeric: tabular-nums; }
+.test2-notice { border-inline-start: 2px solid var(--accent); padding-inline-start: .75rem; }
+.test2-response { padding: .75rem; border: 1px solid var(--line); white-space: pre-wrap; overflow-wrap: anywhere; }
+.test2-checklist { display: grid; gap: .5rem; min-inline-size: 0; margin-block: 1.25rem; border: 1px solid var(--line); padding: .75rem; }
+.test2-checklist:disabled { background: var(--surface2); }
+.test2-point {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: .65rem;
+  min-height: 44px;
+  padding: .55rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.test2-point input { margin-block-start: .25rem; accent-color: var(--accent); }
+.test2-point > span > span { display: block; }
+.test2-point:has(input:checked) { background: var(--surface2); }
+.test2-area .test-refs a { display: inline-block; margin-inline-end: .75rem; padding-block: .3rem; }
+.test2-pending-list { padding-inline-start: 1.3rem; }
+.test2-pending-list li ul { padding-inline-start: 1.1rem; }
+.test2-pending-list > li + li { margin-top: .8rem; }
+.test2-audit-list, .test2-rubric { list-style: none; margin: .5rem 0 1rem; padding: 0; }
+.test2-audit-list > li, .test2-rubric > li { border-block-start: 1px solid var(--line); padding: .6rem 0; }
+.test2-fit-grid { margin: 0; }
+.test2-fit-grid > div + div { border-block-start: 1px solid var(--line); padding-block-start: .65rem; }
+.test2-fit-grid dd { margin-inline-start: 0; }
+.test2-revision { border-inline-start: 2px solid var(--accent); margin-block: 1.2rem; padding-inline-start: .8rem; }
+
+@media (max-width: 650px) {
+  .test2-area .test2-pair { gap: .55rem; }
+  .test2-area .test2-pair > .en { padding-top: .55rem; }
+  .test2-checklist { padding: .45rem; }
+}

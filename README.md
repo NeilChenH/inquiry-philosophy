@@ -26,6 +26,12 @@ Open **Review → Test 1 practice** for the June paper, October paper or October
 
 Open **Theories** in the navigation to find 93 entries from the eight chapters by name, chapter or type. Each entry includes a bilingual explanation, two examples, a clarification, related reading and links to the corresponding slide pages.
 
+## 11 月 Test 2 简答练习 / November Test 2 practice
+
+从 **复习 → 11 月 Test 2 自编模拟卷** 打开第 5–8 章的五道简答题。写完可看双语参考答案、勾选 15 个采分点并定位待补内容。草稿和自评保存在当前浏览器。命题分析收录两份 Test 1 的 40 条逐题观察、重复考点对照及拟合度评分。
+
+Open **Review → November Test 2 practice** for five short-answer questions from Chapters 5–8. Use bilingual answers and 15 marking points to review your own work. Drafts and self-assessment stay in the current browser. The paper analysis documents 40 item observations, paired topic comparisons and the evidence behind the fit score.
+
 ## 源码与开发记录 / Source and development
 
 - `dist/index.html` 是静态入口。界面与交互由 `styles.css`、`app.js` 和 `visualizations.js` 提供。 / The static entry point loads the styles, application and interactive diagrams.
