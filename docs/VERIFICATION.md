@@ -80,3 +80,10 @@ Fresh desktop and 390px sessions used two distinct test origins to verify transf
 - 本轮file://浏览器实测被浏览器工具协议安全策略阻止，离线资源经静态及隔离执行校验。真实手机、macOS、iOS和微信内核尚待实机验证。
 
 Fresh local HTTP and 390px browser walkthroughs passed. Both editions passed 50 isolated state checks. Original course resources retained their hashes. A file-protocol walkthrough was blocked by the browser tool policy. Real-device and WeChat checks remain unverified.
+
+
+### 公网发布验收 / Public release verification
+
+2026-11-26 已发布至 https://inquiry-philosophy.pages.dev/ ，生产版本 https://fa605e3c.inquiry-philosophy.pages.dev/ 。免登录验证三套卷入口、开始计时、Q8判分及19分制交卷。公网四主题和390px分析页面显示正常。实际通过界面把本地HTTP预览导出的v3合成档案导入公网，恢复20题确认记录及19/19合成参考复盘。合成成绩仅为QA样例。线上四项新增脚本和样式与完整本地版SHA-256相同。个人原始草稿仍待用户逐题确认。
+
+Published and anonymously verified the production site, including timed submission, printed option labels, four themes and the 390px analysis view. A real UI export/import restored a synthetic v3 paper review across origins. The synthetic 19/19 is a QA result. Public scripts and styles match the local edition.
