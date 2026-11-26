@@ -116,12 +116,12 @@
       id: 'relativism-rule', chapter: 7, pages: [2, 29, 30, 31, 32, 43],
       topic: text('后现代相对主义', 'Postmodern relativism'),
       stem: text(
-        '后现代相对主义的一项主要特点是什么？简述它为何可能让不同群体难以就一条共同规则达成一致。',
-        'What is one main feature of postmodern relativism? Briefly explain how it can make a shared rule difficult for different groups to agree on.'
+        '两个小组为课堂定规则。一组习惯有问题就发言，另一组习惯等老师点名。这个情境体现了后现代相对主义的哪项特点？简述两组为什么可能难以达成一致。',
+        'Two groups are setting a classroom rule. One group speaks up when they have a question. The other waits to be called on. What feature of postmodern relativism does this illustrate? Briefly explain why the groups may struggle to agree.'
       ),
       model: text(
-        '后现代相对主义认为，判断可能依赖某个文化或思想框架的标准。不同群体可能对什么规则公平有不同标准。因此他们可能很难同意用同一条规则来处理所有情况。',
-        'In postmodern relativism, a judgement can depend on the standards of a culture or framework. Different groups may use different standards of fairness. This can make it hard to agree on one rule for everyone.'
+        '判断可能依赖某个文化或思想框架的标准。一组习惯直接发言，另一组认为应该等老师点名。因为他们判断什么做法合适时采用的标准不同，所以可能难以同意一条共同规则。',
+        'Judgements can depend on the standards of a culture or framework. One group sees speaking up as appropriate, while the other expects students to wait. Their different standards can make it hard to agree on one rule.'
       ),
       points: [
         point('feature', '说明判断可能相对于文化、视角或思想框架。', 'State that a judgement can be relative to a culture, perspective or framework.'),
@@ -133,8 +133,8 @@
         'Page 2 lists the features and effects of relativism as learning aims. The end-of-chapter prompt on p. 43 puts those aims together.'
       ),
       design: text(
-        '初稿沿用章末较宽的 Elaborate 问法，容易写成长段。复核十月 Q13 后，改为直接问一项主要特点，并把影响限定在订一条共同规则的场景。',
-        'The first draft followed the broad “Elaborate” prompt and invited a long paragraph. A check against October Q13 led to one main feature and one application to agreeing on a shared rule.'
+        '十月 Q13 只问核心特征，Q8 用可观察的行为让考生辨认概念。本题先给出两种发言习惯，再问它们体现哪项特点及怎样影响协商。考生可以直接使用题干线索作答。',
+        'October Q13 asks for one central feature, and Q8 uses observable behaviour to identify a concept. This question gives two speaking customs and asks which feature they illustrate and how they affect agreement. The learner can reason from the given clues.'
       ),
       commonMiss: text(
         '只写「大家有不同意见」还没有说明相对主义的特点。补出判断依据随框架变化，以及这种变化为何使共用标准更难形成。用「可能」准确描述这个挑战。',
@@ -142,9 +142,9 @@
       ),
       fit: {
         wording: fitted(6, '十月 Q13 的 primary characteristic 只问核心特征，本题也只问一项。', 'October Q13 asks for a primary characteristic. This item likewise asks for a single main feature.'),
-        structure: fitted(3, '两卷都能为先辨认概念再判断提供依据，要求自行解释社会后果是向简答题的延伸。', 'The papers support recognising a concept and making a judgement. Explaining a social consequence in one’s own words adds a short-answer step.'),
+        structure: fitted(6, '十月 Q8 从行为线索辨认一个维度，六月 Q12 从一段行为识别谬误。本题也用给定行为辨认特点。第 43 页要求联系挑战，简答用一句话说明题干里两种标准怎样影响协商。', 'October Q8 identifies a dimension from behaviour, and June Q12 identifies a fallacy from a response. This item also uses given behaviour to identify a concept. The review prompt on p. 43 asks about challenges, here expressed as one consequence of the given differences.'),
         coverage: fitted(5, '第 2 页学习目标和第 43 页题目直接并列特点与影响，第 29–32 页提供定义与辨析。', 'The aims on p. 2 and the prompt on p. 43 explicitly pair features and effects. Pages 29–32 give the definition and distinctions.'),
-        brevity: fitted(3, '题干只要求一项特点和一条因果说明，可在三句内完成。', 'One feature plus one linked consequence can be written in three short sentences.')
+        brevity: fitted(3, '答案用三句话完成识别特点、提取案例线索和解释一项困难。', 'Three sentences identify the feature, cite the case clue and explain one difficulty.')
       }
     },
     {
@@ -294,11 +294,20 @@
       'Elaborate on the characteristics of postmodern relativist thinking and the challenges it poses to society.'
     ),
     scores: {wording: 3, structure: 3, coverage: 5, brevity: 0},
+    baselineScores: {wording: 6, structure: 3, coverage: 5, brevity: 3},
     reason: text(
       '初稿的章末依据直接，但范围太宽，无法知道要写几项特点和后果。复核十月 Q13 围绕一个主要特征的句式后，收窄为一项特点和一个规则协商情境。解释影响这一步仍是向主观题的迁移。',
       'The draft was grounded in the review prompt but left the number of features and effects open. October Q13 centres on one feature, so the revised item asks for one feature and one shared-rule consequence. Explaining the consequence remains a short-answer adaptation.'
+    ),
+    improvement: text(
+      '扩库版再次比照十月 Q8 和六月 Q12，加入可直接使用的两种课堂发言习惯。学生从给定行为辨认概念，再解释协商困难。第 4 题提问结构从 3 分升到 6 分，四项权重沿用原量表。',
+      'The bank revision uses the observable clues of October Q8 and June Q12. Two classroom customs let learners identify the feature and explain one obstacle to agreement. Q4’s structure moves from 3 to 6 on the same four-part rubric.'
     )
   };
 
-  window.INQUIRY_TEST2 = {questions, audit, comparisons, dimensions, revision};
+  const rounds = [
+    {id: '1', title: text('核心概念与生活应用', 'Core concepts and everyday applications'), questions},
+    ...window.inquiryTest2MoreRounds({text, point, fitted})
+  ];
+  window.INQUIRY_TEST2 = {rounds, audit, comparisons, dimensions, revision};
 })();

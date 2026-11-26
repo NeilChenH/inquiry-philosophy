@@ -100,3 +100,9 @@ Published and anonymously verified the production site, including timed submissi
 - 用空白浏览器来源实测作答、中译展开、留空提示和取消、自评汇总、待补要点以及刷新。编辑一道题后只清除该题勾选，其他已确认点可继续使用。 / Tested drafting, Chinese disclosures, blank-answer confirmation, self-assessment, points to revisit and reload. Editing a response cleared its own marks and preserved the others.
 - 在 390px 窗口实测四个主题、舒适阅读、三轮分析和逐题评分展开。课件定位到第 6 章第 20 页，三套 Test 1 入口、学习档案入口及 51 项既有测验和档案回归通过。 / The 390px walkthrough covered all themes, reading mode, three rounds and item-level fit evidence. The page 20 reference, Test 1 and archive entry points, and 51 existing state checks passed.
 - 完整版在仅本机资源的预览中完成五题并勾选全部 15 个采分点，验证第 6 章第 20 页的原图和双语正文。同步核对 302 个课件相关文件哈希及 3,341 项完整版校验。 / The local-resource-only preview completed all five questions and 15 points, and loaded Chapter 6, p. 20 with both languages. The full edition passed 3,341 checks and retained 302 course-file hashes.
+
+## Test 2 五轮题库 / Five Test 2 practice rounds
+
+- 25 道题分五轮，每轮 5 题、15 个采分点，均覆盖第 5–8 章。逐轮评分依据随命题分析发布，首轮按原量表从 94 提升到 97，五轮各为 97/100。 / Each of the five rounds covers Chapters 5–8 with five questions and 15 marking points. The first round moved from 94 to 97 on the existing rubric. All five rounds scored 97/100 for fit to known question patterns.
+- 用浏览器实测旧链接、首轮草稿和自评恢复，轮次切换、留空确认、键盘勾选及刷新保留。桌面预览和 390px 窗口通过，四主题及舒适阅读可使用。 / Browser walkthroughs covered the old link, first-round draft and review recovery, round switching, blank-answer confirmation, keyboard marking and reload. Desktop and 390px checks covered all four themes and reading mode.
+- 完整版仅用本机资源完成第五轮自评并加载第 5 章第 39 页原图。302 个课件相关文件哈希一致，3,341 项完整版校验及 51 项既有测验与学习档案回归通过。 / The full edition completed Round 5 and loaded the original slide for Chapter 5, p. 39 using local resources. All 302 protected course files retained their hashes. The full edition passed 3,341 checks and 51 test and archive regressions.

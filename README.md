@@ -28,9 +28,9 @@ Open **Theories** in the navigation to find 93 entries from the eight chapters b
 
 ## 11 月 Test 2 简答练习 / November Test 2 practice
 
-从 **复习 → 11 月 Test 2 自编模拟卷** 打开第 5–8 章的五道简答题。写完可看双语参考答案、勾选 15 个采分点并定位待补内容。草稿和自评保存在当前浏览器。命题分析收录两份 Test 1 的 40 条逐题观察、重复考点对照及拟合度评分。
+从 **复习 → 11 月 Test 2 自编模拟卷** 进入第 5–8 章简答题库。25 道题分为五轮，每轮 5 题，五轮题目互不重复。写完可看双语范答、按 15 个采分点自评并回看课件。各轮进度保存在当前浏览器，原卷练习记录可在第 1 轮查看。命题分析收录 40 条 Test 1 逐题观察和每轮的拟合度评分依据。
 
-Open **Review → November Test 2 practice** for five short-answer questions from Chapters 5–8. Use bilingual answers and 15 marking points to review your own work. Drafts and self-assessment stay in the current browser. The paper analysis documents 40 item observations, paired topic comparisons and the evidence behind the fit score.
+Open **Review → November Test 2 practice** for 25 short-answer questions from Chapters 5–8 in five distinct rounds. Each round has five questions and 15 marking points, with bilingual model answers and slide references. Progress stays in the current browser. Existing attempts are available in Round 1. The analysis shows 40 observations from the Test 1 papers and the evidence behind each round’s fit score.
 
 ## 源码与开发记录 / Source and development
 

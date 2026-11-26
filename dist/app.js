@@ -172,7 +172,7 @@
   function parseRoute(){
     const parts=(location.hash.replace(/^#\/?/,'') || '').split('/');
     return {type:parts[0]||'home',id:Number(parts[1])||1,tab:parts[2]||'learn',target:parts[3]||'',
-      paperId:parts[1],testView:parts[2],test2View:parts[1],theoryId:parts[1]||''};
+      paperId:parts[1],testView:parts[2],test2View:parts[1],test2Detail:parts[2],theoryId:parts[1]||''};
   }
   function chapterCard(c){
     const done=(c.sections||[]).filter(s=>state.completed.includes(s.id)).length;
@@ -400,7 +400,7 @@
     const main = $('#main');
     const routeChanged = previousRoute.type !== route.type || previousRoute.id !== route.id ||
       (route.type === 'tests' && (previousRoute.paperId !== route.paperId || previousRoute.testView !== route.testView)) ||
-      (route.type === 'test2' && previousRoute.test2View !== route.test2View) ||
+      (route.type === 'test2' && (previousRoute.test2View !== route.test2View || previousRoute.test2Detail !== route.test2Detail)) ||
       (route.type === 'theories' && previousRoute.theoryId !== route.theoryId);
     const tabChanged = !routeChanged && route.type === 'chapter' && previousRoute.tab !== route.tab;
     document.documentElement.dataset.view = route.type;
@@ -411,7 +411,7 @@
     main.innerHTML=route.type==='chapters'?curriculum():route.type==='chapter'?chapter(chapterMap[route.id])
       :route.type==='review'?review():route.type==='progress'?progress()
       :route.type==='tests'?window.inquiryTests.render(route.paperId, route.testView)
-      :route.type==='test2'?window.inquiryTest2.render(route.test2View)
+      :route.type==='test2'?window.inquiryTest2.render(route.test2View, route.test2Detail)
       :route.type==='theories'?window.inquiryTheories.render(route.theoryId):home();
     if(routeChanged){window.scrollTo({top:0,behavior:'instant'});}else if(route.type==='chapter'&&route.tab!==previousRoute.tab){$('.chapter-tabs')?.scrollIntoView({block:'start',behavior:'instant'});}
     if (route.type === 'chapter' && route.tab === 'learn' && route.target) {

@@ -1,5 +1,27 @@
 /* 简答练习沿用站内试卷与双语排版，编辑区保留清晰焦点和足够的触控尺寸。 */
 .test2-entry-meta { margin: .45rem 0 0; }
+.test2-round-chooser { margin-block: 1.1rem; }
+.test2-round-chooser ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .45rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.test2-round-chooser a {
+  display: grid;
+  gap: .4rem;
+  height: 100%;
+  padding: .7rem .65rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.test2-round-chooser a[aria-current] { border-color: var(--accent); }
+.test2-round-chooser a[aria-current] strong { color: var(--accent); }
+.test2-round-chooser a:hover { background: var(--surface2); }
+.test2-round-chooser strong small, .test2-round-chooser .test-meta span { display: block; }
+.test2-round-chooser strong small { margin-block-start: .25rem; font-size: .78em; color: var(--muted); }
 .test2-area .test2-pair { margin-block: .65rem 1rem; }
 .test2-pair p, .test2-area .test-meta { overflow-wrap: anywhere; }
 .test2-area .test2-pair p { margin: .15rem 0; }
@@ -68,6 +90,8 @@
 .test2-revision { border-inline-start: 2px solid var(--accent); margin-block: 1.2rem; padding-inline-start: .8rem; }
 
 @media (max-width: 650px) {
+  .test2-round-chooser ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .test2-round-chooser a { padding: .6rem; }
   .test2-area .test2-pair { gap: .55rem; }
   .test2-area .test2-pair > .en { padding-top: .55rem; }
   .test2-checklist { padding: .45rem; }

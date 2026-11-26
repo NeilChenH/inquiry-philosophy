@@ -1,10 +1,12 @@
 (() => {
   'use strict';
 
-  const {questions, audit, comparisons, dimensions, revision} = window.INQUIRY_TEST2;
-  const storageKey = 'inquiry-3192-test2-november-v1';
-  const maximum = questions.reduce((total, question) => total + question.points.length, 0);
-  const byId = new Map(questions.map(question => [question.id, question]));
+  const {rounds, audit, comparisons, dimensions, revision} = window.INQUIRY_TEST2;
+  const firstRound = rounds[0];
+  const roundsById = new Map(rounds.map(round => [round.id, round]));
+  const bankSize = rounds.reduce((size, round) => size + round.questions.length, 0);
+  const storageKey = 'inquiry-3192-test2-november-v2';
+  const legacyKey = 'inquiry-3192-test2-november-v1';
   const papers = {
     june: {zh: '六月原卷', en: 'June paper', paperId: 'june', questions: window.INQUIRY_TEST_JUNE.questions},
     actual: {zh: '十月真题', en: 'October paper', paperId: 'october-2026-actual', questions: window.INQUIRY_TEST_OCTOBER_ACTUAL.questions}
@@ -27,23 +29,21 @@
   const pair = ({zh, en}) => `<div class="pair test2-pair"><p lang="zh-CN">${escape(zh)}</p><p class="en" lang="en">${escape(en)}</p></div>`;
   const hasAnswer = value => Boolean(value?.trim());
   const newRecord = () => ({reviewed: false, answers: {}, checked: {}});
-  let record = newRecord();
+  const roundUrl = (round, review = false) => `#/test2/${round.id}${review ? '/review' : ''}`;
+  let records = {activeRound: firstRound.id, rounds: {}};
   let storageAvailable = true;
   let release = () => {};
 
-  function load() {
-    if (!storageAvailable) return record;
-    let raw;
-    try { raw = localStorage.getItem(storageKey); }
-    catch { storageAvailable = false; return record; }
+  function readJson(key) {
+    const raw = localStorage.getItem(key);
+    try { return JSON.parse(raw); }
+    catch { return null; }
+  }
 
-    // 仅读取当前题目和采分点的 ID。旧版、破损记录或缺失字段均可安全打开。
-    let saved;
-    try { saved = JSON.parse(raw || '{}'); }
-    catch { saved = {}; }
+  function readRound(round, saved) {
     const clean = newRecord();
     clean.reviewed = saved?.reviewed === true;
-    for (const question of questions) {
+    for (const question of round.questions) {
       const answer = saved?.answers?.[question.id];
       if (typeof answer !== 'string') continue;
       clean.answers[question.id] = answer;
@@ -52,12 +52,28 @@
         clean.checked[question.id] = question.points.filter(point => checked.includes(point.id)).map(point => point.id);
       }
     }
-    record = clean;
-    return record;
+    return clean;
+  }
+
+  function load() {
+    if (!storageAvailable) return records;
+    try {
+      const saved = readJson(storageKey);
+      if (saved?.rounds && typeof saved.rounds === 'object' && !Array.isArray(saved.rounds)) {
+        const activeRound = roundsById.has(saved.activeRound) ? saved.activeRound : firstRound.id;
+        records = {activeRound, rounds: Object.fromEntries(rounds.map(round => [round.id, readRound(round, saved.rounds[round.id])]))};
+      } else {
+        // 旧版五道题沿用原题 ID，保留第一轮的草稿与已勾选采分点。
+        records = {activeRound: firstRound.id, rounds: {[firstRound.id]: readRound(firstRound, readJson(legacyKey))}};
+      }
+    } catch {
+      storageAvailable = false;
+    }
+    return records;
   }
 
   function save(next, main) {
-    record = next;
+    records = next;
     if (storageAvailable) {
       try { localStorage.setItem(storageKey, JSON.stringify(next)); }
       catch { storageAvailable = false; }
@@ -74,8 +90,8 @@
     return question.pages.map(page => `<a href="#/chapter/${question.chapter}/slides/${page}">${label(`第 ${page} 页`, `p. ${page}`)}</a>`).join('');
   }
 
-  function frame(content, {zh, en}) {
-    return `<article class="test-area test2-area">
+  function frame(content, {zh, en}, round) {
+    return `<article class="test-area test2-area"${round ? ` data-test2-round-id="${round.id}"` : ''}>
       <a class="test-back" href="#/review">← ${label('综合复习', 'Review')}</a>
       <h1 tabindex="-1">${title(zh, en)}</h1>
       ${content}
@@ -88,16 +104,34 @@
     </p>`;
   }
 
-  function paper(state) {
+  function roundChooser(active, saved) {
+    return `<nav class="test2-round-chooser" aria-label="选择练习轮次 / Choose a practice round"><ol>${rounds.map(round => {
+      const record = saved.rounds[round.id] ?? newRecord();
+      return `<li><a href="${roundUrl(round)}"${round.id === active.id ? ' aria-current="page"' : ''}>
+        <strong>${title(`第 ${round.id} 轮`, `Round ${round.id}`)}</strong>
+        <span class="test-meta" data-test2-round-count="${round.id}">${answeredText(round, record)}</span>
+      </a></li>`;
+    }).join('')}</ol></nav>`;
+  }
+
+  function nextRoundLink(round) {
+    const next = rounds[rounds.indexOf(round) + 1];
+    const destination = next ?? firstRound;
+    return `<a class="button" href="${roundUrl(destination)}">${next ? label('下一轮', 'Next round') : label('回到第 1 轮', 'Return to round 1')} →</a>`;
+  }
+
+  function paper(round, state, saved) {
+    const {questions} = round;
     return frame(`
-      <p class="test-meta">${label('本站自编 · 第 5–8 章 · 5 道简答', 'Site-authored · Chapters 5–8 · 5 short answers')}</p>
+      <p class="test-meta">${label(`第 5–8 章 · 题库 ${bankSize} 题 · 每轮 ${questions.length} 题`, `Chapters 5–8 · ${bankSize} questions · ${questions.length} per round`)}</p>
       ${pair({
-        zh: '每题建议用两三句简单英文作答。写完可对照双语范答和采分点自评。草稿保存在当前浏览器。',
-        en: 'Use two or three short English sentences per question. Check your work against bilingual model answers and marking points. Drafts stay in this browser.'
+        zh: '每题用两三句简单英文作答。写完可用双语范答和采分点自评，各轮草稿保存在当前浏览器。',
+        en: 'Use two or three short English sentences per question. Self-check with bilingual answers and marking points. Drafts for each round stay in this browser.'
       })}
       ${storageStatus()}
+      ${roundChooser(round, saved)}
       <div class="test-actions test2-top-actions">
-        ${state.reviewed ? `<a class="button" href="#/test2/review">${label('查看已保存的自评', 'Open saved review')}</a>` : ''}
+        ${state.reviewed ? `<a class="button" href="${roundUrl(round, true)}">${label('查看本轮自评', 'Open this round’s review')}</a>` : ''}
         <a class="button" href="#/test2/analysis">${label('查看命题分析', 'Read the paper analysis')}</a>
       </div>
       <form data-test2-form>
@@ -118,7 +152,7 @@
         }).join('')}</div>
         <div class="test-actions test2-end-actions">
           <button type="submit" class="button primary">${label('完成作答，进入自评', 'Finish and review answers')}</button>
-          <p class="test-meta" data-test2-answered role="status">${answeredText(state)}</p>
+          <p class="test-meta" data-test2-answered role="status">${answeredText(round, state)}</p>
         </div>
       </form>
       <dialog class="info-dialog test-confirm" data-test2-dialog aria-labelledby="test2-confirm-title" aria-describedby="test2-confirm-note">
@@ -129,33 +163,34 @@
           <button class="button primary" value="review">${label('进入自评', 'Review answers')}</button>
         </form>
       </dialog>
-    `, {zh: '11 月 Test 2 自编模拟卷', en: 'November Test 2 practice paper'});
+    `, {zh: `11 月 Test 2 自编模拟卷 · 第 ${round.id} 轮`, en: `November Test 2 practice paper · Round ${round.id}`}, round);
   }
 
-  function countAnswers(state) {
-    return questions.filter(question => hasAnswer(state.answers[question.id])).length;
+  function countAnswers(round, state) {
+    return round.questions.filter(question => hasAnswer(state.answers[question.id])).length;
   }
 
-  function answeredText(state) {
-    const count = countAnswers(state);
-    return label(`已写 ${count} / ${questions.length} 题`, `${count} of ${questions.length} answers written`);
+  function answeredText(round, state) {
+    const count = countAnswers(round, state);
+    return label(`已写 ${count} / ${round.questions.length} 题`, `${count} of ${round.questions.length} answers written`);
   }
 
-  function overview(state) {
-    const done = questions.reduce((total, question) => total + countScore(state, question), 0);
+  function overview(round, state) {
+    const maximum = round.questions.reduce((total, question) => total + question.points.length, 0);
+    const done = round.questions.reduce((total, question) => total + countScore(state, question), 0);
     const remaining = maximum - done;
-    const unanswered = questions.length - countAnswers(state);
+    const unanswered = round.questions.length - countAnswers(round, state);
     const note = remaining
       ? label(`待确认 ${remaining} 个采分点 · 留空 ${unanswered} 题`,
         `${remaining} marking points to check · ${unanswered} unanswered`)
-      : label('本轮 15 个采分点均已确认。', 'All 15 marking points are checked.');
+      : label(`本轮 ${maximum} 个采分点均已确认。`, `All ${maximum} marking points are checked.`);
     return `<p class="test2-score"><strong data-test2-score>${done} / ${maximum}</strong> ${label('已覆盖采分点', 'marking points covered')}</p>
       <progress aria-label="已覆盖采分点 / Marking points covered" value="${done}" max="${maximum}"></progress>
       <p class="test-meta">${note}</p>`;
   }
 
-  function pending(state) {
-    const todo = questions.flatMap((question, index) => {
+  function pending(round, state) {
+    const todo = round.questions.flatMap((question, index) => {
       const unchecked = question.points.filter(point => !state.checked[question.id]?.includes(point.id));
       return unchecked.length ? [{question, unchecked, number: index + 1}] : [];
     });
@@ -204,29 +239,32 @@
     </section>`;
   }
 
-  function review(state) {
+  function review(round, state, saved) {
     return frame(`
       ${pair({
         zh: '按你的答案实际表达的意思勾选采分点。意思正确的简单说法也可以得分。',
         en: 'Check each point your answer expresses. Simple wording counts when it conveys the right idea.'
       })}
       ${storageStatus()}
+      ${roundChooser(round, saved)}
       <section class="test-panel test2-overview" aria-labelledby="test2-overview-title">
         <h2 id="test2-overview-title">${title('本次复盘', 'Your review')}</h2>
-        <div data-test2-overview role="status">${overview(state)}</div>
+        <div data-test2-overview role="status">${overview(round, state)}</div>
         <details class="test2-disclosure">
           <summary>${label('待补要点与课件回看', 'Points to revisit and slide references')}</summary>
-          <div data-test2-pending>${pending(state)}</div>
+          <div data-test2-pending>${pending(round, state)}</div>
         </details>
         <div class="test-actions test2-top-actions">
-          <a class="button" href="#/test2">${label('返回修改作答', 'Edit your answers')}</a>
+          <a class="button" href="${roundUrl(round)}">${label('返回修改作答', 'Edit your answers')}</a>
           <a class="button" href="#/test2/analysis">${label('查看命题分析', 'Read the paper analysis')}</a>
+          ${nextRoundLink(round)}
         </div>
       </section>
       <div class="test-review-list">
-        ${questions.map((question, index) => reviewedQuestion(question, index, state)).join('')}
+        ${round.questions.map((question, index) => reviewedQuestion(question, index, state)).join('')}
       </div>
-    `, {zh: '11 月 Test 2 自评', en: 'November Test 2 answer review'});
+      <div class="test-actions test2-end-actions">${nextRoundLink(round)}</div>
+    `, {zh: `11 月 Test 2 自评 · 第 ${round.id} 轮`, en: `November Test 2 answer review · Round ${round.id}`}, round);
   }
 
   function paperAudit(id) {
@@ -256,9 +294,14 @@
   }
 
   const getFit = scores => dimensions.reduce((total, dimension) => total + scores[dimension.id].score, 0);
-  const fitTotal = questions.reduce((total, question) => total + getFit(question.fit), 0);
-  const initialFit = fitTotal - getFit(byId.get(revision.question).fit) +
-    dimensions.reduce((total, dimension) => total + revision.scores[dimension.id], 0);
+  const roundFit = round => round.questions.reduce((total, question) => total + getFit(question.fit), 0);
+  const firstFit = roundFit(firstRound);
+  const otherItemFits = firstRound.questions.filter(question => question.id !== revision.question)
+    .reduce((total, question) => total + getFit(question.fit), 0);
+  const firstFitWith = scores => otherItemFits +
+    dimensions.reduce((total, dimension) => total + scores[dimension.id], 0);
+  const initialFit = firstFitWith(revision.scores);
+  const baselineFit = firstFitWith(revision.baselineScores);
 
   function fitDetails(question, index) {
     return `<details class="test2-disclosure" data-test2-fit-item="${index + 1}">
@@ -273,13 +316,21 @@
     </details>`;
   }
 
+  function roundAnalysis(round) {
+    return `<details class="test2-disclosure" data-test2-fit-round="${round.id}">
+      <summary><strong>${label(`第 ${round.id} 轮 · ${round.title.zh}`, `Round ${round.id} · ${round.title.en}`)}</strong> · ${roundFit(round)} / 100</summary>
+      ${round.questions.map(fitDetails).join('')}
+      <a class="test-back" href="${roundUrl(round)}">${label(`做第 ${round.id} 轮`, `Practise round ${round.id}`)} ↗</a>
+    </details>`;
+  }
+
   function analysis() {
     return frame(`
       ${pair({
-        zh: '本卷根据六月原卷、十月真题、课件和老师已说明的简答要求编写。拟合度衡量这些已知特征。收到 Test 2 参考卷后，可据实际题型和难度重新校准。',
-        en: 'This mock draws on the June and October Test 1 papers, the slides and the teacher’s guidance on short answers. The fit score measures these known features and can be recalibrated when a Test 2 reference paper is available.'
+        zh: '题库根据六月原卷、十月真题、课件和老师已说明的简答要求编写。每轮按同一套量表评估这些已知特征。取得 Test 2 参考卷后，可用实际题型和难度校准。',
+        en: 'The bank draws on the June and October Test 1 papers, the slides and the teacher’s guidance on short answers. The same rubric measures these known features for each round. A Test 2 reference paper can help calibrate the item formats and difficulty.'
       })}
-      <p class="test2-score"><strong data-test2-fit-total>${fitTotal} / 100</strong> ${label('已知命题特征拟合度', 'Fit to known question patterns')}</p>
+      <p class="test2-score"><strong data-test2-fit-total>${firstFit} / 100</strong> ${label('第 1 轮已知命题特征拟合度', 'Round 1 fit to known question patterns')}</p>
       <div class="test-actions test2-top-actions"><a class="button primary" href="#/test2">${label('打开模拟卷', 'Open the practice paper')}</a></div>
       <div class="test-review-list">
         <details class="test-panel test2-disclosure test2-round" open data-test2-round="1">
@@ -301,28 +352,32 @@
         <details class="test-panel test2-disclosure test2-round" data-test2-round="3">
           <summary>${title('第三轮 · 课件迁移与拟合度复评', 'Round 3 · Transfer to the slides and reassessment')}</summary>
           ${pair({
-            zh: '第 5、7、8 章各一题，第 6 章两题，分别覆盖知识来源和真理标准。试答时逐题核对题干动词及三个采分点，用两三句英文验证能否说全。分项充分吻合给全分，部分吻合给半分，缺少依据给零分。',
-            en: 'Chapters 5, 7 and 8 each have one question. Chapter 6 has two on sources of knowledge and truth. A trial answer checks each command and point in two or three English sentences. Give full credit for a clear fit, half for a partial fit and zero when evidence is absent.'
+            zh: '每轮第 5、7、8 章各一题，第 6 章两题，兼顾知识与真理标准。每轮更换考点或案例，用两三句英文试答并核对三个采分点。分项充分吻合给全分，部分吻合给半分，缺少依据给零分。',
+            en: 'Every round gives Chapters 5, 7 and 8 one question each and Chapter 6 two. Content and cases vary. A trial answer checks each command and point in two or three English sentences. Give full credit for a clear fit, half for a partial fit and zero when evidence is absent.'
           })}
           <ul class="test2-rubric">${dimensions.map(dimension => `<li>
             <strong>${label(dimension.title.zh, dimension.title.en)} · ${dimension.max} / 20</strong>
             ${pair(dimension.standard)}
           </li>`).join('')}</ul>
           <div class="test2-revision">
-            <h3>${title(`初稿 ${initialFit} 分，复评 ${fitTotal} 分`, `Draft ${initialFit}, revised ${fitTotal}`)}</h3>
+            <h3>${title(`第 1 轮从 ${initialFit} 分、${baselineFit} 分到 ${firstFit} 分`, `Round 1: ${initialFit}, then ${baselineFit}, now ${firstFit}`)}</h3>
             ${pair(revision.draft)}
             ${pair(revision.reason)}
+            ${pair(revision.improvement)}
           </div>
-          ${questions.map(fitDetails).join('')}
+          ${rounds.map(roundAnalysis).join('')}
         </details>
       </div>
     `, {zh: '11 月 Test 2 命题分析', en: 'November Test 2 paper analysis'});
   }
 
-  function render(view) {
-    if (view === 'analysis') return analysis();
-    const state = load();
-    return view === 'review' && state.reviewed ? review(state) : paper(state);
+  function render(roundPart, detail) {
+    if (roundPart === 'analysis') return analysis();
+    const saved = load();
+    const round = roundPart === 'review' ? firstRound : (roundsById.get(roundPart || saved.activeRound) ?? firstRound);
+    const state = saved.rounds[round.id] ?? newRecord();
+    const reviewing = roundPart === 'review' || detail === 'review';
+    return reviewing && state.reviewed ? review(round, state, saved) : paper(round, state, saved);
   }
 
   function mount(main, route, navigate) {
@@ -336,13 +391,22 @@
     const dialog = main.querySelector('[data-test2-dialog]');
     const result = main.querySelector('[data-test2-overview]');
     const pendingPoints = main.querySelector('[data-test2-pending]');
+    const round = roundsById.get(main.querySelector('[data-test2-round-id]')?.dataset.test2RoundId);
     main.querySelector('h1')?.focus({preventScroll: true});
+    if (!round) return;
+
+    function saveRound(saved, state) {
+      saved.rounds[round.id] = state;
+      saved.activeRound = round.id;
+      save(saved, main);
+    }
 
     function finish() {
-      const state = load();
+      const saved = load();
+      const state = saved.rounds[round.id] ?? newRecord();
       state.reviewed = true;
-      save(state, main);
-      navigate('#/test2/review');
+      saveRound(saved, state);
+      navigate(roundUrl(round, true));
     }
 
     if (form) {
@@ -350,20 +414,25 @@
       form.addEventListener('input', event => {
         const field = event.target;
         const id = field.dataset.test2Answer;
-        if (!byId.has(id)) return;
-        const state = load();
+        if (!round.questions.some(question => question.id === id)) return;
+        const saved = load();
+        const state = saved.rounds[round.id] ?? newRecord();
         if (state.answers[id] === field.value) return;
         state.answers[id] = field.value;
         delete state.checked[id];
-        save(state, main);
+        saveRound(saved, state);
         const answered = form.querySelector('[data-test2-answered]');
-        const status = answeredText(state);
-        if (answered.innerHTML !== status) answered.innerHTML = status;
+        const status = answeredText(round, state);
+        if (answered.innerHTML !== status) {
+          answered.innerHTML = status;
+          main.querySelector(`[data-test2-round-count="${round.id}"]`).innerHTML = status;
+        }
       }, {signal});
 
       form.addEventListener('submit', event => {
         event.preventDefault();
-        const blank = questions.length - countAnswers(load());
+        const state = load().rounds[round.id] ?? newRecord();
+        const blank = round.questions.length - countAnswers(round, state);
         if (!blank) return finish();
         dialog.returnValue = 'cancel';
         const blankNotice = blank === 1 ? '1 question is unanswered.' : `${blank} questions are unanswered.`;
@@ -378,25 +447,26 @@
 
     if (result) main.addEventListener('change', event => {
       const field = event.target;
-      const question = byId.get(field.dataset.test2Question);
+      const question = round.questions.find(item => item.id === field.dataset.test2Question);
       const id = field.dataset.test2Point;
       if (!question?.points.some(point => point.id === id)) return;
-      const state = load();
+      const saved = load();
+      const state = saved.rounds[round.id] ?? newRecord();
       if (!hasAnswer(state.answers[question.id])) return;
       const checked = new Set(state.checked[question.id] ?? []);
       if (field.checked) checked.add(id);
       else checked.delete(id);
       state.checked[question.id] = [...checked];
-      save(state, main);
-      result.innerHTML = overview(state);
-      pendingPoints.innerHTML = pending(state);
+      saveRound(saved, state);
+      result.innerHTML = overview(round, state);
+      pendingPoints.innerHTML = pending(round, state);
     }, {signal});
   }
 
   function entry() {
     return `<section class="test-panel test-review-entry">
       <div><h2>${title('11 月 Test 2 自编模拟卷', 'NOVEMBER TEST 2 PRACTICE')}</h2>
-      <p class="test-meta test2-entry-meta">${label('第 5–8 章 · 5 道简答 · 采分点自评', 'Chapters 5–8 · 5 short answers · Self-assessment')}</p></div>
+      <p class="test-meta test2-entry-meta">${label(`第 5–8 章 · 题库 ${bankSize} 题 · 每轮 5 题`, `Chapters 5–8 · ${bankSize} questions · 5 per round`)}</p></div>
       <a class="button primary" href="#/test2">${label('进入简答练习', 'Open Test 2 practice')} ↗</a>
     </section>`;
   }

@@ -235,13 +235,25 @@ for (const [paper, excluded] of [[june, 0], [october, 0], [{...actual, reference
 }
 console.log('Automatic review verified for full, partial and disputed scoring.');
 
-// Test 2 的 15 个学习采分点与 100 分命题拟合度分别校验。
+// 每轮分别校验 15 个学习采分点与 100 分命题拟合度。
 const test2 = context.window.INQUIRY_TEST2;
-const shortQuestions = test2.questions;
-assert.deepEqual(Array.from(shortQuestions, question => question.chapter), [5, 6, 6, 7, 8]);
-assert.equal(new Set(shortQuestions.map(question => question.id)).size, 5);
+const {rounds: shortRounds, dimensions: fitDimensions, revision: fitRevision} = test2;
+assert.deepEqual(Array.from(shortRounds, round => round.id), ['1', '2', '3', '4', '5']);
+const shortQuestions = shortRounds.flatMap(round => round.questions);
+assert.equal(shortQuestions.length, 25);
+assert.equal(new Set(shortQuestions.map(question => question.id)).size, shortQuestions.length);
+assert.equal(new Set(shortQuestions.map(question => question.stem.en)).size, shortQuestions.length);
+assert.equal(new Set(shortQuestions.map(question => question.stem.zh)).size, shortQuestions.length);
+assert(shortQuestions.every(question => /^[a-z][a-z0-9-]*$/.test(question.id)));
 const scoreFit = question => test2.dimensions.reduce((sum, dimension) => sum + question.fit[dimension.id].score, 0);
-assert.deepEqual(Array.from(test2.dimensions, dimension => dimension.max), [6, 6, 5, 3]);
+assert.deepEqual(Array.from(fitDimensions, dimension => dimension.max), [6, 6, 5, 3]);
+const roundFits = Array.from(shortRounds, round => {
+  bilingual(round.title, `round ${round.id}`);
+  assert.deepEqual(Array.from(round.questions, question => question.chapter), [5, 6, 6, 7, 8]);
+  const roundFit = round.questions.reduce((sum, question) => sum + scoreFit(question), 0);
+  assert(roundFit > 95 && roundFit <= 100, `round ${round.id} fit: ${roundFit}/100`);
+  return roundFit;
+});
 for (const question of shortQuestions) {
   for (const field of ['topic', 'stem', 'model', 'choice', 'design', 'commonMiss']) bilingual(question[field], `${question.id} ${field}`);
   checkPageReferences(question.pages, pagesByChapter[question.chapter - 1], question.id);
@@ -249,17 +261,25 @@ for (const question of shortQuestions) {
   assert.equal(question.points.length, 3, question.id);
   assert.equal(new Set(question.points.map(point => point.id)).size, 3, question.id);
   question.points.forEach(point => bilingual(point, question.id));
-  for (const dimension of test2.dimensions) {
+  for (const dimension of fitDimensions) {
     const assessment = question.fit[dimension.id];
     bilingual(assessment, `${question.id} fit ${dimension.id}`);
     assert([0, dimension.max / 2, dimension.max].includes(assessment.score), question.id);
   }
 }
-const totalFit = shortQuestions.reduce((sum, question) => sum + scoreFit(question), 0);
-assert(totalFit >= 90 && totalFit <= 100);
-const priorQuestion = shortQuestions.find(question => question.id === test2.revision.question);
-const draftFit = totalFit - scoreFit(priorQuestion) + Object.values(test2.revision.scores).reduce((sum, value) => sum + value, 0);
-assert(draftFit < 90 && draftFit < totalFit);
+const priorQuestion = shortRounds[0].questions.find(question => question.id === fitRevision.question);
+assert(priorQuestion, 'revision belongs to the original round');
+for (const revisionScores of [fitRevision.scores, fitRevision.baselineScores]) {
+  for (const {id, max} of fitDimensions) {
+    assert([0, max / 2, max].includes(revisionScores[id]), `revision score ${id}`);
+  }
+}
+const fitWithRevision = scores => roundFits[0] - scoreFit(priorQuestion) +
+  fitDimensions.reduce((sum, dimension) => sum + scores[dimension.id], 0);
+assert.equal(fitWithRevision(fitRevision.scores), 88);
+assert.equal(fitWithRevision(fitRevision.baselineScores), 94);
+assert.equal(roundFits[0], 97);
+bilingual(fitRevision.improvement, 'round 1 improvement rationale');
 for (const observations of Object.values(test2.audit)) {
   assert.equal(observations.length, 20);
   observations.forEach(entry => {
@@ -280,21 +300,81 @@ context.localStorage = {
 };
 const shortTest = context.window.inquiryTest2;
 assert(shortTest.entry().includes('href="#/test2"'));
-const freshShortPaper = shortTest.render('review');
-assert.equal((freshShortPaper.match(/<textarea/g) || []).length, 5);
-assert(!freshShortPaper.includes('Bilingual model answer'));
-const firstShort = shortQuestions[0];
-test2Data.set('inquiry-3192-test2-november-v1', JSON.stringify({
+function assertShortPaper(html, round) {
+  assert(html.includes(`data-test2-round-id="${round.id}"`));
+  assert.equal((html.match(/<textarea\b/g) || []).length, 5);
+  assert(!html.includes('Bilingual model answer'));
+  for (const question of round.questions) assert(html.includes(`data-test2-answer="${question.id}"`));
+}
+const legacyKey = 'inquiry-3192-test2-november-v1';
+const roundKey = 'inquiry-3192-test2-november-v2';
+const [firstRound, secondRound] = shortRounds;
+const firstShort = firstRound.questions[0];
+const secondShort = secondRound.questions[0];
+
+// 新用户直接打开旧复盘链接时仍需作答，所有新轮次都只展示各自的五题。
+assertShortPaper(shortTest.render('review'), firstRound);
+for (const round of shortRounds) {
+  const html = shortTest.render(round.id);
+  assertShortPaper(html, round);
+  for (const other of shortQuestions.filter(question => !round.questions.includes(question))) {
+    assert(!html.includes(`data-test2-answer="${other.id}"`));
+  }
+}
+test2Data.set(legacyKey, '{malformed');
+assertShortPaper(shortTest.render(), firstRound);
+
+// 旧记录恢复到第一轮，排除无效题目、无效采分点和重复勾选。
+test2Data.set(legacyKey, JSON.stringify({
   reviewed: true,
-  answers: {[firstShort.id]: '<my response>'},
-  checked: {[firstShort.id]: [firstShort.points[0].id, firstShort.points[0].id, 'unknown'], [shortQuestions[1].id]: ['reason']}
+  answers: {[firstShort.id]: '<my response>', [secondShort.id]: 'foreign legacy answer'},
+  checked: {
+    [firstShort.id]: [firstShort.points[0].id, firstShort.points[0].id, 'unknown'],
+    [firstRound.questions[1].id]: [firstRound.questions[1].points[0].id]
+  }
 }));
 const goodShortReview = shortTest.render('review');
 assert.match(goodShortReview, /data-test2-score>1 \/ 15/);
 assert(goodShortReview.includes('&lt;my response&gt;') && !goodShortReview.includes('<my response>'));
+assert(!goodShortReview.includes('foreign legacy answer'));
 assert.equal((goodShortReview.match(/test2-checklist" disabled/g) || []).length, 4);
+assertShortPaper(shortTest.render('2', 'review'), secondRound);
+
+// 默认入口继续上次练习。新版按轮恢复，第一轮旧入口仍能定位第一轮。
+test2Data.set(roundKey, JSON.stringify({
+  activeRound: '2',
+  rounds: {
+    '1': {
+      reviewed: true,
+      answers: {[firstShort.id]: 'first round restored response'},
+      checked: {[firstShort.id]: [firstShort.points[0].id]}
+    },
+    '2': {
+      reviewed: true,
+      answers: {[secondShort.id]: 'second round restored response', [firstShort.id]: 'foreign second round answer'},
+      checked: {
+        [secondShort.id]: secondShort.points.slice(0, 2).map(point => point.id),
+        [firstShort.id]: [firstShort.points[0].id]
+      }
+    }
+  }
+}));
+const resumedRound = shortTest.render();
+assertShortPaper(resumedRound, secondRound);
+assert(resumedRound.includes('second round restored response'));
+const secondReview = shortTest.render('2', 'review');
+assert(secondReview.includes('data-test2-round-id="2"'));
+assert.match(secondReview, /data-test2-score>2 \/ 15/);
+assert(secondReview.includes('second round restored response'));
+assert(!secondReview.includes('foreign second round answer') && !secondReview.includes('first round restored response'));
+const firstReview = shortTest.render('review');
+assert(firstReview.includes('data-test2-round-id="1"'));
+assert.match(firstReview, /data-test2-score>1 \/ 15/);
+assert(firstReview.includes('first round restored response'));
+assert(!firstReview.includes('second round restored response') && !firstReview.includes('&lt;my response&gt;'));
+
 const analysisPage = shortTest.render('analysis');
 assert.equal((analysisPage.match(/data-test2-round=/g) || []).length, 3);
-assert.equal((analysisPage.match(/data-test2-fit-item=/g) || []).length, 5);
-assert(analysisPage.includes(`${draftFit} 分，复评 ${totalFit} 分`));
-console.log(`Test 2 verified: 5 questions, 15 marking points, 40 audit entries and fit ${totalFit}/100.`);
+assert.equal((analysisPage.match(/data-test2-fit-round\b/g) || []).length, 5);
+assert.equal((analysisPage.match(/data-test2-fit-item\b/g) || []).length, 25);
+console.log(`Test 2 verified: 25 questions across 5 rounds, 15 marking points per round, 40 audit entries, and fits ${roundFits.join(', ')}/100.`);
